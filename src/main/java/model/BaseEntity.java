@@ -1,21 +1,28 @@
 package model;
 
 public class BaseEntity {
-    private long id;
+    private Long id;
     protected String name;
 
-    private static long counter = 0;
-
-    //used for creating new object
     public BaseEntity(String name) {
         this.name = name;
-        this.id = counter++;
     }
 
-    //used for restoring objects
-    public BaseEntity(int id, String name) {
+    public BaseEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isNew() {
+        return this.id == null;
     }
 
     public long getId() {

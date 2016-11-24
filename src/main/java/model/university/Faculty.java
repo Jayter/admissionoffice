@@ -6,22 +6,46 @@ import java.util.Collections;
 import java.util.List;
 
 public class Faculty extends BaseEntity {
-    private List<Direction> directions;
     private String officePhone;
     private String officeEmail;
+    private List<Direction> directions;
 
-    public Faculty(String name, List<Direction> directions, String officePhone, String officeEmail) {
+    public Faculty(String name, String officePhone, String officeEmail) {
         super(name);
-        this.directions = directions;
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
     }
 
-    public Faculty(int id, String name, List<Direction> directions, String officePhone, String officeEmail) {
+    public Faculty(Long id, String name, String officePhone, String officeEmail) {
         super(id, name);
-        this.directions = directions;
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
+    }
+
+    public Faculty(String name, String officePhone, String officeEmail, List<Direction> directions) {
+        super(name);
+        this.officePhone = officePhone;
+        this.officeEmail = officeEmail;
+        this.directions = directions;
+    }
+
+    public Faculty(Long id, String name, String officePhone, String officeEmail, List<Direction> directions) {
+        super(id, name);
+        this.officePhone = officePhone;
+        this.officeEmail = officeEmail;
+        this.directions = directions;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public void setOfficeEmail(String officeEmail) {
+        this.officeEmail = officeEmail;
+    }
+
+    public void setDirections(List<Direction> directions) {
+        this.directions = directions;
     }
 
     public List<Direction> getDirections() {

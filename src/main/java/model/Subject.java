@@ -5,7 +5,7 @@ public class Subject extends BaseEntity {
         super(name);
     }
 
-    public Subject(int id, String name) {
+    public Subject(Long id, String name) {
         super(id, name);
     }
 }
