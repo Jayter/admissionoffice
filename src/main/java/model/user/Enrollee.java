@@ -10,28 +10,28 @@ public class Enrollee extends User {
     private Map<Subject, Integer> examResults;
     private double averageMark;
 
-    public Enrollee(String name, String secondName, String address, String email,
+    public Enrollee(String name, String secondName, String address, String email, String password,
                     String phoneNumber, LocalDate birthDate, double averageMark) {
-        super(name, secondName, address, email, phoneNumber, birthDate);
+        super(name, secondName, address, email, password, phoneNumber, birthDate);
         this.averageMark = averageMark;
     }
 
-    public Enrollee(Long id, String name, String secondName, String address, String email,
+    public Enrollee(Long id, String name, String secondName, String address, String email, String password,
                     String phoneNumber, LocalDate birthDate, double averageMark) {
-        super(id, name, secondName, address, email, phoneNumber, birthDate);
+        super(id, name, secondName, address, email, password, phoneNumber, birthDate);
         this.averageMark = averageMark;
     }
 
-    public Enrollee(String name, String secondName, String address, String email, String phoneNumber,
+    public Enrollee(String name, String secondName, String address, String email, String password, String phoneNumber,
                     LocalDate birthDate, Map<Subject, Integer> examResults, double averageMark) {
-        super(name, secondName, address, email, phoneNumber, birthDate);
+        super(name, secondName, address, email, password, phoneNumber, birthDate);
         this.examResults = examResults;
         this.averageMark = averageMark;
     }
 
-    public Enrollee(Long id, String name, String secondName, String address, String email, String phoneNumber,
-                    LocalDate birthDate, Map<Subject, Integer> examResults, double averageMark) {
-        super(id, name, secondName, address, email, phoneNumber, birthDate);
+    public Enrollee(Long id, String name, String secondName, String address, String email, String password,
+                    String phoneNumber, LocalDate birthDate, Map<Subject, Integer> examResults, double averageMark) {
+        super(id, name, secondName, address, email, password, phoneNumber, birthDate);
         this.examResults = examResults;
         this.averageMark = averageMark;
     }

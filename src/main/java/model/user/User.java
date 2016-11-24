@@ -8,25 +8,28 @@ public class User extends BaseEntity {
     protected String secondName;
     protected String address;
     protected String email;
+    protected String password;
     protected String phoneNumber;
     protected LocalDate birthDate;
 
     public User(String name, String secondName, String address, String email,
-                String phoneNumber, LocalDate birthDate) {
+                String password, String phoneNumber, LocalDate birthDate) {
         super(name);
         this.secondName = secondName;
         this.address = address;
         this.email = email;
+        this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
     }
 
     public User(Long id, String name, String secondName, String address, String email,
-                String phoneNumber, LocalDate birthDate) {
+                String password, String phoneNumber, LocalDate birthDate) {
         super(id, name);
         this.secondName = secondName;
         this.address = address;
         this.email = email;
+        this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
     }
@@ -69,5 +72,13 @@ public class User extends BaseEntity {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
