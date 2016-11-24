@@ -1,4 +1,4 @@
-package model;
+package com.jayton.admissionoffice.model;
 
 public class BaseEntity {
     private Long id;

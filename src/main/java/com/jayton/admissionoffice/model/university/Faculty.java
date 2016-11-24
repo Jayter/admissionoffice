@@ -1,6 +1,6 @@
-package model.university;
+package com.jayton.admissionoffice.model.university;
 
-import model.BaseEntity;
+import com.jayton.admissionoffice.model.BaseEntity;
 
 import java.util.Collections;
 import java.util.List;

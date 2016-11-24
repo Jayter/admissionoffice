@@ -1,6 +1,6 @@
-package model.user;
+package com.jayton.admissionoffice.model.user;
 
-import model.BaseEntity;
+import com.jayton.admissionoffice.model.BaseEntity;
 
 import java.time.LocalDate;
 

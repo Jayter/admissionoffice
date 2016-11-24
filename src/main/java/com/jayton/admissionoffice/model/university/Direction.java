@@ -1,7 +1,7 @@
-package model.university;
+package com.jayton.admissionoffice.model.university;
 
-import model.BaseEntity;
-import model.Subject;
+import com.jayton.admissionoffice.model.BaseEntity;
+import com.jayton.admissionoffice.model.Subject;
 
 import java.util.Map;
 

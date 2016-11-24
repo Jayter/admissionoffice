@@ -1,9 +1,8 @@
-package model.user;
+package com.jayton.admissionoffice.model.user;
 
-import model.Subject;
+import com.jayton.admissionoffice.model.Subject;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Map;
 
 public class Enrollee extends User {
