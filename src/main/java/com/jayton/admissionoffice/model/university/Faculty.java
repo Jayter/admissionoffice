@@ -8,18 +8,21 @@ import java.util.List;
 public class Faculty extends BaseEntity {
     private String officePhone;
     private String officeEmail;
+    private University owner;
     private List<Direction> directions;
 
-    public Faculty(String name, String officePhone, String officeEmail) {
+    public Faculty(String name, String officePhone, String officeEmail, University owner) {
         super(name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
+        this.owner = owner;
     }
 
-    public Faculty(Long id, String name, String officePhone, String officeEmail) {
+    public Faculty(Long id, String name, String officePhone, String officeEmail, University owner) {
         super(id, name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
+        this.owner = owner;
     }
 
     public Faculty(String name, String officePhone, String officeEmail, List<Direction> directions) {
@@ -58,5 +61,13 @@ public class Faculty extends BaseEntity {
 
     public String getOfficeEmail() {
         return officeEmail;
+    }
+
+    public University getOwner() {
+        return owner;
+    }
+
+    public void setOwner(University owner) {
+        this.owner = owner;
     }
 }
