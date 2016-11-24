@@ -12,6 +12,9 @@ public class User extends BaseEntity {
     protected String phoneNumber;
     protected LocalDate birthDate;
 
+    public User() {
+    }
+
     public User(String name, String secondName, String address, String email,
                 String password, String phoneNumber, LocalDate birthDate) {
         super(name);

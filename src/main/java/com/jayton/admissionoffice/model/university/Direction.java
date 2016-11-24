@@ -11,6 +11,9 @@ public class Direction extends BaseEntity {
     private Faculty owner;
     private Map<Subject, Integer> entranceSubjects;
 
+    public Direction() {
+    }
+
     public Direction(String name, double averageCoefficient, int countOfStudents) {
         super(name);
         this.averageCoefficient = averageCoefficient;

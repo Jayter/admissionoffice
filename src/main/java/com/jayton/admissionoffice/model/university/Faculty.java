@@ -11,6 +11,9 @@ public class Faculty extends BaseEntity {
     private University owner;
     private List<Direction> directions;
 
+    public Faculty() {
+    }
+
     public Faculty(String name, String officePhone, String officeEmail, University owner) {
         super(name);
         this.officePhone = officePhone;

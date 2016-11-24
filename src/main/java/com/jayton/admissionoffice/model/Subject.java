@@ -1,6 +1,10 @@
 package com.jayton.admissionoffice.model;
 
 public class Subject extends BaseEntity {
+
+    public Subject() {
+    }
+
     public Subject(String name) {
         super(name);
     }

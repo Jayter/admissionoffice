@@ -9,6 +9,9 @@ public class Enrollee extends User {
     private Map<Subject, Integer> examResults;
     private double averageMark;
 
+    public Enrollee() {
+    }
+
     public Enrollee(String name, String secondName, String address, String email, String password,
                     String phoneNumber, LocalDate birthDate, double averageMark) {
         super(name, secondName, address, email, password, phoneNumber, birthDate);

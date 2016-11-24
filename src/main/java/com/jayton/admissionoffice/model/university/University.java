@@ -9,6 +9,9 @@ public class University extends BaseEntity {
     private String city;
     private List<Faculty> faculties;
 
+    public University() {
+    }
+
     public University(String name, String city) {
         super(name);
         this.city = city;

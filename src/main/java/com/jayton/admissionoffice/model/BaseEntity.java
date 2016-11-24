@@ -6,6 +6,9 @@ public class BaseEntity implements Serializable {
     private Long id;
     protected String name;
 
+    public BaseEntity() {
+    }
+
     public BaseEntity(String name) {
         this.name = name;
     }
