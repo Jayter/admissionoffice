@@ -1,11 +1,11 @@
+DROP TABLE IF EXISTS exam_results;
+DROP TABLE IF EXISTS entrance_subjects;
 DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS enrollees;
 DROP TABLE IF EXISTS subjects;
-DROP TABLE IF EXISTS exam_results;
-DROP TABLE IF EXISTS universities;
-DROP TABLE IF EXISTS faculties;
 DROP TABLE IF EXISTS directions;
-DROP TABLE IF EXISTS entrance_subjects;
+DROP TABLE IF EXISTS faculties;
+DROP TABLE IF EXISTS universities;
 DROP SEQUENCE IF EXISTS global_seq;
 
 CREATE SEQUENCE global_seq START 10000;
@@ -18,7 +18,7 @@ CREATE TABLE admins (
   email VARCHAR NOT NULL,
   password VARCHAR NOT NULL,
   phone_number VARCHAR NOT NULL,
-  birth_date TIMESTAMP NOT NULL
+  birth_date DATE NOT NULL
 );
 
 CREATE TABLE enrollees (
@@ -35,14 +35,15 @@ CREATE TABLE enrollees (
 
 CREATE TABLE subjects (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
-  name VARCHAR NOT NULL
+  name VARCHAR UNIQUE NOT NULL
 );
 
 CREATE TABLE exam_results (
-  enrollee_id BIGINT NOT NULL,
-  subject_name VARCHAR NOT NULL,
+  enrollee_id BIGINT,
+  subject_id BIGINT,
   mark REAL,
-  FOREIGN KEY (enrollee_id) REFERENCES enrollees(id) ON DELETE CASCADE
+  FOREIGN KEY (enrollee_id) REFERENCES enrollees(id) ON DELETE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
 
 CREATE TABLE universities (
@@ -70,7 +71,8 @@ CREATE TABLE directions (
 
 CREATE TABLE entrance_subjects (
   direction_id BIGINT NOT NULL,
-  subject_name VARCHAR NOT NULL,
-  coef REAl,
-  FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE
+  subject_id BIGINT NOT NULL,
+  coefficient REAl,
+  FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 )
