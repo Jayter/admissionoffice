@@ -7,32 +7,32 @@ import java.util.Map;
 
 public class Enrollee extends User {
     private Map<Subject, Integer> examResults;
-    private double averageMark;
+    private Long averageMark;
 
     public Enrollee() {
     }
 
     public Enrollee(String name, String secondName, String address, String email, String password,
-                    String phoneNumber, LocalDate birthDate, double averageMark) {
+                    String phoneNumber, LocalDate birthDate, Long averageMark) {
         super(name, secondName, address, email, password, phoneNumber, birthDate);
         this.averageMark = averageMark;
     }
 
     public Enrollee(Long id, String name, String secondName, String address, String email, String password,
-                    String phoneNumber, LocalDate birthDate, double averageMark) {
+                    String phoneNumber, LocalDate birthDate, Long averageMark) {
         super(id, name, secondName, address, email, password, phoneNumber, birthDate);
         this.averageMark = averageMark;
     }
 
     public Enrollee(String name, String secondName, String address, String email, String password, String phoneNumber,
-                    LocalDate birthDate, Map<Subject, Integer> examResults, double averageMark) {
+                    LocalDate birthDate, Map<Subject, Integer> examResults, Long averageMark) {
         super(name, secondName, address, email, password, phoneNumber, birthDate);
         this.examResults = examResults;
         this.averageMark = averageMark;
     }
 
     public Enrollee(Long id, String name, String secondName, String address, String email, String password,
-                    String phoneNumber, LocalDate birthDate, Map<Subject, Integer> examResults, double averageMark) {
+                    String phoneNumber, LocalDate birthDate, Map<Subject, Integer> examResults, Long averageMark) {
         super(id, name, secondName, address, email, password, phoneNumber, birthDate);
         this.examResults = examResults;
         this.averageMark = averageMark;
@@ -46,11 +46,11 @@ public class Enrollee extends User {
         this.examResults = examResults;
     }
 
-    public double getAverageMark() {
+    public Long getAverageMark() {
         return averageMark;
     }
 
-    public void setAverageMark(double averageMark) {
+    public void setAverageMark(Long averageMark) {
         this.averageMark = averageMark;
     }
 }
