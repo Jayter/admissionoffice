@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice;
+package com.jayton.admissionoffice.data;
 
 import com.jayton.admissionoffice.model.user.Admin;
 
