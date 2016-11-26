@@ -13,8 +13,9 @@ public class University extends BaseEntity {
     public University() {
     }
 
-    public University(String name, String city) {
+    public University(String name, String city, String address) {
         super(name);
+        this.city = city;
         this.city = city;
     }
 
