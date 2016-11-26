@@ -189,6 +189,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
             statement.setString(5, admin.getPassword());
             statement.setString(6, admin.getPhoneNumber());
             statement.setDate(7, Date.valueOf(admin.getBirthDate()));
+            statement.setLong(8, admin.getId());
 
             int row = statement.executeUpdate();
             if(row == 0) {
