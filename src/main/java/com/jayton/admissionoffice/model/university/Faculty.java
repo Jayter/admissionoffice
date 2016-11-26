@@ -15,28 +15,28 @@ public class Faculty extends BaseEntity {
     public Faculty() {
     }
 
-    public Faculty(String name, String officePhone, String officeEmail, University owner) {
+    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, University owner) {
         super(name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.owner = owner;
     }
 
-    public Faculty(Long id, String name, String officePhone, String officeEmail, University owner) {
+    public Faculty(Long id, String name, String officePhone, String officeEmail, String officeAddress, University owner) {
         super(id, name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.owner = owner;
     }
 
-    public Faculty(String name, String officePhone, String officeEmail, List<Direction> directions) {
+    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, List<Direction> directions) {
         super(name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.directions = directions;
     }
 
-    public Faculty(Long id, String name, String officePhone, String officeEmail, List<Direction> directions) {
+    public Faculty(Long id, String name, String officePhone, String officeEmail, String officeAddress, List<Direction> directions) {
         super(id, name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;

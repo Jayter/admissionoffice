@@ -18,21 +18,24 @@ public class University extends BaseEntity {
         this.city = city;
     }
 
-    public University(Long id, String name, String city) {
+    public University(Long id, String name, String city, String address) {
         super(id, name);
         this.city = city;
+        this.address = address;
     }
 
-    public University(String name, String city, List<Faculty> faculties) {
+    public University(String name, String city, String address, List<Faculty> faculties) {
         super(name);
         this.city = city;
         this.faculties = faculties;
+        this.address = address;
     }
 
-    public University(Long id, String name, String city, List<Faculty> faculties) {
+    public University(Long id, String name, String city, String address, List<Faculty> faculties) {
         super(id, name);
         this.city = city;
         this.faculties = faculties;
+        this.address = address;
     }
 
     public void setFaculties(List<Faculty> faculties) {
