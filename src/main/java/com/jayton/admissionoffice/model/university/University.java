@@ -7,6 +7,7 @@ import java.util.List;
 
 public class University extends BaseEntity {
     private String city;
+    private String address;
     private List<Faculty> faculties;
 
     public University() {
@@ -48,5 +49,13 @@ public class University extends BaseEntity {
 
     public List<Faculty> getFaculties() {
         return Collections.unmodifiableList(faculties);
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 public class Faculty extends BaseEntity {
     private String officePhone;
     private String officeEmail;
+    private String officeAddress;
     private University owner;
     private List<Direction> directions;
 
@@ -72,5 +73,13 @@ public class Faculty extends BaseEntity {
 
     public void setOwner(University owner) {
         this.owner = owner;
+    }
+
+    public String getOfficeAddress() {
+        return officeAddress;
+    }
+
+    public void setOfficeAddress(String officeAddress) {
+        this.officeAddress = officeAddress;
     }
 }
