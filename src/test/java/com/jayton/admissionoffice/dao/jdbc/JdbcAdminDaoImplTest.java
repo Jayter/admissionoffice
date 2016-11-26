@@ -12,6 +12,7 @@ import org.junit.rules.ExpectedException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.jayton.admissionoffice.data.AdminTestData.*;
 
@@ -39,12 +40,18 @@ public class JdbcAdminDaoImplTest {
     }
 
     @Test
-    public void addTest() throws Exception {
-        jdbcAdminDao.add(ADMIN4);
+    public void getAllTest() throws Exception {
+        List<Admin> actual = jdbcAdminDao.getAll();
 
-        Assert.assertEquals(ADMIN1_ID + 3, ADMIN4.getId());
-        System.out.println(jdbcAdminDao.getAll());
-        Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3, ADMIN4), jdbcAdminDao.getAll());
+        Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3), actual);
+    }
+
+    @Test
+    public void addTest() throws Exception {
+        jdbcAdminDao.add(NEW_ADMIN);
+
+        Assert.assertEquals(ADMIN1_ID + 3, NEW_ADMIN.getId());
+        Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3, NEW_ADMIN), jdbcAdminDao.getAll());
     }
 
     @Test
@@ -55,9 +62,13 @@ public class JdbcAdminDaoImplTest {
 
         Assert.assertEquals(ADMIN2, jdbcAdminDao.get(ADMIN2.getId()));
 
+        //reset to initial state
+        ADMIN2.setAddress("Львів, Некрасова 12");
+        ADMIN2.setBirthDate(LocalDate.of(1995, Month.DECEMBER, 11));
+
         //updating user that was not saved in db
         expected.expect(DAOException.class);
-        jdbcAdminDao.update(ADMIN4);
+        jdbcAdminDao.update(NEW_ADMIN);
     }
 
     @Test
@@ -68,7 +79,7 @@ public class JdbcAdminDaoImplTest {
 
         //deleting user that was not saved in db
         expected.expect(DAOException.class);
-        jdbcAdminDao.delete(ADMIN4);
+        jdbcAdminDao.delete(NEW_ADMIN);
     }
 
 }
