@@ -22,7 +22,9 @@ public class InitHelper {
 
     private InitHelper() {
     }
-
+    static {
+        initDefaultDataSource();
+    }
     public static void initDefaultDataSource() {
         initDataSource(TEST_DB_PROPERTIES);
     }
