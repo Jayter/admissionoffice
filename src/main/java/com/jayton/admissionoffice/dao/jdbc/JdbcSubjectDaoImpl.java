@@ -6,6 +6,8 @@ import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.model.Subject;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jayton on 26.11.2016.
@@ -72,6 +74,50 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Subject> getAll() throws DAOException {
+        List<Subject> subjects = new ArrayList<>();
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_GET_ALL);
+
+            Subject subject;
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while(rs.next()) {
+                    subject = new Subject();
+
+                    subject.setId(rs.getLong("id"));
+                    subject.setName(rs.getString("name"));
+
+                    subjects.add(subject);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load subjects.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+        return subjects;
     }
 
     @Override
