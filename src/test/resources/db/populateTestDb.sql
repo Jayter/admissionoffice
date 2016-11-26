@@ -6,14 +6,7 @@ ALTER SEQUENCE global_seq RESTART WITH 10000;
 INSERT INTO subjects(name) VALUES
   ('Українська мова та література'),
   ('Англійська мова'),
-  ('Математика'),
-  ('Хімія'),
-  ('Біологія'),
-  ('Фізика'),
-  ('Географія'),
-  ('Історія України'),
-  ('Всесвітня історія'),
-  ('Всесвітня література');
+  ('Математика');
 
 INSERT INTO admins (name, second_name, address, email, password, phone_number, birth_date) VALUES
   ('Андрій', 'Пилипенко', 'Київ, Васильківська 25', 'a_pylip@gmail.com', 'pylip19', '+380674562212', '1984-3-22'),
