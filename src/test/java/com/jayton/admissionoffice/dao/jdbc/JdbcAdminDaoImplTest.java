@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 
-import static com.jayton.admissionoffice.AdminTestData.*;
+import static com.jayton.admissionoffice.data.AdminTestData.*;
 
 /**
  * Created by Jayton on 25.11.2016.
@@ -62,9 +62,9 @@ public class JdbcAdminDaoImplTest {
 
     @Test
     public void deleteTest() throws Exception {
-        jdbcAdminDao.delete(ADMIN1_ID + 2);
+        jdbcAdminDao.delete(ADMIN1_ID + 1);
 
-        Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2), jdbcAdminDao.getAll());
+        Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN3), jdbcAdminDao.getAll());
 
         //deleting user that was not saved in db
         expected.expect(DAOException.class);
