@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.jayton.admissionoffice.data.CommonTestData.*;
 import static com.jayton.admissionoffice.data.SubjectTestData.*;
 
 /**
@@ -25,12 +26,14 @@ public class JdbcSubjectDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.populateDb();
+        InitHelper.executeDbPopulate("populateBySubjects.sql");
     }
 
     @Test
     public void get() throws Exception {
         Assert.assertEquals(SUBJECT1, jdbcSubjectDao.get(SUBJECT1_ID));
+
+        Assert.assertNull(jdbcSubjectDao.get(INCORRECT_ID));
     }
 
     @Test
@@ -41,6 +44,8 @@ public class JdbcSubjectDaoImplTest {
     @Test
     public void getByName() throws Exception {
         Assert.assertEquals(SUBJECT2, jdbcSubjectDao.getByName(SUBJECT2.getName()));
+
+        Assert.assertNull(jdbcSubjectDao.getByName(INCORRECT_NAME));
     }
 
     @Test
@@ -60,8 +65,13 @@ public class JdbcSubjectDaoImplTest {
         jdbcSubjectDao.update(SUBJECT3);
         Assert.assertEquals(SUBJECT3, jdbcSubjectDao.get(SUBJECT3.getId()));
 
+        //trying to update a subject with name that already exists
+        SUBJECT3.setName("Українська мова та література");
+        expected.expect(DAOException.class);
+        jdbcSubjectDao.update(SUBJECT3);
+
         //restore initial state
-        SUBJECT3.setName("Математика");
+        SUBJECT3.setName("Українська мова та література");
     }
 
     @Test
@@ -73,7 +83,7 @@ public class JdbcSubjectDaoImplTest {
         Assert.assertEquals(Collections.singletonList(SUBJECT1), jdbcSubjectDao.getAll());
 
         expected.expect(DAOException.class);
-        jdbcSubjectDao.delete(SUBJECT2.getId());
+        jdbcSubjectDao.delete(INCORRECT_ID);
     }
 
 }
