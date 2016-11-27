@@ -59,7 +59,7 @@ public class JdbcUniversityDaoImplTest {
     public void add() throws Exception {
         jdbcUniversityDao.add(NEW_UNIVERSITY);
 
-        Assert.assertEquals(NEW_UNIVERSITY.getId(), UNIVERSITY1_ID + 3);
+        Assert.assertEquals(new Long(UNIVERSITY1_ID + 3), NEW_UNIVERSITY.getId());
 
         Assert.assertEquals(jdbcUniversityDao.getAll(), Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY));
 

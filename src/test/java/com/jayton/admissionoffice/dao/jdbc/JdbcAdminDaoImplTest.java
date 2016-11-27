@@ -53,7 +53,7 @@ public class JdbcAdminDaoImplTest {
     public void addTest() throws Exception {
         jdbcAdminDao.add(NEW_ADMIN);
 
-        Assert.assertEquals(ADMIN1_ID + 3, NEW_ADMIN.getId());
+        Assert.assertEquals(new Long(ADMIN1_ID + 3), NEW_ADMIN.getId());
 
         Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3, NEW_ADMIN), jdbcAdminDao.getAll());
 

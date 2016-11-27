@@ -53,7 +53,7 @@ public class JdbcSubjectDaoImplTest {
     public void add() throws Exception {
         jdbcSubjectDao.add(NEW_SUBJECT);
 
-        Assert.assertEquals(SUBJECT1_ID + 3, NEW_SUBJECT.getId());
+        Assert.assertEquals(new Long(SUBJECT1_ID + 3), NEW_SUBJECT.getId());
         Assert.assertEquals(NEW_SUBJECT, jdbcSubjectDao.getByName(NEW_SUBJECT.getName()));
 
         //trying to add a subject with name that already exists
