@@ -138,7 +138,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
 
         try {
             connection = PoolHelper.getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD);
+            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, admin.getName());
             statement.setString(2, admin.getSecondName());
@@ -148,9 +148,17 @@ public class JdbcAdminDaoImpl implements AdminDao {
             statement.setString(6, admin.getPhoneNumber());
             statement.setDate(7, Date.valueOf(admin.getBirthDate()));
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to save admin.");
+            }
+
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    admin.setId(rs.getLong(1));
+                } else {
+                    throw new DAOException("Failed to get admin id.");
+                }
             }
 
         } catch (SQLException e) {
@@ -191,8 +199,8 @@ public class JdbcAdminDaoImpl implements AdminDao {
             statement.setDate(7, Date.valueOf(admin.getBirthDate()));
             statement.setLong(8, admin.getId());
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to update admin.");
             }
 
@@ -232,8 +240,8 @@ public class JdbcAdminDaoImpl implements AdminDao {
 
             statement.setLong(1, id);
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to delete admin.");
             }
 
