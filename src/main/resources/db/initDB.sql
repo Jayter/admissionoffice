@@ -55,10 +55,10 @@ CREATE TABLE universities (
 CREATE TABLE faculties (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL,
-  university_id BIGINT NOT NULL,
+  universityId BIGINT NOT NULL,
   office_phone VARCHAR NOT NULL,
   office_email VARCHAR NOT NULL,
-  FOREIGN KEY (university_id) REFERENCES universities(id) ON DELETE CASCADE
+  FOREIGN KEY (universityId) REFERENCES universities(id) ON DELETE CASCADE
 );
 
 CREATE TABLE directions (
