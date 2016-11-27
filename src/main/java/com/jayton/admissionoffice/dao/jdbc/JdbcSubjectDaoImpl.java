@@ -169,13 +169,20 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
 
         try {
             connection = PoolHelper.getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD);
+            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, subject.getName());
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to save subject.");
+            }
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    subject.setId(rs.getLong(1));
+                } else {
+                    throw new DAOException("Failed to get subject id.");
+                }
             }
 
         } catch (SQLException e) {
@@ -210,8 +217,8 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             statement.setString(1, subject.getName());
             statement.setLong(2, subject.getId());
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to update subject.");
             }
 
@@ -251,8 +258,8 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
 
             statement.setLong(1, id);
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to delete subject.");
             }
 
