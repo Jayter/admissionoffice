@@ -30,7 +30,7 @@ public class BaseEntity implements Serializable {
         return this.id == null;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
