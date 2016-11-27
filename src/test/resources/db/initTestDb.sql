@@ -15,7 +15,7 @@ CREATE TABLE admins (
   name VARCHAR NOT NULL,
   second_name VARCHAR NOT NULL,
   address VARCHAR NOT NULL,
-  email VARCHAR NOT NULL,
+  email VARCHAR UNIQUE NOT NULL,
   password VARCHAR NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date DATE NOT NULL
@@ -26,7 +26,7 @@ CREATE TABLE enrollees (
   name VARCHAR NOT NULL,
   second_name VARCHAR NOT NULL,
   address VARCHAR NOT NULL,
-  email VARCHAR NOT NULL,
+  email VARCHAR UNIQUE NOT NULL,
   password VARCHAR NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date TIMESTAMP NOT NULL,
@@ -49,14 +49,17 @@ CREATE TABLE exam_results (
 CREATE TABLE universities (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL,
-  city VARCHAR NOT NULL
+  city VARCHAR NOT NULL,
+  address VARCHAR NOT NULL
 );
 
 CREATE TABLE faculties (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
+  name VARCHAR NOT NULL,
   university_id BIGINT NOT NULL,
   office_phone VARCHAR NOT NULL,
   office_email VARCHAR NOT NULL,
+  address VARCHAR NOT NULL,
   FOREIGN KEY (university_id) REFERENCES universities(id) ON DELETE CASCADE
 );
 

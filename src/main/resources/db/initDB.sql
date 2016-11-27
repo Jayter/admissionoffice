@@ -54,6 +54,7 @@ CREATE TABLE universities (
 
 CREATE TABLE faculties (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
+  name VARCHAR NOT NULL,
   university_id BIGINT NOT NULL,
   office_phone VARCHAR NOT NULL,
   office_email VARCHAR NOT NULL,
