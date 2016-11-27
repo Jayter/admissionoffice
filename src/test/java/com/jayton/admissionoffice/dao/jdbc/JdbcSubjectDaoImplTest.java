@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.util.InitHelper;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,6 +52,7 @@ public class JdbcSubjectDaoImplTest {
     @Test
     public void add() throws Exception {
         jdbcSubjectDao.add(NEW_SUBJECT);
+        Assert.assertEquals(SUBJECT1_ID + 3, NEW_SUBJECT.getId());
         Assert.assertEquals(NEW_SUBJECT, jdbcSubjectDao.getByName(NEW_SUBJECT.getName()));
 
         //trying to add a subject with name that already exists
