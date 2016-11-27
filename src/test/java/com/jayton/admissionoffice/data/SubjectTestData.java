@@ -11,6 +11,6 @@ public class SubjectTestData {
     public static final Subject SUBJECT1 = new Subject(SUBJECT1_ID, "Українська мова та література");
     public static final Subject SUBJECT2 = new Subject(SUBJECT1_ID + 1, "Англійська мова");
     public static final Subject SUBJECT3 = new Subject(SUBJECT1_ID + 2, "Математика");
-    public static final Subject NEW_SUBJECT = new Subject(SUBJECT1_ID, "Хімія");
-    public static final Subject DUPLICATED_SUBJECT = new Subject(SUBJECT1_ID, "Математика");
+    public static final Subject NEW_SUBJECT = new Subject("Хімія");
+    public static final Subject DUPLICATED_SUBJECT = new Subject("Математика");
 }
