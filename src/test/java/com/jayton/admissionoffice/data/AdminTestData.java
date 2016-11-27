@@ -17,7 +17,7 @@ public class AdminTestData {
             "krylov@gmail.com", "1kr45kr", "+380632245612", LocalDate.of(1995, Month.DECEMBER, 11));
     public static final Admin ADMIN3 = new Admin(ADMIN1_ID + 2, "Ігор", "Дудік", "Житомир, Польова 1",
             "duddik@gmail.com", "12dud12", "+380672235616", LocalDate.of(1989, Month.JUNE, 2));
-    public static final Admin NEW_ADMIN = new Admin(ADMIN1_ID + 3, "Анна", "Мохир", "Боярка, Шевченка 45",
+    public static final Admin NEW_ADMIN = new Admin("Анна", "Мохир", "Боярка, Шевченка 45",
             "anna.mochyr@yandex.ru", "kotik18", "+380991329782", LocalDate.of(1990, Month.JULY, 7));
     public static final Admin ADMIN_WITH_NULLABLE_FIELDS = new Admin();
 
