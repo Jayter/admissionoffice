@@ -3,52 +3,55 @@ package com.jayton.admissionoffice.model.university;
 import com.jayton.admissionoffice.model.BaseEntity;
 import com.jayton.admissionoffice.model.Subject;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class Direction extends BaseEntity {
-    private double averageCoefficient;
+    private BigDecimal averageCoefficient;
     private int countOfStudents;
-    private Faculty owner;
+    private Long ownerId;
     private Map<Subject, Integer> entranceSubjects;
 
     public Direction() {
     }
 
-    public Direction(String name, double averageCoefficient, int countOfStudents) {
+    public Direction(String name, BigDecimal averageCoefficient, int countOfStudents, Long ownerId) {
         super(name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
+        this.ownerId = ownerId;
     }
 
-    public Direction(Long id, String name, double averageCoefficient, int countOfStudents) {
+    public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents, Long ownerId) {
         super(id, name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
+        this.ownerId = ownerId;
     }
 
-    public Direction(String name, double averageCoefficient, int countOfStudents,
-                     Faculty owner, Map<Subject, Integer> entranceSubjects) {
+    public Direction(String name, BigDecimal averageCoefficient, int countOfStudents,
+                     Long owner, Map<Subject, Integer> entranceSubjects) {
         super(name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
-        this.owner = owner;
+        this.ownerId = owner;
         this.entranceSubjects = entranceSubjects;
     }
 
-    public Direction(Long id, String name, double averageCoefficient, int countOfStudents,
-                     Faculty owner, Map<Subject, Integer> entranceSubjects) {
+    public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents,
+                     Long owner, Map<Subject, Integer> entranceSubjects) {
         super(id, name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
-        this.owner = owner;
+        this.ownerId = owner;
         this.entranceSubjects = entranceSubjects;
     }
 
-    public double getAverageCoefficient() {
+    public BigDecimal getAverageCoefficient() {
         return averageCoefficient;
     }
 
-    public void setAverageCoefficient(double averageCoefficient) {
+    public void setAverageCoefficient(BigDecimal averageCoefficient) {
         this.averageCoefficient = averageCoefficient;
     }
 
@@ -68,11 +71,37 @@ public class Direction extends BaseEntity {
         this.entranceSubjects = entranceSubjects;
     }
 
-    public Faculty getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(Faculty owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Direction direction = (Direction) o;
+
+        if (countOfStudents != direction.countOfStudents) return false;
+        if (averageCoefficient != null ? !averageCoefficient.equals(direction.averageCoefficient) : direction.averageCoefficient != null)
+            return false;
+        if (ownerId != null ? !ownerId.equals(direction.ownerId) : direction.ownerId != null) return false;
+        return entranceSubjects != null ? entranceSubjects.equals(direction.entranceSubjects) : direction.entranceSubjects == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (averageCoefficient != null ? averageCoefficient.hashCode() : 0);
+        result = 31 * result + countOfStudents;
+        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (entranceSubjects != null ? entranceSubjects.hashCode() : 0);
+        return result;
     }
 }
