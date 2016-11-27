@@ -204,7 +204,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
                 throw new DAOException("Failed to update admin.");
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to update admin.", e);
         } finally {
             if(statement != null) {

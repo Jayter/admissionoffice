@@ -222,7 +222,7 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
                 throw new DAOException("Failed to update subject.");
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to update subject.", e);
         } finally {
             if(statement != null) {
