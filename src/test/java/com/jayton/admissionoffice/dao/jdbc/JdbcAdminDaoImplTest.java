@@ -9,12 +9,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.jayton.admissionoffice.data.AdminTestData.*;
+import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_ID;
 
 /**
  * Created by Jayton on 25.11.2016.
@@ -27,8 +29,8 @@ public class JdbcAdminDaoImplTest {
     public ExpectedException expected = ExpectedException.none();
 
     @Before
-    public void setUpDb() throws Exception {
-        InitHelper.populateDb();
+    public void setUpDb() throws SQLException {
+        InitHelper.executeDbPopulate("populateByAdmins.sql");
     }
 
     @Test
@@ -36,6 +38,7 @@ public class JdbcAdminDaoImplTest {
         Admin admin = jdbcAdminDao.get(ADMIN1_ID);
 
         Assert.assertEquals(admin, ADMIN1);
+
         Assert.assertNull(jdbcAdminDao.get(INCORRECT_ID));
     }
 
@@ -51,7 +54,11 @@ public class JdbcAdminDaoImplTest {
         jdbcAdminDao.add(NEW_ADMIN);
 
         Assert.assertEquals(ADMIN1_ID + 3, NEW_ADMIN.getId());
+
         Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3, NEW_ADMIN), jdbcAdminDao.getAll());
+
+        expected.expect(DAOException.class);
+        jdbcAdminDao.add(ADMIN_WITH_NULLABLE_FIELDS);
     }
 
     @Test
@@ -69,6 +76,7 @@ public class JdbcAdminDaoImplTest {
         //updating user that was not saved in db
         expected.expect(DAOException.class);
         jdbcAdminDao.update(NEW_ADMIN);
+        System.out.println("here too");
     }
 
     @Test
