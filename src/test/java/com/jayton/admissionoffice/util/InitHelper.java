@@ -15,9 +15,9 @@ import java.sql.SQLException;
 public class InitHelper {
 
     private static final String TEST_DB_PROPERTIES = "db.testDb";
-    private static final String TEST_RESOURCES_PATH = "src\\test\\resources\\";
+    private static final String DB_TEST_RESOURCES_PATH = "src\\test\\resources\\db\\";
     private static final String INIT_DB_PATH = "db\\initTestDb.sql";
-    private static final String POPULATE_DB_PATH = "db\\populateTestDb.sql";
+
     private static boolean dataSourceInitialized;
 
     private InitHelper() {
@@ -38,11 +38,11 @@ public class InitHelper {
     }
 
     public static void initDb() throws SQLException {
-        executeScript(TEST_RESOURCES_PATH + INIT_DB_PATH);
+        executeScript(DB_TEST_RESOURCES_PATH + INIT_DB_PATH);
     }
 
-    public static void populateDb() throws SQLException {
-        executeScript(TEST_RESOURCES_PATH + POPULATE_DB_PATH);
+    public static void executeDbPopulate(String path) throws SQLException {
+        executeScript(DB_TEST_RESOURCES_PATH + path);
     }
 
     private static void executeScript(String path) throws SQLException {
@@ -50,6 +50,8 @@ public class InitHelper {
 
         try {
             ScriptRunner sr = new ScriptRunner(connection, false, false);
+            //in future replace with logger
+            sr.setLogWriter(null);
 
             Reader reader = new BufferedReader(
                     new FileReader(path));
