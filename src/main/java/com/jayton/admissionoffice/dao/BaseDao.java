@@ -3,6 +3,8 @@ package com.jayton.admissionoffice.dao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.BaseEntity;
 
+import java.util.List;
+
 /**
  * Created by Jayton on 24.11.2016.
  */
@@ -12,4 +14,5 @@ public interface BaseDao<T extends BaseEntity> {
     void update(T entity) throws DAOException;
     void delete(T entity) throws DAOException;
     void delete(Long id) throws DAOException;
+    List<T> getAll() throws DAOException;
 }
