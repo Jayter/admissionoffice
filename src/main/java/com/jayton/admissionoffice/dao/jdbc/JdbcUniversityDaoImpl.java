@@ -5,10 +5,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.model.university.University;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +17,8 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     public static final String SQL_GET = "SELECT * FROM universities WHERE id=?";
     public static final String SQL_GET_BY_CITY = "SELECT * FROM universities WHERE city=?";
     public static final String SQL_GET_ALL = "SELECT * FROM universities";
-    public static final String SQL_ADD = "INSERT INTO universities (name, city) VALUES (?, ?)";
-    public static final String SQL_UPDATE = "UPDATE universities SET name=?, city=? WHERE id=?";
+    public static final String SQL_ADD = "INSERT INTO universities (name, city, address) VALUES (?, ?, ?)";
+    public static final String SQL_UPDATE = "UPDATE universities SET name=?, city=?, address=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM universities WHERE id=?";
 
     private static JdbcUniversityDaoImpl instance;
@@ -57,6 +54,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                 university.setId(rs.getLong("id"));
                 university.setName(rs.getString("name"));
                 university.setCity(rs.getString("city"));
+                university.setAddress(rs.getString("address"));
             }
 
             return university;
@@ -100,6 +98,9 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                     university.setId(rs.getLong("id"));
                     university.setName(rs.getString("name"));
                     university.setCity(rs.getString("city"));
+                    university.setAddress(rs.getString("address"));
+
+                    universities.add(university);
                 }
             }
 
@@ -143,6 +144,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                     university.setId(rs.getLong("id"));
                     university.setName(rs.getString("name"));
                     university.setCity(rs.getString("city"));
+                    university.setAddress(rs.getString("address"));
 
                     universities.add(university);
                 }
@@ -176,14 +178,23 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD);
+            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
+            statement.setString(3, university.getAddress());
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to save university.");
+            }
+
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    university.setId(rs.getLong(1));
+                } else {
+                    throw new DAOException("Failed to get university id.");
+                }
             }
 
         } catch (SQLException e) {
@@ -217,14 +228,16 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
-            statement.setLong(3, university.getId());
+            statement.setString(3, university.getAddress());
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            statement.setLong(4, university.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to update university.");
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to update university.", e);
         } finally {
             if(statement != null) {
@@ -260,8 +273,8 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             statement.setLong(1, id);
 
-            int row = statement.executeUpdate();
-            if(row == 0) {
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
                 throw new DAOException("Failed to delete university.");
             }
 
