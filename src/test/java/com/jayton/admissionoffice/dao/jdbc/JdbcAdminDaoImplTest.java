@@ -76,7 +76,6 @@ public class JdbcAdminDaoImplTest {
         //updating user that was not saved in db
         expected.expect(DAOException.class);
         jdbcAdminDao.update(NEW_ADMIN);
-        System.out.println("here too");
     }
 
     @Test
