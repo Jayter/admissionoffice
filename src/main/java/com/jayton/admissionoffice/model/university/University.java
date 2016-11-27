@@ -16,7 +16,7 @@ public class University extends BaseEntity {
     public University(String name, String city, String address) {
         super(name);
         this.city = city;
-        this.city = city;
+        this.address = address;
     }
 
     public University(Long id, String name, String city, String address) {
@@ -61,5 +61,28 @@ public class University extends BaseEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        University that = (University) o;
+
+        if (city != null ? !city.equals(that.city) : that.city != null) return false;
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+        return faculties != null ? faculties.equals(that.faculties) : that.faculties == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (faculties != null ? faculties.hashCode() : 0);
+        return result;
     }
 }
