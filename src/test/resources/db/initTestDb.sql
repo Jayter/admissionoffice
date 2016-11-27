@@ -30,7 +30,7 @@ CREATE TABLE enrollees (
   password VARCHAR NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date TIMESTAMP NOT NULL,
-  average_mark REAL
+  average_mark NUMERIC(4, 2)
 );
 
 CREATE TABLE subjects (
@@ -41,7 +41,7 @@ CREATE TABLE subjects (
 CREATE TABLE exam_results (
   enrollee_id BIGINT,
   subject_id BIGINT,
-  mark REAL,
+  mark NUMERIC(5, 2),
   FOREIGN KEY (enrollee_id) REFERENCES enrollees(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
