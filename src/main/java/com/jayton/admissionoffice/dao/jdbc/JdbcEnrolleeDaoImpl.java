@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.EnrolleDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.model.to.ExamResult;
 import com.jayton.admissionoffice.model.user.Enrollee;
 
 import java.math.BigDecimal;
@@ -22,6 +23,11 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
     public static final String SQL_UPDATE = "UPDATE enrollees SET name=?, second_name=?, address=?, email=?," +
             " password=?, phone_number=?, birth_date=?, average_mark=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM enrollees WHERE id=?";
+
+    public static final String SQL_GET_RESULTS = "SELECT * FROM exam_results WHERE enrollee_id=?";
+    public static final String SQL_ADD_RESULTS = "INSERT INTO exam_results (enrollee_id, subject_id, mark) values (?, ?, ?)";
+    public static final String SQL_UPDATE_RESULTS = "UPDATE exam_results SET mark=? WHERE enrollee_id=? AND subject_id=?";
+    public static final String SQL_DELETE_RESULTS = "DELETE FROM exam_results WHERE enrollee_id=? AND subject_id=?";
 
     private static JdbcEnrolleeDaoImpl instance;
 
@@ -270,4 +276,167 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         }
     }
 
+    @Override
+    public void addResults(List<ExamResult> results) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_ADD_RESULTS);
+            for(ExamResult result: results) {
+                statement.setLong(1, result.getUserId());
+                statement.setLong(2, result.getSubjectId());
+                statement.setBigDecimal(3, result.getMark().setScale(2, BigDecimal.ROUND_HALF_UP));
+                statement.addBatch();
+            }
+
+            int[] affectedRows = statement.executeBatch();
+            for(int row: affectedRows) {
+                if(row == 0) {
+                    throw new DAOException("Failed to save results.");
+                }
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to save results.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public void deleteResults(ExamResult result) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_DELETE_RESULTS);
+
+            statement.setLong(1, result.getUserId());
+            statement.setLong(2, result.getSubjectId());
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
+                throw new DAOException("Failed to delete result.");
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to delete result.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateResults(ExamResult result) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_UPDATE_RESULTS);
+
+            statement.setBigDecimal(1, result.getMark());
+            statement.setLong(2, result.getUserId());
+            statement.setLong(3, result.getSubjectId());
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
+                throw new DAOException("Failed to update result.");
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to update result.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<ExamResult> getResults(Long userId) throws DAOException {
+        List<ExamResult> results = new ArrayList<>();
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_GET_RESULTS);
+
+            statement.setLong(1, userId);
+
+            ExamResult result;
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while(rs.next()) {
+                    result = new ExamResult();
+
+                    result.setUserId(rs.getLong("enrollee_id"));
+                    result.setSubjectId(rs.getLong("subject_id"));
+                    result.setMark(rs.getBigDecimal("mark").setScale(2, BigDecimal.ROUND_HALF_UP));
+
+                    results.add(result);
+                }
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to update results.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+        return results;
+    }
 }
