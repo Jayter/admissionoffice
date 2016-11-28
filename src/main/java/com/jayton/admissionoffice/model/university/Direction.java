@@ -61,7 +61,7 @@ public class Direction extends BaseEntity {
         Direction direction = (Direction) o;
 
         if (countOfStudents != direction.countOfStudents) return false;
-        if (averageCoefficient != null ? !averageCoefficient.equals(direction.averageCoefficient) : direction.averageCoefficient != null)
+        if (averageCoefficient != null ? !(averageCoefficient.compareTo(direction.averageCoefficient) == 0) : direction.averageCoefficient != null)
             return false;
         return ownerId != null ? ownerId.equals(direction.ownerId) : direction.ownerId == null;
 
@@ -72,7 +72,7 @@ public class Direction extends BaseEntity {
         int result = super.hashCode();
         result = 31 * result + (averageCoefficient != null ? averageCoefficient.hashCode() : 0);
         result = 31 * result + countOfStudents;
-        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (ownerId != null ? ownerId.intValue() : 0);
         return result;
     }
 }

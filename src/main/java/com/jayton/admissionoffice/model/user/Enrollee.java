@@ -43,7 +43,7 @@ public class Enrollee extends User {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (averageMark != null ? averageMark.hashCode() : 0);
+        result = 31 * result + (averageMark != null ? averageMark.intValue() : 0);
         return result;
     }
 }
