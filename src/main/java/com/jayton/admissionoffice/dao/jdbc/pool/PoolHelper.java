@@ -17,17 +17,27 @@ public class PoolHelper {
     private static final String DB_USERNAME = "db.username";
     private static final String DB_PASSWORD = "db.password";
 
-    private static DataSource dataSource;
+    private DataSource dataSource;
+
+    private static PoolHelper instance;
 
     private PoolHelper() {
     }
 
+    public static PoolHelper getInstance() {
+        if(instance == null) {
+            instance = new PoolHelper();
+        }
+        return instance;
+    }
+
+
     //should be called from listener
-    public static void initStandardDataSource() {
+    public void initStandardDataSource() {
         initDataSource(STANDARD_DB_PROPERTIES);
     }
 
-    public static void initDataSource(String path) {
+    public void initDataSource(String path) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(path);
 
         String url = resourceBundle.getString(JDBC_URL);
@@ -44,11 +54,11 @@ public class PoolHelper {
         dataSource = new DataSource(properties);
     }
 
-    public static void destroyDataSource() {
+    public void destroyDataSource() {
         dataSource.close();
     }
 
-    public static DataSource getDataSource() {
+    public DataSource getDataSource() {
         return dataSource;
     }
 }

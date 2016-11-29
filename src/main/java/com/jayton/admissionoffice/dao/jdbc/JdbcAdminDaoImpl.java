@@ -40,7 +40,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
@@ -88,7 +88,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
             Admin admin;
@@ -137,7 +137,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, admin.getName());
@@ -187,7 +187,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
 
             statement.setString(1, admin.getName());
@@ -235,7 +235,7 @@ public class JdbcAdminDaoImpl implements AdminDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE);
 
             statement.setLong(1, id);

@@ -42,7 +42,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
@@ -89,7 +89,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_BY_UNIVERSITY);
             statement.setLong(1, universityId);
 
@@ -138,7 +138,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
             Faculty faculty = null;
@@ -185,7 +185,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, faculty.getName());
@@ -233,7 +233,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
 
             statement.setString(1, faculty.getName());
@@ -279,7 +279,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE);
 
             statement.setLong(1, id);

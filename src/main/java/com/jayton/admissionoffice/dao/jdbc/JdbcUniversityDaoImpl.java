@@ -40,7 +40,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
@@ -85,7 +85,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_BY_CITY);
             statement.setString(1, city);
 
@@ -132,7 +132,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
             University university;
@@ -177,7 +177,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, university.getName());
@@ -223,7 +223,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
 
             statement.setString(1, university.getName());
@@ -268,7 +268,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE);
 
             statement.setLong(1, id);

@@ -49,7 +49,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
@@ -98,7 +98,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
             Enrollee enrollee;
@@ -148,7 +148,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, enrollee.getName());
@@ -199,7 +199,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
 
             statement.setString(1, enrollee.getName());
@@ -248,7 +248,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE);
 
             statement.setLong(1, id);
@@ -284,7 +284,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_ADD_RESULTS);
             for(ExamResult result: results) {
                 statement.setLong(1, result.getUserId());
@@ -326,7 +326,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_RESULTS);
 
             statement.setLong(1, result.getUserId());
@@ -363,7 +363,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE_RESULTS);
 
             statement.setBigDecimal(1, scale(result.getMark(), 2));
@@ -402,7 +402,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_RESULTS);
 
             statement.setLong(1, userId);
