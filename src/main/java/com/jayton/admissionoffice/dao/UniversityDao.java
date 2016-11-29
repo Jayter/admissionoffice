@@ -10,5 +10,4 @@ import java.util.List;
  */
 public interface UniversityDao extends BaseDao<University> {
     List<University> getByCity(String city) throws DAOException;
-    List<University> getAll() throws DAOException;
 }
