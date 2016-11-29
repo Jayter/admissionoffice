@@ -1,12 +1,10 @@
 package com.jayton.admissionoffice.model.university;
 
-import com.jayton.admissionoffice.model.BaseEntity;
-import com.jayton.admissionoffice.model.Subject;
+import com.jayton.admissionoffice.model.NamedEntity;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
-public class Direction extends BaseEntity {
+public class Direction extends NamedEntity {
     private BigDecimal averageCoefficient;
     private int countOfStudents;
     private Long ownerId;

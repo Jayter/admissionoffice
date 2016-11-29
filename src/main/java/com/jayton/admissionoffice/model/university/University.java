@@ -1,8 +1,8 @@
 package com.jayton.admissionoffice.model.university;
 
-import com.jayton.admissionoffice.model.BaseEntity;
+import com.jayton.admissionoffice.model.NamedEntity;
 
-public class University extends BaseEntity {
+public class University extends NamedEntity {
     private String city;
     private String address;
 

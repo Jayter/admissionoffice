@@ -1,10 +1,10 @@
 package com.jayton.admissionoffice.model.user;
 
-import com.jayton.admissionoffice.model.BaseEntity;
+import com.jayton.admissionoffice.model.NamedEntity;
 
 import java.time.LocalDate;
 
-public class User extends BaseEntity {
+public class User extends NamedEntity {
     protected String secondName;
     protected String address;
     protected String email;

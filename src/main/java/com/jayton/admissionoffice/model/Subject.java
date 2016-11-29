@@ -1,6 +1,6 @@
 package com.jayton.admissionoffice.model;
 
-public class Subject extends BaseEntity {
+public class Subject extends NamedEntity {
 
     public Subject() {
     }
