@@ -30,6 +30,7 @@
         <postgresql.version>9.4.1211</postgresql.version>
         <tomcat.version>8.0.33</tomcat.version>
         <junit.version>4.12</junit.version>
+        <servlet.version>2.5</servlet.version>
         <ibatis.version>2.1.7.597</ibatis.version>
     </properties>
 
@@ -46,6 +47,14 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
             <version>${tomcat.version}</version>
+        </dependency>
+
+        <!-- Servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Testing -->
