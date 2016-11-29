@@ -11,6 +11,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
+
 /**
  * Created by Jayton on 27.11.2016.
  */
@@ -66,7 +68,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
                 enrollee.setPassword(rs.getString("password"));
                 enrollee.setPhoneNumber(rs.getString("phone_number"));
                 enrollee.setBirthDate(rs.getDate("birth_date").toLocalDate());
-                enrollee.setAverageMark(rs.getBigDecimal("average_mark").setScale(2, BigDecimal.ROUND_HALF_UP));
+                enrollee.setAverageMark(scale(rs.getBigDecimal("average_mark"), 2));
             }
 
             return enrollee;
@@ -113,7 +115,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
                     enrollee.setPassword(rs.getString("password"));
                     enrollee.setPhoneNumber(rs.getString("phone_number"));
                     enrollee.setBirthDate(rs.getDate("birth_date").toLocalDate());
-                    enrollee.setAverageMark(rs.getBigDecimal("average_mark").setScale(2, BigDecimal.ROUND_HALF_UP));
+                    enrollee.setAverageMark(scale(rs.getBigDecimal("average_mark"), 2));
 
                     enrollees.add(enrollee);
                 }
@@ -156,7 +158,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
             statement.setString(5, enrollee.getPassword());
             statement.setString(6, enrollee.getPhoneNumber());
             statement.setDate(7, Date.valueOf(enrollee.getBirthDate()));
-            statement.setBigDecimal(8, enrollee.getAverageMark().setScale(2, BigDecimal.ROUND_HALF_UP));
+            statement.setBigDecimal(8, scale(enrollee.getAverageMark(), 2));
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
@@ -207,7 +209,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
             statement.setString(5, enrollee.getPassword());
             statement.setString(6, enrollee.getPhoneNumber());
             statement.setDate(7, Date.valueOf(enrollee.getBirthDate()));
-            statement.setBigDecimal(8, enrollee.getAverageMark().setScale(2, BigDecimal.ROUND_HALF_UP));
+            statement.setBigDecimal(8, scale(enrollee.getAverageMark(), 2));
             statement.setLong(9, enrollee.getId());
 
             int affectedRows = statement.executeUpdate();
@@ -287,7 +289,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
             for(ExamResult result: results) {
                 statement.setLong(1, result.getUserId());
                 statement.setLong(2, result.getSubjectId());
-                statement.setBigDecimal(3, result.getMark().setScale(2, BigDecimal.ROUND_HALF_UP));
+                statement.setBigDecimal(3, scale(result.getMark(), 2));
                 statement.addBatch();
             }
 
@@ -364,7 +366,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
             connection = PoolHelper.getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE_RESULTS);
 
-            statement.setBigDecimal(1, result.getMark());
+            statement.setBigDecimal(1, scale(result.getMark(), 2));
             statement.setLong(2, result.getUserId());
             statement.setLong(3, result.getSubjectId());
 
@@ -413,7 +415,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
 
                     result.setUserId(rs.getLong("enrollee_id"));
                     result.setSubjectId(rs.getLong("subject_id"));
-                    result.setMark(rs.getBigDecimal("mark").setScale(2, BigDecimal.ROUND_HALF_UP));
+                    result.setMark(scale(rs.getBigDecimal("mark"), 2));
 
                     results.add(result);
                 }

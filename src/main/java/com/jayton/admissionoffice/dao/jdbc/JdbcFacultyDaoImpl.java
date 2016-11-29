@@ -208,7 +208,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             }
 
         } catch (SQLException e) {
-            throw new DAOException("Failed to save university.", e);
+            throw new DAOException("Failed to save faculty.", e);
         } finally {
             if(statement != null) {
                 try {
