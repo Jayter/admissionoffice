@@ -33,7 +33,7 @@ public class InitHelper {
         if(dataSourceInitialized) {
             throw new UnsupportedOperationException("Data source is already initialized.");
         }
-        PoolHelper.initDataSource(path);
+        PoolHelper.getInstance().initDataSource(path);
         dataSourceInitialized = true;
     }
 
@@ -46,7 +46,7 @@ public class InitHelper {
     }
 
     private static void executeScript(String path) throws SQLException {
-        Connection connection = PoolHelper.getDataSource().getConnection();
+        Connection connection = PoolHelper.getInstance().getDataSource().getConnection();
 
         try {
             ScriptRunner sr = new ScriptRunner(connection, false, false);
