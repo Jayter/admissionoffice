@@ -1,6 +1,7 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
+import com.jayton.admissionoffice.model.to.ExamResult;
 import com.jayton.admissionoffice.model.user.Enrollee;
 import com.jayton.admissionoffice.util.InitHelper;
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_ID;
+import static com.jayton.admissionoffice.data.CommonTestData.*;
 import static com.jayton.admissionoffice.data.EnrolleeTestData.*;
 
 /**
@@ -38,7 +39,7 @@ public class JdbcEnrolleeDaoImplTest {
 
     @Test
     public void get() throws Exception {
-        Enrollee enrollee = jdbcEnrolleeDao.get(ENROLLEE1_ID);
+        Enrollee enrollee = jdbcEnrolleeDao.get(START_SEQUENCE);
 
         Assert.assertEquals(enrollee, ENROLLEE1);
 
@@ -56,8 +57,7 @@ public class JdbcEnrolleeDaoImplTest {
     public void add() throws Exception {
         jdbcEnrolleeDao.add(NEW_ENROLLEE);
 
-        Assert.assertEquals(new Long(ENROLLEE1_ID + 3), NEW_ENROLLEE.getId());
-
+        Assert.assertEquals(new Long(START_SEQUENCE + 7), NEW_ENROLLEE.getId());
         Assert.assertEquals(Arrays.asList(ENROLLEE1, ENROLLEE2, ENROLLEE3, NEW_ENROLLEE), jdbcEnrolleeDao.getAll());
 
         expected.expect(DAOException.class);
@@ -83,13 +83,46 @@ public class JdbcEnrolleeDaoImplTest {
 
     @Test
     public void delete() throws Exception {
-        jdbcEnrolleeDao.delete(ENROLLEE1_ID);
+        jdbcEnrolleeDao.delete(START_SEQUENCE);
 
         Assert.assertEquals(Arrays.asList(ENROLLEE2, ENROLLEE3), jdbcEnrolleeDao.getAll());
 
         //deleting user that was not saved in db
         expected.expect(DAOException.class);
         jdbcEnrolleeDao.delete(NEW_ENROLLEE);
+    }
+
+    @Test
+    public void addResults() throws Exception {
+        jdbcEnrolleeDao.addResults(NEW_RESULTS);
+
+        Assert.assertEquals(jdbcEnrolleeDao.getResults(START_SEQUENCE + 1), NEW_RESULTS);
+    }
+
+    @Test
+    public void deleteResults() throws Exception {
+        jdbcEnrolleeDao.deleteResults(RESULT2);
+
+        Assert.assertEquals(jdbcEnrolleeDao.getResults(START_SEQUENCE), Arrays.asList(RESULT1, RESULT3, RESULT4));
+    }
+
+    @Test
+    public void updateResults() throws Exception {
+        RESULT1.setMark(BigDecimal.TEN);
+
+        jdbcEnrolleeDao.updateResults(RESULT1);
+
+        List<ExamResult> all = jdbcEnrolleeDao.getResults(START_SEQUENCE);
+        Assert.assertEquals(all.get(3), RESULT1);
+
+        RESULT1.setMark(BigDecimal.valueOf(192.5));
+    }
+
+    @Test
+    public void getResults() throws Exception {
+        Assert.assertEquals(jdbcEnrolleeDao.getResults(START_SEQUENCE), ALL_RESULTS);
+
+        Assert.assertEquals(jdbcEnrolleeDao.getResults(INCORRECT_ID), Collections.emptyList());
     }
 
 }
