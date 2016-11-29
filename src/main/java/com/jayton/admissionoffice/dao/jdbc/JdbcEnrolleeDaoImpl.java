@@ -420,7 +420,7 @@ public class JdbcEnrolleeDaoImpl implements EnrolleDao {
             }
 
         } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to update results.", e);
+            throw new DAOException("Failed to get results.", e);
         } finally {
             if(statement != null) {
                 try {
