@@ -44,6 +44,10 @@ public class PoolHelper {
         dataSource = new DataSource(properties);
     }
 
+    public static void destroyDataSource() {
+        dataSource.close();
+    }
+
     public static DataSource getDataSource() {
         return dataSource;
     }
