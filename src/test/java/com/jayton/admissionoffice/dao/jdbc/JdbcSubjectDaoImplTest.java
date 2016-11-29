@@ -2,7 +2,6 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.util.InitHelper;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,7 +31,7 @@ public class JdbcSubjectDaoImplTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(SUBJECT1, jdbcSubjectDao.get(SUBJECT1_ID));
+        Assert.assertEquals(SUBJECT1, jdbcSubjectDao.get(START_SEQUENCE));
 
         Assert.assertNull(jdbcSubjectDao.get(INCORRECT_ID));
     }
@@ -53,7 +52,7 @@ public class JdbcSubjectDaoImplTest {
     public void add() throws Exception {
         jdbcSubjectDao.add(NEW_SUBJECT);
 
-        Assert.assertEquals(new Long(SUBJECT1_ID + 3), NEW_SUBJECT.getId());
+        Assert.assertEquals(new Long(START_SEQUENCE + 3), NEW_SUBJECT.getId());
         Assert.assertEquals(NEW_SUBJECT, jdbcSubjectDao.getByName(NEW_SUBJECT.getName()));
 
         //trying to add a subject with name that already exists

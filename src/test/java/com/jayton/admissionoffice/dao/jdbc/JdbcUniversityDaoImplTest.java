@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_ID;
-import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_NAME;
+import static com.jayton.admissionoffice.data.CommonTestData.*;
 import static com.jayton.admissionoffice.data.JdbcUniversityTestData.*;
 
 /**
@@ -33,7 +32,7 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(UNIVERSITY1, jdbcUniversityDao.get(UNIVERSITY1_ID));
+        Assert.assertEquals(UNIVERSITY1, jdbcUniversityDao.get(START_SEQUENCE));
 
         Assert.assertNull(jdbcUniversityDao.get(INCORRECT_ID));
     }
@@ -59,7 +58,7 @@ public class JdbcUniversityDaoImplTest {
     public void add() throws Exception {
         jdbcUniversityDao.add(NEW_UNIVERSITY);
 
-        Assert.assertEquals(new Long(UNIVERSITY1_ID + 3), NEW_UNIVERSITY.getId());
+        Assert.assertEquals(new Long(START_SEQUENCE + 3), NEW_UNIVERSITY.getId());
 
         Assert.assertEquals(jdbcUniversityDao.getAll(), Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY));
 

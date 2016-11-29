@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.jayton.admissionoffice.data.AdminTestData.*;
-import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_ID;
+import static com.jayton.admissionoffice.data.CommonTestData.*;
 
 /**
  * Created by Jayton on 25.11.2016.
@@ -35,7 +35,7 @@ public class JdbcAdminDaoImplTest {
 
     @Test
     public void getTest() throws Exception {
-        Admin admin = jdbcAdminDao.get(ADMIN1_ID);
+        Admin admin = jdbcAdminDao.get(START_SEQUENCE);
 
         Assert.assertEquals(admin, ADMIN1);
 
@@ -53,7 +53,7 @@ public class JdbcAdminDaoImplTest {
     public void addTest() throws Exception {
         jdbcAdminDao.add(NEW_ADMIN);
 
-        Assert.assertEquals(new Long(ADMIN1_ID + 3), NEW_ADMIN.getId());
+        Assert.assertEquals(new Long(START_SEQUENCE + 3), NEW_ADMIN.getId());
 
         Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN2, ADMIN3, NEW_ADMIN), jdbcAdminDao.getAll());
 
@@ -80,7 +80,7 @@ public class JdbcAdminDaoImplTest {
 
     @Test
     public void deleteTest() throws Exception {
-        jdbcAdminDao.delete(ADMIN1_ID + 1);
+        jdbcAdminDao.delete(START_SEQUENCE + 1);
 
         Assert.assertEquals(Arrays.asList(ADMIN1, ADMIN3), jdbcAdminDao.getAll());
 
