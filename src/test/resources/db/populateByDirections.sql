@@ -30,3 +30,15 @@ INSERT INTO directions (name, average_coef, count_of_students, faculty_id) VALUE
   ('Безпека інформаційних систем', 0.1, 20, 10003),
   ('Прикладна математика', 0.05, 40, 10006),
   ('Програмне забезпечення автоматизованих систем', 0.05, 25, 10006);
+
+INSERT INTO subjects(name) VALUES
+  ('Українська мова та література'),
+  ('Англійська мова'),
+  ('Математика'),
+  ('Біологія'),
+  ('Фізика');
+
+INSERT INTO entrance_subjects (direction_id, subject_id, coefficient) VALUES
+  (10007, 10012, 0.4),
+  (10007, 10013, 0.3),
+  (10007, 10014, 0.2);
