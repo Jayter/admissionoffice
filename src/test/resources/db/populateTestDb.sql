@@ -58,3 +58,8 @@ INSERT INTO entrance_subjects (direction_id, subject_id, coefficient) VALUES
   (10014, 10000, 0.4),
   (10014, 10001, 0.3),
   (10014, 10002, 0.2);
+
+INSERT INTO applications (user_id, direction_id, created_time, status) VALUES
+  (10004, 10015, '2016-11-29 12:15:55', 'Approved'),
+  (10004, 10014, '2016-11-30 20:49:30', 'Created'),
+  (10004, 10016, '2016-11-30 18:01:45', 'Rejected');

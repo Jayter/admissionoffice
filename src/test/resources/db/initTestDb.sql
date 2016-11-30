@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS exam_results;
 DROP TABLE IF EXISTS entrance_subjects;
 DROP TABLE IF EXISTS credentials;
+DROP TABLE IF EXISTS applications;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS subjects;
 DROP TABLE IF EXISTS directions;
@@ -69,7 +70,19 @@ CREATE TABLE directions (
 CREATE TABLE entrance_subjects (
   direction_id BIGINT NOT NULL,
   subject_id BIGINT NOT NULL,
-  coefficient REAl,
+  coefficient REAL,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
-)
+);
+
+CREATE TABLE applications (
+  id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
+  user_id BIGINT NOT NULL,
+  direction_id BIGINT UNIQUE NOT NULL,
+  created_time TIMESTAMP NOT NULL DEFAULT now(),
+  status VARCHAR NOT NULL DEFAULT 'Created',
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX unique_applications ON applications (user_id, direction_id);
