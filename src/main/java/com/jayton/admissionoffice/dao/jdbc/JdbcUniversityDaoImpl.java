@@ -44,20 +44,18 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
-
-            University university = new University();
             try(ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {
                     return null;
                 }
 
-                university.setId(rs.getLong("id"));
-                university.setName(rs.getString("name"));
-                university.setCity(rs.getString("city"));
-                university.setAddress(rs.getString("address"));
+                String name = rs.getString("name");
+                String city = rs.getString("city");
+                String address = rs.getString("address");
+
+                return new University(id, name, city, address);
             }
 
-            return university;
         } catch (SQLException e) {
             throw new DAOException("Failed to load university.", e);
         } finally {
@@ -80,7 +78,6 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public List<University> getByCity(String city) throws DAOException {
-        List<University> universities = new ArrayList<>();
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -89,20 +86,19 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             statement = connection.prepareStatement(SQL_GET_BY_CITY);
             statement.setString(1, city);
 
-            University university = null;
+            List<University> universities = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    university = new University();
 
-                    university.setId(rs.getLong("id"));
-                    university.setName(rs.getString("name"));
-                    university.setCity(rs.getString("city"));
-                    university.setAddress(rs.getString("address"));
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String address = rs.getString("address");
 
-                    universities.add(university);
+                    universities.add(new University(id, name, city, address));
                 }
             }
+            return universities;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
@@ -122,12 +118,10 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                 }
             }
         }
-        return universities;
     }
 
     @Override
     public List<University> getAll() throws DAOException {
-        List<University> universities = new ArrayList<>();
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -135,20 +129,19 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
-            University university;
+            List<University> universities = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while(rs.next()) {
-                    university = new University();
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String city = rs.getString("city");
+                    String address = rs.getString("address");
 
-                    university.setId(rs.getLong("id"));
-                    university.setName(rs.getString("name"));
-                    university.setCity(rs.getString("city"));
-                    university.setAddress(rs.getString("address"));
-
-                    universities.add(university);
+                    universities.add(new University(id, name, city, address));
                 }
             }
+            return universities;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
@@ -168,11 +161,10 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                 }
             }
         }
-        return universities;
     }
 
     @Override
-    public void add(University university) throws DAOException {
+    public Long add(University university) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -191,7 +183,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    university.setId(rs.getLong(1));
+                    return rs.getLong(1);
                 } else {
                     throw new DAOException("Failed to get university id.");
                 }
@@ -258,12 +250,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public void delete(University university) throws DAOException {
-        delete(university.getId());
-    }
-
-    @Override
-    public void delete(Long id) throws DAOException {
+    public boolean delete(Long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -274,9 +261,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             statement.setLong(1, id);
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to delete university.");
-            }
+            return affectedRows != 0;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to delete university.", e);

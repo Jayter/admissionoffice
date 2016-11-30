@@ -17,7 +17,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     public static final String SQL_GET = "SELECT * FROM faculties WHERE id=?";
     public static final String SQL_GET_BY_UNIVERSITY = "SELECT * FROM faculties WHERE university_id=?";
     public static final String SQL_GET_ALL = "SELECT * FROM faculties";
-    public static final String SQL_ADD = "INSERT INTO faculties (name, university_id, office_phone, office_email, address)" +
+    public static final String SQL_ADD = "INSERT INTO faculties (name, office_phone, office_email, address, university_id)" +
             " VALUES (?, ?, ?, ?, ?)";
     public static final String SQL_UPDATE = "UPDATE faculties SET name=?, office_phone=?, office_email=?, address=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM faculties WHERE id=?";
@@ -46,22 +46,19 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
-
-            Faculty faculty = new Faculty();
             try(ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {
                     return null;
                 }
 
-                faculty.setId(rs.getLong("id"));
-                faculty.setName(rs.getString("name"));
-                faculty.setUniversityId(rs.getLong("university_id"));
-                faculty.setOfficePhone(rs.getString("office_phone"));
-                faculty.setOfficeEmail(rs.getString("office_email"));
-                faculty.setOfficeAddress(rs.getString("address"));
-            }
+                String name = rs.getString("name");
+                String phone = rs.getString("office_phone");
+                String email = rs.getString("office_email");
+                String address = rs.getString("address");
+                Long universityId = rs.getLong("university_id");
 
-            return faculty;
+                return new Faculty(id, name, phone, email, address, universityId);
+            }
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculty.", e);
         } finally {
@@ -84,7 +81,6 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public List<Faculty> getByUniversity(Long universityId) throws DAOException {
-        List<Faculty> faculties = new ArrayList<>();
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -93,22 +89,20 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             statement = connection.prepareStatement(SQL_GET_BY_UNIVERSITY);
             statement.setLong(1, universityId);
 
-            Faculty faculty = null;
+            List<Faculty> faculties = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    faculty = new Faculty();
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String phone = rs.getString("office_phone");
+                    String email = rs.getString("office_email");
+                    String address = rs.getString("address");
 
-                    faculty.setId(rs.getLong("id"));
-                    faculty.setName(rs.getString("name"));
-                    faculty.setUniversityId(rs.getLong("university_id"));
-                    faculty.setOfficePhone(rs.getString("office_phone"));
-                    faculty.setOfficeEmail(rs.getString("office_email"));
-                    faculty.setOfficeAddress(rs.getString("address"));
-
-                    faculties.add(faculty);
+                    faculties.add(new Faculty(id, name, phone, email, address, universityId));
                 }
             }
+            return faculties;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculties.", e);
@@ -128,12 +122,10 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
                 }
             }
         }
-        return faculties;
     }
 
     @Override
     public List<Faculty> getAll() throws DAOException {
-        List<Faculty> faculties = new ArrayList<>();
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -141,22 +133,21 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
-            Faculty faculty = null;
+            List<Faculty> faculties = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    faculty = new Faculty();
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String phone = rs.getString("office_phone");
+                    String email = rs.getString("office_email");
+                    String address = rs.getString("address");
+                    Long universityId = rs.getLong("university_id");
 
-                    faculty.setId(rs.getLong("id"));
-                    faculty.setName(rs.getString("name"));
-                    faculty.setUniversityId(rs.getLong("university_id"));
-                    faculty.setOfficePhone(rs.getString("office_phone"));
-                    faculty.setOfficeEmail(rs.getString("office_email"));
-                    faculty.setOfficeAddress(rs.getString("address"));
-
-                    faculties.add(faculty);
+                    faculties.add(new Faculty(id, name, phone, email, address, universityId));
                 }
             }
+            return faculties;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculties.", e);
@@ -176,11 +167,10 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
                 }
             }
         }
-        return faculties;
     }
 
     @Override
-    public void add(Faculty faculty) throws DAOException {
+    public Long add(Faculty faculty) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -189,10 +179,10 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, faculty.getName());
-            statement.setLong(2, faculty.getUniversityId());
-            statement.setString(3, faculty.getOfficePhone());
-            statement.setString(4, faculty.getOfficeEmail());
-            statement.setString(5, faculty.getOfficeAddress());
+            statement.setString(2, faculty.getOfficePhone());
+            statement.setString(3, faculty.getOfficeEmail());
+            statement.setString(4, faculty.getOfficeAddress());
+            statement.setLong(5, faculty.getUniversityId());
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
@@ -201,7 +191,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    faculty.setId(rs.getLong(1));
+                    return rs.getLong(1);
                 } else {
                     throw new DAOException("Failed to get faculty`s id.");
                 }
@@ -269,12 +259,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    public void delete(Faculty entity) throws DAOException {
-        delete(entity.getId());
-    }
-
-    @Override
-    public void delete(Long id) throws DAOException {
+    public boolean delete(Long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -285,9 +270,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             statement.setLong(1, id);
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to delete faculty.");
-            }
+            return affectedRows != 0;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to delete faculty.", e);

@@ -44,18 +44,15 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             statement = connection.prepareStatement(SQL_GET);
             statement.setLong(1, id);
 
-            Subject subject = new Subject();
-
             try(ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {
                     return null;
                 }
 
-                subject.setId(rs.getLong("id"));
-                subject.setName(rs.getString("name"));
-            }
+                String name = rs.getString("name");
 
-            return subject;
+                return new Subject(id, name);
+            }
         } catch (SQLException e) {
             throw new DAOException("Failed to load subject.", e);
         } finally {
@@ -78,7 +75,6 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
 
     @Override
     public List<Subject> getAll() throws DAOException {
-        List<Subject> subjects = new ArrayList<>();
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -86,18 +82,17 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_GET_ALL);
 
-            Subject subject;
+            List<Subject> subjects = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while(rs.next()) {
-                    subject = new Subject();
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
 
-                    subject.setId(rs.getLong("id"));
-                    subject.setName(rs.getString("name"));
-
-                    subjects.add(subject);
+                    subjects.add(new Subject(id, name));
                 }
             }
+            return subjects;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load subjects.", e);
@@ -117,7 +112,6 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
                 }
             }
         }
-        return subjects;
     }
 
     @Override
@@ -130,18 +124,14 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             statement = connection.prepareStatement(SQL_GET_BY_NAME);
             statement.setString(1, name);
 
-            Subject subject = new Subject();
-
             try(ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {
                     return null;
                 }
 
-                subject.setId(rs.getLong("id"));
-                subject.setName(rs.getString("name"));
+                Long id = rs.getLong("id");
+                return new Subject(id, name);
             }
-
-            return subject;
         } catch (SQLException e) {
             throw new DAOException("Failed to load subject.", e);
         } finally {
@@ -163,7 +153,7 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
     }
 
     @Override
-    public void add(Subject subject) throws DAOException {
+    public Long add(Subject subject) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -177,11 +167,12 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             if(affectedRows == 0) {
                 throw new DAOException("Failed to save subject.");
             }
+
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    subject.setId(rs.getLong(1));
+                    return rs.getLong(1);
                 } else {
-                    throw new DAOException("Failed to get subject id.");
+                    throw new DAOException("Failed to get subject`s id.");
                 }
             }
 
@@ -243,12 +234,7 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
     }
 
     @Override
-    public void delete(Subject subject) throws DAOException {
-        delete(subject.getId());
-    }
-
-    @Override
-    public void delete(Long id) throws DAOException {
+    public boolean delete(Long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -259,9 +245,7 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
             statement.setLong(1, id);
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to delete subject.");
-            }
+            return affectedRows != 0;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to delete subject.", e);
