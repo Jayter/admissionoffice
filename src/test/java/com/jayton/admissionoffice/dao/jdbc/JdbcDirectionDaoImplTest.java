@@ -9,14 +9,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.CommonTestData.INCORRECT_ID;
-import static com.jayton.admissionoffice.data.DirectionTestData.*;
-import static com.jayton.admissionoffice.data.FacultyTestData.*;
+import static com.jayton.admissionoffice.data.TestData.*;
 
 /**
  * Created by Jayton on 27.11.2016.
@@ -30,23 +27,23 @@ public class JdbcDirectionDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateByDirections.sql");
+        InitHelper.executeDbPopulate("populateTestDb.sql");
     }
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(jdbcDirectionDao.get(DIRECTION1_ID), DIRECTION1);
+        Assert.assertEquals(DIRECTION1, jdbcDirectionDao.get(DIRECTION1.getId()));
 
         Assert.assertNull(jdbcDirectionDao.get(INCORRECT_ID));
     }
 
     @Test
     public void getByFaculty() throws Exception {
-        List<Direction> directions = jdbcDirectionDao.getByFaculty(FACULTY1_ID);
+        List<Direction> directions = jdbcDirectionDao.getByFaculty(FACULTY1.getId());
 
-        Assert.assertEquals(directions, Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3));
+        Assert.assertEquals(Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3), directions);
 
-        Assert.assertEquals(jdbcDirectionDao.getByFaculty(INCORRECT_ID), Collections.emptyList());
+        Assert.assertEquals(Collections.emptyList(), jdbcDirectionDao.getByFaculty(INCORRECT_ID));
     }
 
     @Test
@@ -58,9 +55,7 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void add() throws Exception {
-        jdbcDirectionDao.add(NEW_DIRECTION);
-
-        Assert.assertEquals(NEW_DIRECTION.getId(), new Long(DIRECTION1_ID + 10));
+        Assert.assertEquals(NEW_ID, jdbcDirectionDao.add(NEW_DIRECTION));
 
         List<Direction> all = Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3, DIRECTION4, DIRECTION5, NEW_DIRECTION);
         Assert.assertEquals(jdbcDirectionDao.getAll(), all);
@@ -71,47 +66,19 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void update() throws Exception {
-        DIRECTION3.setCountOfStudents(25);
-        jdbcDirectionDao.update(DIRECTION3);
+        jdbcDirectionDao.update(UPDATED_DIRECTION);
 
-        Assert.assertEquals(jdbcDirectionDao.get(DIRECTION3.getId()), DIRECTION3);
-
-        DIRECTION3.setCountOfStudents(20);
+        Assert.assertEquals(UPDATED_DIRECTION, jdbcDirectionDao.get(DIRECTION3.getId()));
     }
 
     @Test
     public void delete() throws Exception {
-        jdbcDirectionDao.delete(DIRECTION5);
-        jdbcDirectionDao.delete(DIRECTION3.getId());
+        Assert.assertTrue(jdbcDirectionDao.delete(DIRECTION3.getId()));
 
-        Assert.assertEquals(jdbcDirectionDao.getAll(), Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION4));
-
-        expected.expect(DAOException.class);
-        jdbcDirectionDao.delete(NEW_DIRECTION);
-    }
-
-    @Test
-    public void addSubjects() throws Exception {
-        jdbcDirectionDao.addSubjects(ALL_NEW_SUBJECTS);
-
-        Assert.assertEquals(jdbcDirectionDao.getSubjects(DIRECTION1_ID + 1), ALL_NEW_SUBJECTS);
-    }
-
-    @Test
-    public void deleteSubject() throws Exception {
-        jdbcDirectionDao.deleteSubject(ENTRANCE_SUBJECT2);
-
-        Assert.assertEquals(jdbcDirectionDao.getSubjects(DIRECTION1_ID),
-                Arrays.asList(ENTRANCE_SUBJECT1, ENTRANCE_SUBJECT3));
+        Assert.assertEquals(Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION4, DIRECTION5),
+                jdbcDirectionDao.getAll());
 
         expected.expect(DAOException.class);
-        jdbcDirectionDao.deleteSubject(ENTRANCE_SUBJECT4);
-    }
-
-    @Test
-    public void getSubjects() throws Exception {
-        Assert.assertEquals(jdbcDirectionDao.getSubjects(DIRECTION1_ID), ALL_SUBJECTS);
-
-        Assert.assertEquals(jdbcDirectionDao.getSubjects(INCORRECT_ID), Collections.emptyList());
+        jdbcDirectionDao.delete(NEW_DIRECTION.getId());
     }
 }

@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.CommonTestData.*;
-import static com.jayton.admissionoffice.data.JdbcUniversityTestData.*;
+import static com.jayton.admissionoffice.data.TestData.*;
 
 /**
  * Created by Jayton on 26.11.2016.
@@ -27,19 +26,19 @@ public class JdbcUniversityDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateByUniversities.sql");
+        InitHelper.executeDbPopulate("populateTestDb.sql");
     }
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(UNIVERSITY1, jdbcUniversityDao.get(START_SEQUENCE));
+        Assert.assertEquals(UNIVERSITY1, jdbcUniversityDao.get(UNIVERSITY1.getId()));
 
         Assert.assertNull(jdbcUniversityDao.get(INCORRECT_ID));
     }
 
     @Test
     public void getByCity() throws Exception {
-        List<University> list = jdbcUniversityDao.getByCity(CITY);
+        List<University> list = jdbcUniversityDao.getByCity(KYIV);
 
         Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
 
@@ -51,16 +50,15 @@ public class JdbcUniversityDaoImplTest {
     public void getAll() throws Exception {
         List<University> all = jdbcUniversityDao.getAll();
 
-        Assert.assertEquals(all, Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3));
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
     }
 
     @Test
     public void add() throws Exception {
-        jdbcUniversityDao.add(NEW_UNIVERSITY);
+        Assert.assertEquals(NEW_ID, jdbcUniversityDao.add(NEW_UNIVERSITY));
 
-        Assert.assertEquals(new Long(START_SEQUENCE + 3), NEW_UNIVERSITY.getId());
-
-        Assert.assertEquals(jdbcUniversityDao.getAll(), Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY));
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY),
+                jdbcUniversityDao.getAll());
 
         expected.expect(DAOException.class);
         jdbcUniversityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
@@ -68,27 +66,22 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void update() throws Exception {
-        UNIVERSITY2.setAddress("вул. Григорія Сковороди, 10");
+        jdbcUniversityDao.update(UPDATED_UNIVERSITY);
 
-        jdbcUniversityDao.update(UNIVERSITY2);
+        Assert.assertEquals(UPDATED_UNIVERSITY, jdbcUniversityDao.get(UNIVERSITY3.getId()));
 
-        Assert.assertEquals(jdbcUniversityDao.get(UNIVERSITY2.getId()), UNIVERSITY2);
-
-        //restore initial state
-        UNIVERSITY2.setAddress("вул. Григорія Сковороди, 2");
-
+        //incorrect or nullable id
         expected.expect(DAOException.class);
         jdbcUniversityDao.update(NEW_UNIVERSITY);
     }
 
     @Test
     public void delete() throws Exception {
-        jdbcUniversityDao.delete(UNIVERSITY3.getId());
+        Assert.assertTrue(jdbcUniversityDao.delete(UNIVERSITY3.getId()));
 
-        Assert.assertEquals(jdbcUniversityDao.getAll(), Arrays.asList(UNIVERSITY1, UNIVERSITY2));
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), jdbcUniversityDao.getAll());
 
-        expected.expect(DAOException.class);
-        jdbcUniversityDao.delete(INCORRECT_ID);
+        Assert.assertFalse(jdbcUniversityDao.delete(INCORRECT_ID));
     }
 
 }
