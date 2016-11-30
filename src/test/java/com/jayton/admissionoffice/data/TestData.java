@@ -1,8 +1,10 @@
 package com.jayton.admissionoffice.data;
 
 import com.jayton.admissionoffice.model.Subject;
+import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.EntranceSubject;
 import com.jayton.admissionoffice.model.to.ExamResult;
+import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.model.university.University;
@@ -10,6 +12,7 @@ import com.jayton.admissionoffice.model.user.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 /**
@@ -18,7 +21,7 @@ import java.time.Month;
 public class TestData {
     public static final Long START_SEQ = 10000L;
     public static final Long INCORRECT_ID = 10L;
-    public static final Long NEW_ID = 10019L;
+    public static final Long NEW_ID = 10022L;
     public static final String KYIV = "Київ";
     public static final String INCORRECT_NAME = "Some dummy value";
 
@@ -111,6 +114,17 @@ public class TestData {
             scale(new BigDecimal(0.3)));
     public static final EntranceSubject ENTRANCE6 = new EntranceSubject(DIRECTION2.getId(), SUBJECT3.getId(),
             scale(new BigDecimal(0.25)));
+
+    public static final Application APPLICATION1 = new Application(START_SEQ + 19, USER1.getId(), DIRECTION2.getId(),
+            LocalDateTime.of(2016, 11, 29, 12, 15, 55), Status.APPROVED);
+    public static final Application APPLICATION2 = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
+            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.CREATED);
+    public static final Application APPLICATION3 = new Application(START_SEQ + 21, USER1.getId(), DIRECTION3.getId(),
+            LocalDateTime.of(2016, 11, 30, 18, 1, 45), Status.REJECTED);
+    public static final Application NEW_APPLICATION = new Application(USER1.getId(), DIRECTION4.getId());
+    public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId());
+    public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
+            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED);
 
     private static BigDecimal scale(BigDecimal in) {
         return in.setScale(2, BigDecimal.ROUND_HALF_UP);
