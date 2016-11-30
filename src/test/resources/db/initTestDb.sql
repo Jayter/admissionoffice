@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS exam_results;
 DROP TABLE IF EXISTS entrance_subjects;
-DROP TABLE IF EXISTS admins;
-DROP TABLE IF EXISTS enrollees;
+DROP TABLE IF EXISTS credentials;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS subjects;
 DROP TABLE IF EXISTS directions;
 DROP TABLE IF EXISTS faculties;
@@ -10,27 +10,21 @@ DROP SEQUENCE IF EXISTS global_seq;
 
 CREATE SEQUENCE global_seq START 10000;
 
-CREATE TABLE admins (
-  id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
-  name VARCHAR NOT NULL,
-  second_name VARCHAR NOT NULL,
-  address VARCHAR NOT NULL,
-  email VARCHAR UNIQUE NOT NULL,
-  password VARCHAR NOT NULL,
-  phone_number VARCHAR NOT NULL,
-  birth_date DATE NOT NULL
+CREATE TABLE credentials (
+  login TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  is_admin BOOL NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE enrollees (
+CREATE TABLE users (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL,
-  second_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
   address VARCHAR NOT NULL,
   email VARCHAR UNIQUE NOT NULL,
-  password VARCHAR NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date TIMESTAMP NOT NULL,
-  average_mark NUMERIC(4, 2)
+  average_mark REAL
 );
 
 CREATE TABLE subjects (
@@ -39,10 +33,10 @@ CREATE TABLE subjects (
 );
 
 CREATE TABLE exam_results (
-  enrollee_id BIGINT,
+  user_id BIGINT,
   subject_id BIGINT,
-  mark NUMERIC(5, 2),
-  FOREIGN KEY (enrollee_id) REFERENCES enrollees(id) ON DELETE CASCADE,
+  mark REAL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
 
@@ -56,11 +50,11 @@ CREATE TABLE universities (
 CREATE TABLE faculties (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL,
-  university_id BIGINT NOT NULL,
+  university_Id BIGINT NOT NULL,
   office_phone VARCHAR NOT NULL,
   office_email VARCHAR NOT NULL,
   address VARCHAR NOT NULL,
-  FOREIGN KEY (university_id) REFERENCES universities(id) ON DELETE CASCADE
+  FOREIGN KEY (university_Id) REFERENCES universities(id) ON DELETE CASCADE
 );
 
 CREATE TABLE directions (
@@ -78,4 +72,4 @@ CREATE TABLE entrance_subjects (
   coefficient REAl,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
-);
+)
