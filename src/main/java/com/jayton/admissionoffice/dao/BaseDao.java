@@ -10,9 +10,8 @@ import java.util.List;
  */
 public interface BaseDao<T extends NamedEntity> {
     T get(Long id) throws DAOException;
-    void add(T entity) throws DAOException;
+    Long add(T entity) throws DAOException;
     void update(T entity) throws DAOException;
-    void delete(T entity) throws DAOException;
-    void delete(Long id) throws DAOException;
+    boolean delete(Long id) throws DAOException;
     List<T> getAll() throws DAOException;
 }
