@@ -1,17 +1,15 @@
 package com.jayton.admissionoffice.model.to;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * Created by Jayton on 28.11.2016.
  */
-public class ExamResult {
+public class ExamResult implements Serializable {
     private Long userId;
     private Long subjectId;
     private BigDecimal mark;
-
-    public ExamResult() {
-    }
 
     public ExamResult(Long userId, Long subjectId, BigDecimal mark) {
         this.userId = userId;
@@ -23,24 +21,12 @@ public class ExamResult {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public Long getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(Long subjectId) {
-        this.subjectId = subjectId;
-    }
-
     public BigDecimal getMark() {
         return mark;
-    }
-
-    public void setMark(BigDecimal mark) {
-        this.mark = mark;
     }
 
     @Override

@@ -8,15 +8,12 @@ public class Faculty extends NamedEntity {
     private String officeAddress;
     private Long universityId;
 
-    public Faculty() {
-    }
-
-    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, Long owner) {
+    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, Long universityId) {
         super(name);
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.officeAddress = officeAddress;
-        this.universityId = owner;
+        this.universityId = universityId;
     }
 
     public Faculty(Long id, String name, String officePhone, String officeEmail, String officeAddress, Long owner) {
@@ -25,14 +22,6 @@ public class Faculty extends NamedEntity {
         this.officeEmail = officeEmail;
         this.officeAddress = officeAddress;
         this.universityId = owner;
-    }
-
-    public void setOfficePhone(String officePhone) {
-        this.officePhone = officePhone;
-    }
-
-    public void setOfficeEmail(String officeEmail) {
-        this.officeEmail = officeEmail;
     }
 
     public String getOfficePhone() {
@@ -47,16 +36,8 @@ public class Faculty extends NamedEntity {
         return universityId;
     }
 
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
-
     public String getOfficeAddress() {
         return officeAddress;
-    }
-
-    public void setOfficeAddress(String officeAddress) {
-        this.officeAddress = officeAddress;
     }
 
     @Override

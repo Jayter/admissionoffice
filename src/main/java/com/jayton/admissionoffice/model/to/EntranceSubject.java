@@ -1,17 +1,15 @@
 package com.jayton.admissionoffice.model.to;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * Created by Jayton on 29.11.2016.
  */
-public class EntranceSubject {
+public class EntranceSubject implements Serializable {
     private Long directionId;
     private Long subjectId;
     private BigDecimal coef;
-
-    public EntranceSubject() {
-    }
 
     public EntranceSubject(Long directionId, Long subjectId, BigDecimal coef) {
         this.directionId = directionId;
@@ -23,24 +21,12 @@ public class EntranceSubject {
         return directionId;
     }
 
-    public void setDirectionId(Long directionId) {
-        this.directionId = directionId;
-    }
-
     public Long getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(Long subjectId) {
-        this.subjectId = subjectId;
-    }
-
     public BigDecimal getCoef() {
         return coef;
-    }
-
-    public void setCoef(BigDecimal coef) {
-        this.coef = coef;
     }
 
     @Override

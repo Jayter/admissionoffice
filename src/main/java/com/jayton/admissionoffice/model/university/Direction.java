@@ -7,47 +7,32 @@ import java.math.BigDecimal;
 public class Direction extends NamedEntity {
     private BigDecimal averageCoefficient;
     private int countOfStudents;
-    private Long ownerId;
+    private Long facultyId;
 
-    public Direction() {
-    }
-
-    public Direction(String name, BigDecimal averageCoefficient, int countOfStudents, Long ownerId) {
+    public Direction(String name, BigDecimal averageCoefficient, int countOfStudents, Long facultyId) {
         super(name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
-        this.ownerId = ownerId;
+        this.facultyId = facultyId;
     }
 
-    public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents, Long ownerId) {
+    public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents, Long facultyId) {
         super(id, name);
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
-        this.ownerId = ownerId;
+        this.facultyId = facultyId;
     }
 
     public BigDecimal getAverageCoefficient() {
         return averageCoefficient;
     }
 
-    public void setAverageCoefficient(BigDecimal averageCoefficient) {
-        this.averageCoefficient = averageCoefficient;
-    }
-
     public int getCountOfStudents() {
         return countOfStudents;
     }
 
-    public void setCountOfStudents(int countOfStudents) {
-        this.countOfStudents = countOfStudents;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public Long getFacultyId() {
+        return facultyId;
     }
 
     @Override
@@ -61,7 +46,7 @@ public class Direction extends NamedEntity {
         if (countOfStudents != direction.countOfStudents) return false;
         if (averageCoefficient != null ? !(averageCoefficient.compareTo(direction.averageCoefficient) == 0) : direction.averageCoefficient != null)
             return false;
-        return ownerId != null ? ownerId.equals(direction.ownerId) : direction.ownerId == null;
+        return facultyId != null ? facultyId.equals(direction.facultyId) : direction.facultyId == null;
 
     }
 
@@ -70,7 +55,7 @@ public class Direction extends NamedEntity {
         int result = super.hashCode();
         result = 31 * result + (averageCoefficient != null ? averageCoefficient.hashCode() : 0);
         result = 31 * result + countOfStudents;
-        result = 31 * result + (ownerId != null ? ownerId.intValue() : 0);
+        result = 31 * result + (facultyId != null ? facultyId.intValue() : 0);
         return result;
     }
 }

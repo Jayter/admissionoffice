@@ -2,87 +2,73 @@ package com.jayton.admissionoffice.model.user;
 
 import com.jayton.admissionoffice.model.NamedEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class User extends NamedEntity {
-    protected String secondName;
-    protected String address;
-    protected String email;
-    protected String password;
-    protected String phoneNumber;
-    protected LocalDate birthDate;
+    private String lastName;
+    private String address;
+    private String login;
+    private String email;
+    private String password;
+    private String phoneNumber;
+    private LocalDate birthDate;
+    private BigDecimal averageMark;
 
-    public User() {
-    }
-
-    public User(String name, String secondName, String address, String email,
-                String password, String phoneNumber, LocalDate birthDate) {
+    public User(String name, String lastName, String address, String login, String email, String password,
+                String phoneNumber, LocalDate birthDate, BigDecimal averageMark) {
         super(name);
-        this.secondName = secondName;
+        this.lastName = lastName;
         this.address = address;
+        this.login = login;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
+        this.averageMark = averageMark;
     }
 
-    public User(Long id, String name, String secondName, String address, String email,
-                String password, String phoneNumber, LocalDate birthDate) {
+    public User(Long id, String name, String lastName, String address, String email,
+                String phoneNumber, LocalDate birthDate, BigDecimal averageMark) {
         super(id, name);
-        this.secondName = secondName;
+        this.lastName = lastName;
         this.address = address;
         this.email = email;
-        this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
+        this.averageMark = averageMark;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public BigDecimal getAverageMark() {
+        return averageMark;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public String getLogin() {
+        return login;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getAddress() {
+        return address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
     @Override
@@ -93,24 +79,24 @@ public class User extends NamedEntity {
 
         User user = (User) o;
 
-        if (secondName != null ? !secondName.equals(user.secondName) : user.secondName != null) return false;
+        if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
         if (address != null ? !address.equals(user.address) : user.address != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) return false;
-        return birthDate != null ? birthDate.equals(user.birthDate) : user.birthDate == null;
+        if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
+        return averageMark != null ? averageMark.compareTo(user.averageMark) == 0 : user.averageMark == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (secondName != null ? secondName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
+        result = 31 * result + (averageMark != null ? averageMark.intValue() : 0);
         return result;
     }
 }

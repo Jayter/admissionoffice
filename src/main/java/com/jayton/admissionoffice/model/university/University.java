@@ -6,9 +6,6 @@ public class University extends NamedEntity {
     private String city;
     private String address;
 
-    public University() {
-    }
-
     public University(String name, String city, String address) {
         super(name);
         this.city = city;
@@ -21,21 +18,12 @@ public class University extends NamedEntity {
         this.address = address;
     }
 
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getCity() {
         return city;
     }
 
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     @Override
