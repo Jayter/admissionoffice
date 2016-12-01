@@ -119,7 +119,7 @@ public class JdbcEntranceSubjectDaoImpl implements EntranceSubjectDao {
     }
 
     @Override
-    public boolean deleteSubject(EntranceSubject subject) throws DAOException {
+    public boolean deleteSubject(Long directionId, Long subjectId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -127,8 +127,8 @@ public class JdbcEntranceSubjectDaoImpl implements EntranceSubjectDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_DELETE);
 
-            statement.setLong(1, subject.getDirectionId());
-            statement.setLong(2, subject.getSubjectId());
+            statement.setLong(1, directionId);
+            statement.setLong(2, subjectId);
 
             int affectedRows = statement.executeUpdate();
             return affectedRows != 0;

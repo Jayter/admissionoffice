@@ -40,12 +40,12 @@ public class JdbcEntranceSubjectDaoImplTest {
 
     @Test
     public void deleteSubject() throws Exception {
-        Assert.assertTrue(jdbcEntranceSubjectDao.deleteSubject(ENTRANCE3));
+        Assert.assertTrue(jdbcEntranceSubjectDao.deleteSubject(ENTRANCE3.getDirectionId(), ENTRANCE3.getSubjectId()));
 
         Assert.assertEquals(Arrays.asList(ENTRANCE1, ENTRANCE2),
                 jdbcEntranceSubjectDao.getSubjects(DIRECTION1.getId()));
 
-        Assert.assertFalse(jdbcEntranceSubjectDao.deleteSubject(ENTRANCE4));
+        Assert.assertFalse(jdbcEntranceSubjectDao.deleteSubject(ENTRANCE4.getDirectionId(), ENTRANCE4.getSubjectId()));
     }
 
     @Test
