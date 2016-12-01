@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  */
 public class ServiceVerifier {
 
-
+    public static final String INCORRECT_COEF = "Coefficient must be less than 1 and greater than 0.";
     public static final String INCORRECT_ID = "Id must not be empty or negative.";
     public static final String INCORRECT_PHONE = "Incorrect phone number.";
     public static final String INCORRECT_EMAIL = "Incorrect email.";
@@ -57,6 +57,12 @@ public class ServiceVerifier {
                 return true;
         }
         return false;
+    }
+
+    public static void verifyCoef(BigDecimal coef) throws ServiceVerificationException {
+        if(!isCoefCorrect(coef)) {
+            throw new ServiceVerificationException(INCORRECT_COEF);
+        }
     }
 
     public static void verifyId(Long id) throws ServiceException {
