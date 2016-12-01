@@ -11,6 +11,7 @@ import java.util.List;
 public interface EntranceSubjectDao {
     void addSubject(EntranceSubject subject) throws DAOException;
     void addSubjects(List<EntranceSubject> subject) throws DAOException;
+    void updateSubjects(List<EntranceSubject> subjects) throws DAOException;
     boolean deleteSubject(Long directionId, Long subjectId) throws DAOException;
     List<EntranceSubject> getSubjects(Long directionId) throws DAOException;
 }

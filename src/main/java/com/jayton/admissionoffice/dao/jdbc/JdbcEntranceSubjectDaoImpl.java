@@ -23,6 +23,8 @@ public class JdbcEntranceSubjectDaoImpl implements EntranceSubjectDao {
     public static final String SQL_GET = "SELECT * FROM entrance_subjects WHERE direction_id=?";
     public static final String SQL_ADD = "INSERT INTO entrance_subjects (direction_id, subject_id, coefficient)" +
             " VALUES (?, ?, ?)";
+    public static final String SQL_UPDATE = "UPDATE entrance_subjects SET coefficient=?" +
+            "WHERE direction_id=? AND subject_id=?";
     public static final String SQL_DELETE = "DELETE FROM entrance_subjects WHERE direction_id=? AND subject_id=?";
 
     private static JdbcEntranceSubjectDaoImpl instance;
@@ -100,6 +102,49 @@ public class JdbcEntranceSubjectDaoImpl implements EntranceSubjectDao {
 
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to save entrance subjects.", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateSubjects(List<EntranceSubject> subjects) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_UPDATE);
+
+            for (EntranceSubject subject : subjects) {
+                statement.setBigDecimal(1, scale(subject.getCoef(), 2));
+                statement.setLong(2, subject.getDirectionId());
+                statement.setLong(3, subject.getSubjectId());
+                statement.addBatch();
+            }
+
+            int[] affectedRows = statement.executeBatch();
+            for (int row : affectedRows) {
+                if (row == 0) {
+                    throw new DAOException("Failed to update entrance subjects.");
+                }
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to update entrance subjects.", e);
         } finally {
             if (statement != null) {
                 try {
