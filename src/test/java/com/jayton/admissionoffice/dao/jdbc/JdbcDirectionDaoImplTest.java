@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,8 @@ public class JdbcDirectionDaoImplTest {
     @Test
     public void get() throws Exception {
         Assert.assertEquals(DIRECTION1, jdbcDirectionDao.get(DIRECTION1.getId()));
+        Assert.assertEquals(Collections.emptyMap(),
+                jdbcDirectionDao.get(DIRECTION4.getId()).getEntranceSubjects());
 
         Assert.assertNull(jdbcDirectionDao.get(INCORRECT_ID));
     }
@@ -59,6 +62,7 @@ public class JdbcDirectionDaoImplTest {
 
         List<Direction> all = Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3, DIRECTION4, DIRECTION5, NEW_DIRECTION);
         Assert.assertEquals(jdbcDirectionDao.getAll(), all);
+        Assert.assertEquals(jdbcDirectionDao.get(NEW_ID).getEntranceSubjects(), NEW_DIRECTION.getEntranceSubjects());
 
         expected.expect(DAOException.class);
         jdbcDirectionDao.add(DIRECTION_WITH_INCORRECT_OWNER);
@@ -68,17 +72,36 @@ public class JdbcDirectionDaoImplTest {
     public void update() throws Exception {
         jdbcDirectionDao.update(UPDATED_DIRECTION);
 
-        Assert.assertEquals(UPDATED_DIRECTION, jdbcDirectionDao.get(DIRECTION3.getId()));
+        Assert.assertEquals(UPDATED_DIRECTION, jdbcDirectionDao.get(DIRECTION2.getId()));
     }
 
     @Test
     public void delete() throws Exception {
-        Assert.assertTrue(jdbcDirectionDao.delete(DIRECTION3.getId()));
+        Assert.assertTrue(jdbcDirectionDao.delete(DIRECTION2.getId()));
 
-        Assert.assertEquals(Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION4, DIRECTION5),
+        Assert.assertEquals(Arrays.asList(DIRECTION1, DIRECTION3, DIRECTION4, DIRECTION5),
                 jdbcDirectionDao.getAll());
 
         expected.expect(DAOException.class);
         jdbcDirectionDao.delete(NEW_DIRECTION.getId());
+    }
+
+    @Test
+    public void addEntranceSubject() throws Exception {
+        jdbcDirectionDao.addSubject(DIRECTION1.getId(), SUBJECT4.getId(), new BigDecimal(0.3));
+
+        Assert.assertEquals(jdbcDirectionDao.get(DIRECTION1.getId()).getEntranceSubjects().size(), 4);
+
+        expected.expect(DAOException.class);
+        jdbcDirectionDao.addSubject(INCORRECT_ID, SUBJECT1.getId(), new BigDecimal(0.1));
+    }
+
+    @Test
+    public void deleteEntranceSubject() throws Exception {
+        Assert.assertTrue(jdbcDirectionDao.deleteSubject(DIRECTION2.getId(), SUBJECT1.getId()));
+
+        Assert.assertEquals(jdbcDirectionDao.get(DIRECTION2.getId()).getEntranceSubjects().size(), 2);
+
+        Assert.assertFalse(jdbcDirectionDao.deleteSubject(DIRECTION3.getId(), SUBJECT4.getId()));
     }
 }

@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Created by Jayton on 30.11.2016.
@@ -85,35 +87,26 @@ public class TestData {
     public static final Faculty UPDATED_FACULTY = new Faculty(START_SEQ + 10, "Факультет інформаційних технологій",
             "сайт не працює", "fit_knu@ukr.net", "вул. Ванди Василевської, 24", UNIVERSITY1.getId());
 
-    public static final Direction DIRECTION1 = new Direction(START_SEQ + 14, "Інформатика",
-            scale(new BigDecimal(0.1)), 30, FACULTY1.getId());
-    public static final Direction DIRECTION2 = new Direction(START_SEQ + 15, "Комп`ютерні науки",
-            scale(new BigDecimal(0.05)), 45, FACULTY1.getId());
+    public static final Direction DIRECTION1 = new Direction(START_SEQ + 14, "Інформатика", scale(new BigDecimal(0.1)),
+            30, FACULTY1.getId(), new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4)));
+        put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.2)));}});
+    public static final Direction DIRECTION2 = new Direction(START_SEQ + 15, "Комп`ютерні науки", scale(new BigDecimal(0.05)),
+            45, FACULTY1.getId(), new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4))); put(SUBJECT2.getId(),
+            scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
     public static final Direction DIRECTION3 = new Direction(START_SEQ + 16, "Безпека інформаційних систем",
-            scale(new BigDecimal(0.1)), 20, FACULTY1.getId());
+            scale(new BigDecimal(0.1)), 20, FACULTY1.getId(), Collections.emptyMap());
     public static final Direction DIRECTION4 = new Direction(START_SEQ + 17, "Прикладна математика",
-            scale(new BigDecimal(0.05)), 40, FACULTY2.getId());
+            scale(new BigDecimal(0.05)), 40, FACULTY2.getId(), Collections.emptyMap());
     public static final Direction DIRECTION5 = new Direction(START_SEQ + 18, "Програмне забезпечення автоматизованих систем",
-            scale(new BigDecimal(0.05)), 25, FACULTY2.getId());
-    public static final Direction NEW_DIRECTION = new Direction("Системний аналіз",
-            scale(new BigDecimal(0.15)), 35, FACULTY2.getId());
+            scale(new BigDecimal(0.05)), 25, FACULTY2.getId(), Collections.emptyMap());
+    public static final Direction NEW_DIRECTION = new Direction("Системний аналіз", scale(new BigDecimal(0.15)), 35,
+            FACULTY2.getId(), new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4))); put(SUBJECT2.getId(),
+            scale(new BigDecimal(0.2))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
     public static final Direction DIRECTION_WITH_INCORRECT_OWNER = new Direction("Програмна інженерія",
-            scale(new BigDecimal(0.1)), 35, INCORRECT_ID);
-    public static final Direction UPDATED_DIRECTION = new Direction(START_SEQ + 16, "Безпека інформаційних систем",
-            scale(new BigDecimal(0.1)), 25, FACULTY1.getId());
-
-    public static final EntranceSubject ENTRANCE1 = new EntranceSubject(DIRECTION1.getId(), SUBJECT1.getId(),
-            scale(new BigDecimal(0.4)));
-    public static final EntranceSubject ENTRANCE2 = new EntranceSubject(DIRECTION1.getId(), SUBJECT2.getId(),
-            scale(new BigDecimal(0.3)));
-    public static final EntranceSubject ENTRANCE3 = new EntranceSubject(DIRECTION1.getId(), SUBJECT3.getId(),
-            scale(new BigDecimal(0.2)));
-    public static final EntranceSubject ENTRANCE4 = new EntranceSubject(DIRECTION2.getId(), SUBJECT1.getId(),
-            scale(new BigDecimal(0.4)));
-    public static final EntranceSubject ENTRANCE5 = new EntranceSubject(DIRECTION2.getId(), SUBJECT2.getId(),
-            scale(new BigDecimal(0.3)));
-    public static final EntranceSubject ENTRANCE6 = new EntranceSubject(DIRECTION2.getId(), SUBJECT3.getId(),
-            scale(new BigDecimal(0.25)));
+            scale(new BigDecimal(0.1)), 35, INCORRECT_ID, Collections.emptyMap());
+    public static final Direction UPDATED_DIRECTION = new Direction(START_SEQ + 15, "Комп`ютерні науки",
+            scale(new BigDecimal(0.1)), 35, FACULTY1.getId(), new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4)));
+            put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.2)));}});
 
     public static final Application APPLICATION1 = new Application(START_SEQ + 19, USER1.getId(), DIRECTION2.getId(),
             LocalDateTime.of(2016, 11, 29, 12, 15, 55), Status.APPROVED);

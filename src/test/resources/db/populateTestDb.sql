@@ -1,3 +1,4 @@
+DELETE FROM applications;
 DELETE FROM exam_results;
 DELETE FROM entrance_subjects;
 DELETE FROM credentials;
@@ -57,7 +58,10 @@ INSERT INTO directions (name, average_coef, count_of_students, faculty_id) VALUE
 INSERT INTO entrance_subjects (direction_id, subject_id, coefficient) VALUES
   (10014, 10000, 0.4),
   (10014, 10001, 0.3),
-  (10014, 10002, 0.2);
+  (10014, 10002, 0.2),
+  (10015, 10000, 0.4),
+  (10015, 10001, 0.3),
+  (10015, 10002, 0.25);
 
 INSERT INTO applications (user_id, direction_id, created_time, status) VALUES
   (10004, 10015, '2016-11-29 12:15:55', 'Approved'),
