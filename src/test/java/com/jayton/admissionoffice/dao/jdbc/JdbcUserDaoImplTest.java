@@ -109,4 +109,11 @@ public class JdbcUserDaoImplTest {
 
         Assert.assertEquals(jdbcEnrolleeDao.getByUser(INCORRECT_ID), Collections.emptyMap());
     }
+
+    @Test
+    public void checkEmailTest() throws Exception {
+        Assert.assertEquals(1, jdbcEnrolleeDao.checkEmail(USER1.getEmail()));
+
+        Assert.assertEquals(0, jdbcEnrolleeDao.checkEmail(NEW_USER.getEmail()));
+    }
 }

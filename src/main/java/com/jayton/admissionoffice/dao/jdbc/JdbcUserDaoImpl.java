@@ -28,6 +28,7 @@ public class JdbcUserDaoImpl implements UserDao {
     public static final String SQL_UPDATE = "UPDATE users SET name=?, last_name=?, address=?, email=?," +
             " phone_number=?, birth_date=?, average_mark=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM users WHERE id=?";
+    public static final String SQL_GET_COUNT = "SELECT COUNT(*) FROM users WHERE email=?";
 
     public static final String SQL_GET_RESULTS = "SELECT subject_id, mark FROM exam_results WHERE user_id=?";
     public static final String SQL_ADD_RESULT = "INSERT INTO exam_results (user_id, subject_id, mark) values (?, ?, ?)";
@@ -453,6 +454,46 @@ public class JdbcUserDaoImpl implements UserDao {
 
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to delete result.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public int checkEmail(String email) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_GET_COUNT);
+
+            statement.setString(1, email);
+
+            try(ResultSet rs = statement.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+                else {
+                    throw new DAOException("Failed to check email.");
+                }
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to check email.", e);
         } finally {
             if(statement != null) {
                 try {
