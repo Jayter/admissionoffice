@@ -24,7 +24,7 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             return jdbcSubjectDao.add(subject);
         } catch (DAOException e) {
-            throw new ServiceException("Failed to load subject.", e);
+            throw new ServiceException(e);
         }
     }
 
@@ -33,21 +33,10 @@ public class SubjectServiceImpl implements SubjectService {
         ServiceVerifier.verifyId(id);
 
         JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
-
         try {
             return jdbcSubjectDao.get(id);
         } catch (DAOException e) {
-            throw new ServiceException("Failed to load subject.", e);
-        }
-    }
-
-    @Override
-    public List<Subject> getAll() throws ServiceException {
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
-        try {
-            return jdbcSubjectDao.getAll();
-        } catch (DAOException e) {
-            throw new ServiceException("Failed to load subjects.", e);
+            throw new ServiceException(e);
         }
     }
 
@@ -58,11 +47,10 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = new Subject(id, name);
 
         JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
-
         try {
             jdbcSubjectDao.update(subject);
         } catch (DAOException e) {
-            throw new ServiceException("Failed to update subject.", e);
+            throw new ServiceException(e);
         }
     }
 
@@ -71,11 +59,20 @@ public class SubjectServiceImpl implements SubjectService {
         ServiceVerifier.verifyId(id);
 
         JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
-
         try {
             return jdbcSubjectDao.delete(id);
         } catch (DAOException e) {
-            throw new ServiceException("Failed to delete subject.", e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Subject> getAll() throws ServiceException {
+        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        try {
+            return jdbcSubjectDao.getAll();
+        } catch (DAOException e) {
+            throw new ServiceException(e);
         }
     }
 }
