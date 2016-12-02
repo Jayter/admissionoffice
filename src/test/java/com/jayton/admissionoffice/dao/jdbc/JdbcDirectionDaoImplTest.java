@@ -104,4 +104,11 @@ public class JdbcDirectionDaoImplTest {
 
         Assert.assertFalse(jdbcDirectionDao.deleteSubject(DIRECTION3.getId(), SUBJECT4.getId()));
     }
+
+    @Test
+    public void getByDirection() throws Exception {
+        Assert.assertEquals(jdbcDirectionDao.getByDirection(DIRECTION1.getId()), DIRECTION1.getEntranceSubjects());
+
+        Assert.assertEquals(jdbcDirectionDao.getByDirection(INCORRECT_ID), Collections.emptyMap());
+    }
 }
