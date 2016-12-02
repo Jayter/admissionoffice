@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.service;
 
-import com.jayton.admissionoffice.model.to.EntranceSubject;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 

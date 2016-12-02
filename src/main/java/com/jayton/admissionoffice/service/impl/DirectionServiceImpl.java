@@ -2,7 +2,6 @@ package com.jayton.admissionoffice.service.impl;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.JdbcDirectionDaoImpl;
-import com.jayton.admissionoffice.model.to.EntranceSubject;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.DirectionService;
 import com.jayton.admissionoffice.service.exception.ServiceException;

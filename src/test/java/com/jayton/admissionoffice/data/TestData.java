@@ -3,14 +3,11 @@ package com.jayton.admissionoffice.data;
 import com.jayton.admissionoffice.model.NamedEntity;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
-import com.jayton.admissionoffice.model.to.EntranceSubject;
-import com.jayton.admissionoffice.model.to.ExamResult;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.model.user.User;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
