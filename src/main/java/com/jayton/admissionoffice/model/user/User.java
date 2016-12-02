@@ -29,6 +29,18 @@ public class User extends NamedEntity {
         this.results = results;
     }
 
+    public User(Long id, String name, String lastName, String address, String phoneNumber,
+                LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
+        super(id, name);
+        this.lastName = lastName;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.averageMark = averageMark;
+        this.results = results;
+    }
+
     public User(Long id, String name, String lastName, String address, String email, String phoneNumber,
                 LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
         super(id, name);
@@ -89,7 +101,6 @@ public class User extends NamedEntity {
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
         if (averageMark != null ? !(averageMark.compareTo(user.averageMark) == 0) : user.averageMark != null) return false;
         return results != null ? results.equals(user.results) : user.results == null;
-
     }
 
     @Override
