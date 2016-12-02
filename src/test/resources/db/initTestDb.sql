@@ -86,3 +86,4 @@ CREATE TABLE applications (
 );
 
 CREATE UNIQUE INDEX unique_applications ON applications (user_id, direction_id);
+CREATE UNIQUE INDEX unique_results ON exam_results (user_id, subject_id);

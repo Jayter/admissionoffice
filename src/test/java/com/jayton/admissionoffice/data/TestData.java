@@ -1,5 +1,6 @@
 package com.jayton.admissionoffice.data;
 
+import com.jayton.admissionoffice.model.NamedEntity;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.EntranceSubject;
@@ -9,12 +10,14 @@ import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.model.user.User;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -36,28 +39,30 @@ public class TestData {
     public static final Subject UPDATED_SUBJECT = new Subject(START_SEQ + 2, "Математичний аналіз");
 
     public static final User USER1 = new User(START_SEQ + 4, "Дмитро", "Васильков", "Ужгород, Загорська 35",
-            "vas_dim@gmail.com", "+380671823452", LocalDate.of(2000, Month.MARCH, 22), BigDecimal.valueOf(10.5));
+            "vas_dim@gmail.com", "+380671823452", LocalDate.of(2000, Month.MARCH, 22), BigDecimal.valueOf(10.5),
+            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(192.5))); put(SUBJECT2.getId(), scale(new BigDecimal(187.0)));
+                put(SUBJECT3.getId(), scale(new BigDecimal(183.25))); put(SUBJECT4.getId(), scale(new BigDecimal(181.2)));}});
     public static final User USER2 = new User(START_SEQ + 5, "Катерина", "Руденко", "Умань, Європейська 12",
-            "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 11), BigDecimal.valueOf(9.8));
+            "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 11), BigDecimal.valueOf(9.8),
+            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
+                put(SUBJECT3.getId(), scale(new BigDecimal(181.5)));}});
     public static final User USER3 = new User(START_SEQ + 6, "Максим", "Панченко", "Шостка, Сімейна 1",
-            "pan_max@gmail.com", "+380952235616", LocalDate.of(2001, Month.JANUARY, 2), BigDecimal.valueOf(8.7));
+            "pan_max@gmail.com", "+380952235616", LocalDate.of(2001, Month.JANUARY, 2), BigDecimal.valueOf(8.7),
+            Collections.emptyMap());
     public static final User NEW_USER = new User("Анна", "Мохир", "Боярка, Шевченка 45", "annBo", "anna.moch@yandex.ru",
-            "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0));
-    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null, null);
+            "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
+            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
+                put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
+    public static final User NEW_USER_WITHOUT_CREDENTIALS = new User(NEW_ID, "Анна", "Мохир", "Боярка, Шевченка 45",
+            "anna.moch@yandex.ru", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
+            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
+                put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
+    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null, null,
+            Collections.emptyMap());
     public static final User UPDATED_USER = new User(START_SEQ + 5, "Катерина", "Руденко", "Дніпропетровськ, Орловська 13",
-            "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), BigDecimal.valueOf(9.8));
-
-
-    public static final ExamResult RESULT1 = new ExamResult(USER1.getId(), SUBJECT1.getId(), scale(new BigDecimal(192.5)));
-    public static final ExamResult RESULT2 = new ExamResult(USER1.getId(), SUBJECT2.getId(), scale(new BigDecimal(187.0)));
-    public static final ExamResult RESULT3 = new ExamResult(USER1.getId(), SUBJECT3.getId(), scale(new BigDecimal(183.25)));
-    public static final ExamResult RESULT4 = new ExamResult(USER1.getId(), SUBJECT4.getId(), scale(new BigDecimal(181.2)));
-    public static final ExamResult RESULT5 = new ExamResult(USER2.getId(), SUBJECT1.getId(), scale(new BigDecimal(190.6)));
-    public static final ExamResult RESULT6 = new ExamResult(USER2.getId(), SUBJECT2.getId(), scale(new BigDecimal(184.22)));
-    public static final ExamResult RESULT7 = new ExamResult(USER2.getId(), SUBJECT3.getId(), scale(new BigDecimal(181.5)));
-    public static final ExamResult RESULT8 = new ExamResult(USER2.getId(), SUBJECT4.getId(), scale(new BigDecimal(173.6)));
-    public static final ExamResult UPDATED_RESULT = new ExamResult(USER1.getId(), SUBJECT2.getId(),
-            scale(new BigDecimal(194.6)));
+            "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), BigDecimal.valueOf(9.8),
+            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
+                put(SUBJECT3.getId(), scale(new BigDecimal(182.5)));}});
 
     public static final University UNIVERSITY1 = new University(START_SEQ + 7,
             "Київський національний університет ім. Тараса Шевченка", "Київ", "вул. Володимирська, 60");
@@ -118,6 +123,13 @@ public class TestData {
     public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId());
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
             LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED);
+
+    public static final Comparator<NamedEntity> COMPARATOR = new Comparator<NamedEntity>() {
+        @Override
+        public int compare(NamedEntity o1, NamedEntity o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
+    };
 
     private static BigDecimal scale(BigDecimal in) {
         return in.setScale(2, BigDecimal.ROUND_HALF_UP);
