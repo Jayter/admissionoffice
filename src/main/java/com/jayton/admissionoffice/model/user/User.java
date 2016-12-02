@@ -9,7 +9,6 @@ import java.util.Map;
 public class User extends NamedEntity {
     private String lastName;
     private String address;
-    private String login;
     private String email;
     private String password;
     private String phoneNumber;
@@ -17,12 +16,11 @@ public class User extends NamedEntity {
     private BigDecimal averageMark;
     private Map<Long, BigDecimal> results;
 
-    public User(String name, String lastName, String address, String login, String email, String password,
+    public User(String name, String lastName, String address, String email, String password,
                 String phoneNumber, LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
         super(name);
         this.lastName = lastName;
         this.address = address;
-        this.login = login;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -49,10 +47,6 @@ public class User extends NamedEntity {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public String getLogin() {
-        return login;
     }
 
     public String getPassword() {
@@ -89,7 +83,6 @@ public class User extends NamedEntity {
 
         if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
         if (address != null ? !address.equals(user.address) : user.address != null) return false;
-        if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) return false;
@@ -104,7 +97,6 @@ public class User extends NamedEntity {
         int result = super.hashCode();
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (login != null ? login.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);

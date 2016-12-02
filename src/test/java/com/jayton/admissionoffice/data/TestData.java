@@ -49,7 +49,7 @@ public class TestData {
     public static final User USER3 = new User(START_SEQ + 6, "Максим", "Панченко", "Шостка, Сімейна 1",
             "pan_max@gmail.com", "+380952235616", LocalDate.of(2001, Month.JANUARY, 2), BigDecimal.valueOf(8.7),
             Collections.emptyMap());
-    public static final User NEW_USER = new User("Анна", "Мохир", "Боярка, Шевченка 45", "annBo", "anna.moch@yandex.ru",
+    public static final User NEW_USER = new User("Анна", "Мохир", "Боярка, Шевченка 45", "anna.moch@yandex.ru",
             "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
             new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
                 put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
@@ -57,7 +57,7 @@ public class TestData {
             "anna.moch@yandex.ru", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
             new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
                 put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
-    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null, null,
+    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null,
             Collections.emptyMap());
     public static final User UPDATED_USER = new User(START_SEQ + 5, "Катерина", "Руденко", "Дніпропетровськ, Орловська 13",
             "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), BigDecimal.valueOf(9.8),

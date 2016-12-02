@@ -68,7 +68,7 @@ public class JdbcUserDaoImpl implements UserDao {
             addUserSt.setDate(6, Date.valueOf(user.getBirthDate()));
             addUserSt.setBigDecimal(7, scale(user.getAverageMark(), 2));
 
-            addCredentialsSt.setString(1, user.getLogin());
+            addCredentialsSt.setString(1, user.getEmail());
             addCredentialsSt.setString(2, user.getPassword());
 
             int affectedUsers = addUserSt.executeUpdate();
