@@ -25,7 +25,7 @@ public class JdbcUserDaoImpl implements UserDao {
     public static final String SQL_ADD_CREDENTIALS = "INSERT INTO credentials(login, password) VALUES (?, ?)";
     public static final String SQL_ADD = "INSERT INTO users (name, last_name, address, email, phone_number, birth_date, average_mark)" +
             " VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE users SET name=?, last_name=?, address=?, email=?," +
+    public static final String SQL_UPDATE = "UPDATE users SET name=?, last_name=?, address=?," +
             " phone_number=?, birth_date=?, average_mark=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM users WHERE id=?";
     public static final String SQL_GET_COUNT = "SELECT COUNT(*) FROM users WHERE email=?";
@@ -276,11 +276,10 @@ public class JdbcUserDaoImpl implements UserDao {
             updateUserSt.setString(1, user.getName());
             updateUserSt.setString(2, user.getLastName());
             updateUserSt.setString(3, user.getAddress());
-            updateUserSt.setString(4, user.getEmail());
-            updateUserSt.setString(5, user.getPhoneNumber());
-            updateUserSt.setDate(6, Date.valueOf(user.getBirthDate()));
-            updateUserSt.setBigDecimal(7, scale(user.getAverageMark(), 2));
-            updateUserSt.setLong(8, user.getId());
+            updateUserSt.setString(4, user.getPhoneNumber());
+            updateUserSt.setDate(5, Date.valueOf(user.getBirthDate()));
+            updateUserSt.setBigDecimal(6, scale(user.getAverageMark(), 2));
+            updateUserSt.setLong(7, user.getId());
 
             int affectedRow = updateUserSt.executeUpdate();
             if(affectedRow == 0) {
