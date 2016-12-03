@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 
 import java.math.BigDecimal;
@@ -22,7 +23,6 @@ public class JdbcUserDaoImpl implements UserDao {
 
     public static final String SQL_GET = "SELECT * FROM users WHERE id=?";
     public static final String SQL_GET_ALL = "SELECT * FROM users";
-    public static final String SQL_ADD_CREDENTIALS = "INSERT INTO credentials(login, password) VALUES (?, ?)";
     public static final String SQL_ADD = "INSERT INTO users (name, last_name, address, email, phone_number, birth_date, average_mark)" +
             " VALUES (?, ?, ?, ?, ?, ?, ?)";
     public static final String SQL_UPDATE = "UPDATE users SET name=?, last_name=?, address=?," +
@@ -34,6 +34,9 @@ public class JdbcUserDaoImpl implements UserDao {
     public static final String SQL_ADD_RESULT = "INSERT INTO exam_results (user_id, subject_id, mark) values (?, ?, ?)";
     public static final String SQL_UPDATE_RESULT = "UPDATE exam_results SET mark=? WHERE user_id=? AND subject_id=?";
     public static final String SQL_DELETE_RESULT = "DELETE FROM exam_results WHERE user_id=? AND subject_id=?";
+
+    public static final String SQL_ADD_CREDENTIALS = "INSERT INTO credentials(login, password) VALUES (?, ?)";
+    public static final String SQL_AUTHORIZE = "SELECT is_admin FROM credentials WHERE login=? and password=?";
 
     private static JdbcUserDaoImpl instance;
 
@@ -376,6 +379,50 @@ public class JdbcUserDaoImpl implements UserDao {
 
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to save result.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public AuthorizationResult authorize(String login, String password) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_AUTHORIZE);
+
+            statement.setString(1, login);
+            statement.setString(2, password);
+
+            try(ResultSet rs = statement.executeQuery()) {
+                if(rs.next()) {
+                    if(rs.getBoolean("is_admin")) {
+                        return AuthorizationResult.ADMIN;
+                    }
+                    return AuthorizationResult.USER;
+                }
+                else {
+                    return AuthorizationResult.NULL;
+                }
+            }
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to authorize.", e);
         } finally {
             if(statement != null) {
                 try {

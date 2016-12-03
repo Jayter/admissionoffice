@@ -25,7 +25,7 @@ public class TestData {
     public static final Long INCORRECT_ID = 10L;
     public static final Long NEW_ID = 10022L;
     public static final String KYIV = "Київ";
-    public static final String INCORRECT_NAME = "Some dummy value";
+    public static final String INCORRECT_STRING = "Some dummy value";
 
     public static final Subject SUBJECT1 = new Subject(START_SEQ, "Українська мова та література");
     public static final Subject SUBJECT2 = new Subject(START_SEQ + 1, "Англійська мова");
@@ -120,6 +120,11 @@ public class TestData {
     public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId());
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
             LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED);
+
+    public static final String ADMIN_LOGIN = "admin";
+    public static final String ADMIN_PASSWORD = "a1D2m3I4n4I2s2Ch1E";
+    public static final String USER_LOGIN = "dimasik";
+    public static final String USER_PASSWORD = "dim_dim";
 
     public static final Comparator<NamedEntity> COMPARATOR = new Comparator<NamedEntity>() {
         @Override
