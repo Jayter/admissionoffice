@@ -2,7 +2,6 @@ package com.jayton.admissionoffice.service;
 
 import com.jayton.admissionoffice.model.NamedEntity;
 import com.jayton.admissionoffice.service.exception.ServiceException;
-import com.sun.xml.internal.ws.wsdl.writer.document.Service;
 
 import java.util.List;
 

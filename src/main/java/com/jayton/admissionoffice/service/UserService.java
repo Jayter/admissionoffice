@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.service;
 
-import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 
