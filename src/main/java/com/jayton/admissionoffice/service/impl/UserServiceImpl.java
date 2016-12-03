@@ -1,7 +1,8 @@
 package com.jayton.admissionoffice.service.impl;
 
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.JdbcUserDaoImpl;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.UserService;
@@ -33,9 +34,9 @@ public class UserServiceImpl implements UserService {
 
         User user = new User(name, lastName, address, email, password, phoneNumber, birthDate, averageCoef, results);
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return jdbcUserDao.add(user);
+            return userDao.add(user);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -45,9 +46,9 @@ public class UserServiceImpl implements UserService {
     public User get(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return jdbcUserDao.get(id);
+            return userDao.get(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -62,9 +63,9 @@ public class UserServiceImpl implements UserService {
 
         User user = new User(id, name, lastName, address, phoneNumber, birthDate, averageCoef, results);
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            jdbcUserDao.update(user);
+            userDao.update(user);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -74,9 +75,9 @@ public class UserServiceImpl implements UserService {
     public boolean delete(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return jdbcUserDao.delete(id);
+            return userDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -84,9 +85,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() throws ServiceException {
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return jdbcUserDao.getAll();
+            return userDao.getAll();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -98,9 +99,9 @@ public class UserServiceImpl implements UserService {
         ServiceVerifier.verifyResult(mark);
 
         Map<Long, BigDecimal> results;
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-             results = jdbcUserDao.getByUser(userId);
+             results = userDao.getByUser(userId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
         verifyResults(results);
 
         try {
-            jdbcUserDao.addResult(userId, subjectId, mark);
+            userDao.addResult(userId, subjectId, mark);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -119,9 +120,9 @@ public class UserServiceImpl implements UserService {
     public boolean deleteResult(Long userId, Long subjectId) throws ServiceException {
         ServiceVerifier.verifyIds(userId, subjectId);
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return jdbcUserDao.deleteResult(userId, subjectId);
+            return userDao.deleteResult(userId, subjectId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -134,9 +135,9 @@ public class UserServiceImpl implements UserService {
 
         AuthorizationResult result;
 
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            result =  jdbcUserDao.authorize(login, password);
+            result =  userDao.authorize(login, password);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -150,9 +151,9 @@ public class UserServiceImpl implements UserService {
 
 
     private void checkEmail(String email) throws ServiceException {
-        JdbcUserDaoImpl jdbcUserDao = JdbcUserDaoImpl.getInstance();
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            int count = jdbcUserDao.checkEmail(email);
+            int count = userDao.checkEmail(email);
             if(count != 0) {
                 throw new ServiceVerificationException("Email already exists.");
             }

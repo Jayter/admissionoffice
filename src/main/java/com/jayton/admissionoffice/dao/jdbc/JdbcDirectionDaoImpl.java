@@ -34,19 +34,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     public static final String SQL_GET_SUBJECTS = "SELECT subject_id, coefficient FROM entrance_subjects WHERE direction_id=?";
     public static final String SQL_DELETE_SUBJECT = "DELETE FROM entrance_subjects WHERE direction_id=? AND subject_id=?";
 
-    private static JdbcDirectionDaoImpl instance;
-
-    private JdbcDirectionDaoImpl() {
+    JdbcDirectionDaoImpl() {
     }
-
-    public static synchronized JdbcDirectionDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcDirectionDaoImpl();
-        }
-
-        return instance;
-    }
-
 
     public Long add(Direction direction) throws DAOException {
         PreparedStatement addDirectionSt = null;

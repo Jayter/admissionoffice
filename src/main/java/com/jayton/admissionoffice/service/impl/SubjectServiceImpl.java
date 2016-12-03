@@ -1,7 +1,8 @@
 package com.jayton.admissionoffice.service.impl;
 
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.SubjectDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.JdbcSubjectDaoImpl;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.service.SubjectService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -20,9 +21,9 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = new Subject(name);
 
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            return jdbcSubjectDao.add(subject);
+            return subjectDao.add(subject);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -32,9 +33,9 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject get(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            return jdbcSubjectDao.get(id);
+            return subjectDao.get(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -46,9 +47,9 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = new Subject(id, name);
 
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            jdbcSubjectDao.update(subject);
+            subjectDao.update(subject);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -58,9 +59,9 @@ public class SubjectServiceImpl implements SubjectService {
     public boolean delete(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            return jdbcSubjectDao.delete(id);
+            return subjectDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -68,9 +69,9 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<Subject> getAll() throws ServiceException {
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            return jdbcSubjectDao.getAll();
+            return subjectDao.getAll();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

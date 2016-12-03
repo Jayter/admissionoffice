@@ -1,5 +1,7 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.SubjectDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.util.InitHelper;
 import org.junit.Assert;
@@ -17,7 +19,7 @@ import static com.jayton.admissionoffice.data.TestData.*;
  */
 public class JdbcSubjectDaoImplTest {
 
-    private JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+    private SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -29,49 +31,49 @@ public class JdbcSubjectDaoImplTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(SUBJECT1, jdbcSubjectDao.get(SUBJECT1.getId()));
+        Assert.assertEquals(SUBJECT1, subjectDao.get(SUBJECT1.getId()));
 
-        Assert.assertNull(jdbcSubjectDao.get(INCORRECT_ID));
+        Assert.assertNull(subjectDao.get(INCORRECT_ID));
     }
 
     @Test
     public void getAll() throws Exception {
-        Assert.assertEquals(Arrays.asList(SUBJECT1, SUBJECT2, SUBJECT3, SUBJECT4), jdbcSubjectDao.getAll());
+        Assert.assertEquals(Arrays.asList(SUBJECT1, SUBJECT2, SUBJECT3, SUBJECT4), subjectDao.getAll());
     }
 
     @Test
     public void getByName() throws Exception {
-        Assert.assertEquals(SUBJECT2, jdbcSubjectDao.getByName(SUBJECT2.getName()));
+        Assert.assertEquals(SUBJECT2, subjectDao.getByName(SUBJECT2.getName()));
 
-        Assert.assertNull(jdbcSubjectDao.getByName(INCORRECT_STRING));
+        Assert.assertNull(subjectDao.getByName(INCORRECT_STRING));
     }
 
     @Test
     public void add() throws Exception {
-        Assert.assertEquals(NEW_ID, jdbcSubjectDao.add(NEW_SUBJECT));
-        Assert.assertEquals(NEW_SUBJECT, jdbcSubjectDao.getByName(NEW_SUBJECT.getName()));
+        Assert.assertEquals(NEW_ID, subjectDao.add(NEW_SUBJECT));
+        Assert.assertEquals(NEW_SUBJECT, subjectDao.getByName(NEW_SUBJECT.getName()));
 
         //trying to add a subject with name that already exists
         expected.expect(DAOException.class);
-        jdbcSubjectDao.add(DUPLICATED_SUBJECT);
+        subjectDao.add(DUPLICATED_SUBJECT);
     }
 
     @Test
     public void update() throws Exception {
-        jdbcSubjectDao.update(UPDATED_SUBJECT);
-        Assert.assertEquals(UPDATED_SUBJECT, jdbcSubjectDao.get(SUBJECT3.getId()));
+        subjectDao.update(UPDATED_SUBJECT);
+        Assert.assertEquals(UPDATED_SUBJECT, subjectDao.get(SUBJECT3.getId()));
 
         //trying to update a subject with name that already exists
         expected.expect(DAOException.class);
-        jdbcSubjectDao.update(DUPLICATED_SUBJECT);
+        subjectDao.update(DUPLICATED_SUBJECT);
     }
 
     @Test
     public void delete() throws Exception {
-        Assert.assertTrue(jdbcSubjectDao.delete(SUBJECT3.getId()));
-        Assert.assertEquals(Arrays.asList(SUBJECT1, SUBJECT2, SUBJECT4), jdbcSubjectDao.getAll());
+        Assert.assertTrue(subjectDao.delete(SUBJECT3.getId()));
+        Assert.assertEquals(Arrays.asList(SUBJECT1, SUBJECT2, SUBJECT4), subjectDao.getAll());
 
-        Assert.assertFalse(jdbcSubjectDao.delete(INCORRECT_ID));
+        Assert.assertFalse(subjectDao.delete(INCORRECT_ID));
     }
 
 }

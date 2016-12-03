@@ -1,5 +1,7 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
+import com.jayton.admissionoffice.dao.ApplicationDao;
+import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.util.InitHelper;
@@ -19,7 +21,7 @@ import static com.jayton.admissionoffice.data.TestData.*;
  */
 public class JdbcApplicationDaoImplTest {
 
-    private JdbcApplicationDaoImpl jdbcApplicationDao = JdbcApplicationDaoImpl.getInstance();
+    private ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -31,39 +33,39 @@ public class JdbcApplicationDaoImplTest {
 
     @Test
     public void add() throws Exception {
-        Assert.assertEquals(NEW_ID, jdbcApplicationDao.add(NEW_APPLICATION));
+        Assert.assertEquals(NEW_ID, applicationDao.add(NEW_APPLICATION));
 
         expected.expect(DAOException.class);
-        jdbcApplicationDao.add(DUPLICATED_APPLICATION);
+        applicationDao.add(DUPLICATED_APPLICATION);
     }
 
     @Test
     public void update() throws Exception {
-        jdbcApplicationDao.update(APPLICATION2.getId(), Status.APPROVED);
+        applicationDao.update(APPLICATION2.getId(), Status.APPROVED);
 
-        Assert.assertEquals(UPDATED_APPLICATION, jdbcApplicationDao.get(APPLICATION2.getId()));
+        Assert.assertEquals(UPDATED_APPLICATION, applicationDao.get(APPLICATION2.getId()));
     }
 
     @Test
     public void delete() throws Exception {
-        Assert.assertTrue(jdbcApplicationDao.delete(APPLICATION1.getId()));
+        Assert.assertTrue(applicationDao.delete(APPLICATION1.getId()));
 
         Assert.assertEquals(Arrays.asList(APPLICATION3, APPLICATION2),
-                jdbcApplicationDao.getByUser(USER1.getId()));
+                applicationDao.getByUser(USER1.getId()));
 
-        Assert.assertFalse(jdbcApplicationDao.delete(INCORRECT_ID));
+        Assert.assertFalse(applicationDao.delete(INCORRECT_ID));
     }
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(APPLICATION3, jdbcApplicationDao.get(APPLICATION3.getId()));
+        Assert.assertEquals(APPLICATION3, applicationDao.get(APPLICATION3.getId()));
 
-        Assert.assertNull(jdbcApplicationDao.get(INCORRECT_ID));
+        Assert.assertNull(applicationDao.get(INCORRECT_ID));
 
         Assert.assertEquals(Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2),
-                jdbcApplicationDao.getByUser(USER1.getId()));
+                applicationDao.getByUser(USER1.getId()));
 
-        Assert.assertEquals(Collections.emptyList(), jdbcApplicationDao.getByUser(INCORRECT_ID));
+        Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }
 
 }

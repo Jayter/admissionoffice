@@ -22,19 +22,8 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     public static final String SQL_UPDATE = "UPDATE faculties SET name=?, office_phone=?, office_email=?, address=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM faculties WHERE id=?";
 
-    private static JdbcFacultyDaoImpl instance;
-
-    private JdbcFacultyDaoImpl() {
+    JdbcFacultyDaoImpl() {
     }
-
-    public static synchronized JdbcFacultyDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcFacultyDaoImpl();
-        }
-
-        return instance;
-    }
-
 
     @Override
     public Faculty get(Long id) throws DAOException {

@@ -1,5 +1,7 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.InitHelper;
@@ -19,7 +21,8 @@ import static com.jayton.admissionoffice.data.TestData.*;
  * Created by Jayton on 26.11.2016.
  */
 public class JdbcUniversityDaoImplTest {
-    private JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+
+    private UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -31,57 +34,57 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void get() throws Exception {
-        Assert.assertEquals(UNIVERSITY1, jdbcUniversityDao.get(UNIVERSITY1.getId()));
+        Assert.assertEquals(UNIVERSITY1, universityDao.get(UNIVERSITY1.getId()));
 
-        Assert.assertNull(jdbcUniversityDao.get(INCORRECT_ID));
+        Assert.assertNull(universityDao.get(INCORRECT_ID));
     }
 
     @Test
     public void getByCity() throws Exception {
-        List<University> list = jdbcUniversityDao.getByCity(KYIV);
+        List<University> list = universityDao.getByCity(KYIV);
 
         Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
 
         //if call with name that does not exist, receive an empty list, not null
-        Assert.assertEquals(jdbcUniversityDao.getByCity(INCORRECT_STRING), Collections.emptyList());
+        Assert.assertEquals(universityDao.getByCity(INCORRECT_STRING), Collections.emptyList());
     }
 
     @Test
     public void getAll() throws Exception {
-        List<University> all = jdbcUniversityDao.getAll();
+        List<University> all = universityDao.getAll();
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
     }
 
     @Test
     public void add() throws Exception {
-        Assert.assertEquals(NEW_ID, jdbcUniversityDao.add(NEW_UNIVERSITY));
+        Assert.assertEquals(NEW_ID, universityDao.add(NEW_UNIVERSITY));
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY),
-                jdbcUniversityDao.getAll());
+                universityDao.getAll());
 
         expected.expect(DAOException.class);
-        jdbcUniversityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
+        universityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
     }
 
     @Test
     public void update() throws Exception {
-        jdbcUniversityDao.update(UPDATED_UNIVERSITY);
+        universityDao.update(UPDATED_UNIVERSITY);
 
-        Assert.assertEquals(UPDATED_UNIVERSITY, jdbcUniversityDao.get(UNIVERSITY3.getId()));
+        Assert.assertEquals(UPDATED_UNIVERSITY, universityDao.get(UNIVERSITY3.getId()));
 
         //incorrect or nullable id
         expected.expect(DAOException.class);
-        jdbcUniversityDao.update(NEW_UNIVERSITY);
+        universityDao.update(NEW_UNIVERSITY);
     }
 
     @Test
     public void delete() throws Exception {
-        Assert.assertTrue(jdbcUniversityDao.delete(UNIVERSITY3.getId()));
+        Assert.assertTrue(universityDao.delete(UNIVERSITY3.getId()));
 
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), jdbcUniversityDao.getAll());
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getAll());
 
-        Assert.assertFalse(jdbcUniversityDao.delete(INCORRECT_ID));
+        Assert.assertFalse(universityDao.delete(INCORRECT_ID));
     }
 
 }

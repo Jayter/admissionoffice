@@ -1,8 +1,9 @@
 package com.jayton.admissionoffice.service.impl;
 
+import com.jayton.admissionoffice.dao.DirectionDao;
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.SubjectDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.JdbcDirectionDaoImpl;
-import com.jayton.admissionoffice.dao.jdbc.JdbcSubjectDaoImpl;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.DirectionService;
@@ -31,9 +32,9 @@ public class DirectionServiceImpl implements DirectionService {
 
         Direction direction = new Direction(name, averageCoef, countOfStudents, facultyId, subjects);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.add(direction);
+            return directionDao.add(direction);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -43,9 +44,9 @@ public class DirectionServiceImpl implements DirectionService {
     public Direction get(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.get(id);
+            return directionDao.get(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -60,9 +61,9 @@ public class DirectionServiceImpl implements DirectionService {
 
         Direction direction = new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            jdbcDirectionDao.update(direction);
+            directionDao.update(direction);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -72,9 +73,9 @@ public class DirectionServiceImpl implements DirectionService {
     public boolean delete(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.delete(id);
+            return directionDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -82,9 +83,9 @@ public class DirectionServiceImpl implements DirectionService {
 
     @Override
     public List<Direction> getAll() throws ServiceException {
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.getAll();
+            return directionDao.getAll();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -94,9 +95,9 @@ public class DirectionServiceImpl implements DirectionService {
     public List<Direction> getByFaculty(Long facultyId) throws ServiceException {
         ServiceVerifier.verifyId(facultyId);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.getByFaculty(facultyId);
+            return directionDao.getByFaculty(facultyId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -110,9 +111,9 @@ public class DirectionServiceImpl implements DirectionService {
 
         Map<Long, BigDecimal> subjects;
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            subjects = jdbcDirectionDao.getByDirection(direction.getId());
+            subjects = directionDao.getByDirection(direction.getId());
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -120,7 +121,7 @@ public class DirectionServiceImpl implements DirectionService {
         verifySubjectsData(direction.getAverageCoefficient(), subjects);
 
         try {
-            jdbcDirectionDao.addSubject(direction.getId(), subjectId, coef);
+            directionDao.addSubject(direction.getId(), subjectId, coef);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -131,9 +132,9 @@ public class DirectionServiceImpl implements DirectionService {
     public boolean deleteEntranceSubject(Long directionId, Long subjectId) throws ServiceException {
         ServiceVerifier.verifyIds(directionId, subjectId);
 
-        JdbcDirectionDaoImpl jdbcDirectionDao = JdbcDirectionDaoImpl.getInstance();
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return jdbcDirectionDao.deleteSubject(directionId, subjectId);
+            return directionDao.deleteSubject(directionId, subjectId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -149,9 +150,9 @@ public class DirectionServiceImpl implements DirectionService {
         }
 
         Subject compulsory;
-        JdbcSubjectDaoImpl jdbcSubjectDao = JdbcSubjectDaoImpl.getInstance();
+        SubjectDao subjectDao = FactoryProducer.getInstance().getPostgresDaoFactory().getSubjectDao();
         try {
-            compulsory = jdbcSubjectDao.getByName("Українська мова та література");
+            compulsory = subjectDao.getByName("Українська мова та література");
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

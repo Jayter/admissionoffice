@@ -38,16 +38,7 @@ public class JdbcUserDaoImpl implements UserDao {
     public static final String SQL_ADD_CREDENTIALS = "INSERT INTO credentials(login, password) VALUES (?, ?)";
     public static final String SQL_AUTHORIZE = "SELECT is_admin FROM credentials WHERE login=? and password=?";
 
-    private static JdbcUserDaoImpl instance;
-
-    private JdbcUserDaoImpl() {
-    }
-
-    public static synchronized JdbcUserDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcUserDaoImpl();
-        }
-        return instance;
+    JdbcUserDaoImpl() {
     }
 
     @Override

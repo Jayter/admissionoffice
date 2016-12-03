@@ -21,17 +21,7 @@ public class JdbcSubjectDaoImpl implements SubjectDao {
     public static final String SQL_UPDATE = "UPDATE subjects SET name=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM subjects WHERE id=?";
 
-    private static JdbcSubjectDaoImpl instance;
-
-    private JdbcSubjectDaoImpl() {
-    }
-
-    public static synchronized JdbcSubjectDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcSubjectDaoImpl();
-        }
-
-        return instance;
+    JdbcSubjectDaoImpl() {
     }
 
     @Override

@@ -23,16 +23,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     public static final String SQL_UPDATE = "UPDATE applications SET status=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM applications WHERE id=?";
 
-    private static JdbcApplicationDaoImpl instance;
-
-    private JdbcApplicationDaoImpl() {
-    }
-
-    public static JdbcApplicationDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcApplicationDaoImpl();
-        }
-        return instance;
+    JdbcApplicationDaoImpl() {
     }
 
     @Override

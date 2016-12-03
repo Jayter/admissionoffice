@@ -21,17 +21,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     public static final String SQL_UPDATE = "UPDATE universities SET name=?, city=?, address=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM universities WHERE id=?";
 
-    private static JdbcUniversityDaoImpl instance;
-
-    private JdbcUniversityDaoImpl() {
-    }
-
-    public static synchronized JdbcUniversityDaoImpl getInstance() {
-        if(instance == null) {
-            instance = new JdbcUniversityDaoImpl();
-        }
-
-        return instance;
+    JdbcUniversityDaoImpl() {
     }
 
     @Override

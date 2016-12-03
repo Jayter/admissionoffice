@@ -1,7 +1,8 @@
 package com.jayton.admissionoffice.service.impl;
 
+import com.jayton.admissionoffice.dao.FactoryProducer;
+import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.JdbcUniversityDaoImpl;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -20,9 +21,9 @@ public class UniversityServiceImpl implements UniversityService {
 
         University university = new University(name, city, address);
 
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return jdbcUniversityDao.add(university);
+            return universityDao.add(university);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -32,9 +33,9 @@ public class UniversityServiceImpl implements UniversityService {
     public University get(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return jdbcUniversityDao.get(id);
+            return universityDao.get(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -47,9 +48,9 @@ public class UniversityServiceImpl implements UniversityService {
 
         University university = new University(name, city, address);
 
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            jdbcUniversityDao.update(university);
+            universityDao.update(university);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -59,9 +60,9 @@ public class UniversityServiceImpl implements UniversityService {
     public boolean delete(Long id) throws ServiceException {
         ServiceVerifier.verifyId(id);
 
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return jdbcUniversityDao.delete(id);
+            return universityDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -69,9 +70,9 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public List<University> getAll() throws ServiceException {
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return jdbcUniversityDao.getAll();
+            return universityDao.getAll();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -81,9 +82,9 @@ public class UniversityServiceImpl implements UniversityService {
     public List<University> getByCity(String city) throws ServiceException {
         ServiceVerifier.verifyString(city);
 
-        JdbcUniversityDaoImpl jdbcUniversityDao = JdbcUniversityDaoImpl.getInstance();
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return jdbcUniversityDao.getByCity(city);
+            return universityDao.getByCity(city);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
