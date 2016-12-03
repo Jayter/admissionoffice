@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by Jayton on 01.12.2016.
  */
-public interface DirectionService extends BaseService<Direction> {
+public interface DirectionService extends Service<Direction> {
     Long add(String name, BigDecimal averageCoef, int countOfStudents, Long facultyId, Map<Long, BigDecimal> subjects)
             throws ServiceException;
     void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId,

@@ -6,7 +6,7 @@ import com.jayton.admissionoffice.service.exception.ServiceException;
 /**
  * Created by Jayton on 01.12.2016.
  */
-public interface SubjectService extends BaseService<Subject> {
+public interface SubjectService extends Service<Subject> {
     void update(Long id, String name) throws ServiceException;
     Long add(String name) throws ServiceException;
 }

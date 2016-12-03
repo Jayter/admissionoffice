@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Jayton on 01.12.2016.
  */
 public class SubjectServiceImpl implements SubjectService {
-
+    
     @Override
     public Long add(String name) throws ServiceException {
         ServiceVerifier.verifyString(name);

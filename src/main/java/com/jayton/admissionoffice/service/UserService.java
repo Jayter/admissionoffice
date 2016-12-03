@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by Jayton on 02.12.2016.
  */
-public interface UserService extends BaseService<User> {
+public interface UserService extends Service<User> {
     Long add(String name, String lastName, String address, String email, String phoneNumber, LocalDate birthDate,
              BigDecimal averageCoef, String password, Map<Long, BigDecimal> results) throws ServiceException;
     void update(Long id, String name, String lastName, String address, String phoneNumber, LocalDate birthDate,
