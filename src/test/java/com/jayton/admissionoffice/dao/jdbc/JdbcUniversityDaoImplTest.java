@@ -43,7 +43,7 @@ public class JdbcUniversityDaoImplTest {
         Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
 
         //if call with name that does not exist, receive an empty list, not null
-        Assert.assertEquals(jdbcUniversityDao.getByCity(INCORRECT_NAME), Collections.emptyList());
+        Assert.assertEquals(jdbcUniversityDao.getByCity(INCORRECT_STRING), Collections.emptyList());
     }
 
     @Test

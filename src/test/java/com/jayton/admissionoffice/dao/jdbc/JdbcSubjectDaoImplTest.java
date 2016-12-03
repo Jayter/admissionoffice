@@ -43,7 +43,7 @@ public class JdbcSubjectDaoImplTest {
     public void getByName() throws Exception {
         Assert.assertEquals(SUBJECT2, jdbcSubjectDao.getByName(SUBJECT2.getName()));
 
-        Assert.assertNull(jdbcSubjectDao.getByName(INCORRECT_NAME));
+        Assert.assertNull(jdbcSubjectDao.getByName(INCORRECT_STRING));
     }
 
     @Test
