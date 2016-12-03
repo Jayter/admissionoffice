@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.util;
 
-import com.ibatis.common.jdbc.ScriptRunner;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 
 import java.io.BufferedReader;
@@ -47,17 +46,15 @@ public class InitHelper {
 
     private static void executeScript(String path) throws SQLException {
         Connection connection = PoolHelper.getInstance().getDataSource().getConnection();
-
         try {
-            ScriptRunner sr = new ScriptRunner(connection, false, false);
-            //in future replace with logger
-            sr.setLogWriter(null);
+            SqlScriptRunner runner = new SqlScriptRunner(connection, true);
 
             Reader reader = new BufferedReader(
                     new FileReader(path));
 
-            sr.runScript(reader);
+            runner.runScript(reader);
 
+            connection.close();
         } catch (Exception e) {
             System.err.println("Failed to Execute" + path + " The error is " + e.getMessage());
         }
