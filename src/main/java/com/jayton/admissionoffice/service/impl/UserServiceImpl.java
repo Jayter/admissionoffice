@@ -6,6 +6,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.UserService;
+import com.jayton.admissionoffice.service.exception.ServiceAuthorizationException;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
 import com.jayton.admissionoffice.service.util.ServiceVerifier;
@@ -142,7 +143,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(e);
         }
         if(result == AuthorizationResult.NULL) {
-            throw new ServiceVerificationException("Incorrect login or(and) password.");
+            throw new ServiceAuthorizationException("Incorrect login or (and) password.");
         }
 
         return result == AuthorizationResult.ADMIN;

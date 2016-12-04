@@ -46,7 +46,7 @@ public class UniversityServiceImpl implements UniversityService {
         ServiceVerifier.verifyId(id);
         ServiceVerifier.verifyStrings(name, city, address);
 
-        University university = new University(name, city, address);
+        University university = new University(id, name, city, address);
 
         UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
