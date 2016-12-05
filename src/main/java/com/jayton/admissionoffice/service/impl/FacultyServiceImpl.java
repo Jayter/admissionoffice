@@ -50,7 +50,7 @@ public class FacultyServiceImpl implements FacultyService {
         ServiceVerifier.verifyIds(id, universityId);
         ServiceVerifier.verifyStrings(name, officePhone, officeEmail, address);
 
-        Faculty faculty = new Faculty(name, officePhone, officeEmail, address, universityId);
+        Faculty faculty = new Faculty(id, name, officePhone, officeEmail, address, universityId);
 
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
