@@ -27,6 +27,9 @@ public class TestData {
     public static final String KYIV = "Київ";
     public static final String INCORRECT_STRING = "Some dummy value";
 
+    public static final LocalDateTime START_DATE = LocalDateTime.of(2016, 7, 1, 12, 0, 0);
+    public static final LocalDateTime END_DATE = LocalDateTime.of(2016, 7, 21, 12, 0, 0);
+
     public static final Subject SUBJECT1 = new Subject(START_SEQ, "Українська мова та література");
     public static final Subject SUBJECT2 = new Subject(START_SEQ + 1, "Англійська мова");
     public static final Subject SUBJECT3 = new Subject(START_SEQ + 2, "Математика");

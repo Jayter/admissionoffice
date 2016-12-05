@@ -12,6 +12,7 @@ public class PostgresDaoFactory implements DaoFactory {
     private final JdbcUniversityDaoImpl jdbcUniversityDao = new JdbcUniversityDaoImpl();
     private final JdbcSubjectDaoImpl jdbcSubjectDao = new JdbcSubjectDaoImpl();
     private final JdbcUserDaoImpl jdbcUserDao = new JdbcUserDaoImpl();
+    private final JdbcUtilDaoImpl jdbcUtilDao = new JdbcUtilDaoImpl();
 
     @Override
     public ApplicationDao getApplicationDao() {
@@ -41,5 +42,10 @@ public class PostgresDaoFactory implements DaoFactory {
     @Override
     public UserDao getUserDao() {
         return jdbcUserDao;
+    }
+
+    @Override
+    public UtilDao getUtilDao() {
+        return jdbcUtilDao;
     }
 }

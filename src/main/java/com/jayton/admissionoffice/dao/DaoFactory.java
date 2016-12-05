@@ -10,4 +10,5 @@ public interface DaoFactory {
     UniversityDao getUniversityDao();
     SubjectDao getSubjectDao();
     UserDao getUserDao();
+    UtilDao getUtilDao();
 }
