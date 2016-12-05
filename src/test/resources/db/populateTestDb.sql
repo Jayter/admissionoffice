@@ -10,6 +10,9 @@ DELETE FROM universities;
 
 ALTER SEQUENCE global_seq RESTART WITH 10000;
 
+INSERT INTO session_info (year, session_start, session_end) VALUES
+  ('2016', '2016-7-01 12:00:00', '2016-7-21 12:00:00');
+
 INSERT INTO credentials (login, password, is_admin) VALUES
   ('admin', 'a1D2m3I4n4I2s2Ch1E', TRUE),
   ('dimasik', 'dim_dim', FALSE),

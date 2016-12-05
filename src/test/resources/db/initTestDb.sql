@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS session_info;
 DROP TABLE IF EXISTS exam_results;
 DROP TABLE IF EXISTS entrance_subjects;
 DROP TABLE IF EXISTS credentials;
@@ -10,6 +11,12 @@ DROP TABLE IF EXISTS universities;
 DROP SEQUENCE IF EXISTS global_seq;
 
 CREATE SEQUENCE global_seq START 10000;
+
+CREATE TABLE session_info (
+  year INTEGER UNIQUE PRIMARY KEY,
+  session_start TIMESTAMP NOT NULL,
+  session_end TIMESTAMP NOT NULL
+);
 
 CREATE TABLE credentials (
   login TEXT UNIQUE NOT NULL,
