@@ -108,7 +108,7 @@ public class TestData {
             scale(new BigDecimal(0.1)), 35, INCORRECT_ID, Collections.emptyMap());
     public static final Direction UPDATED_DIRECTION = new Direction(START_SEQ + 15, "Комп`ютерні науки",
             scale(new BigDecimal(0.1)), 35, FACULTY1.getId(), new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4)));
-            put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.2)));}});
+            put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
 
     public static final Application APPLICATION1 = new Application(START_SEQ + 19, USER1.getId(), DIRECTION2.getId(),
             LocalDateTime.of(2016, 11, 29, 12, 15, 55), Status.APPROVED);

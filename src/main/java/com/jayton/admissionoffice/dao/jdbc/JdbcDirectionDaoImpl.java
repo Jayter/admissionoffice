@@ -311,14 +311,11 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     @Override
     public void update(Direction direction) throws DAOException {
         PreparedStatement updateDirection = null;
-        PreparedStatement updateSubject = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             updateDirection = connection.prepareStatement(SQL_UPDATE);
-            updateSubject = connection.prepareStatement(SQL_UPDATE_SUBJECT);
-            connection.setAutoCommit(false);
 
             updateDirection.setString(1, direction.getName());
             updateDirection.setBigDecimal(2, scale(direction.getAverageCoefficient(), 2));
@@ -330,34 +327,12 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 throw new DAOException("Failed to update direction.");
             }
 
-            for(Map.Entry<Long, BigDecimal> pair: direction.getEntranceSubjects().entrySet()) {
-                updateSubject.setBigDecimal(1, scale(pair.getValue(), 2));
-                updateSubject.setLong(2, direction.getId());
-                updateSubject.setLong(3, pair.getKey());
-                updateSubject.addBatch();
-            }
-
-            int[] affectedRows = updateSubject.executeBatch();
-            for (int row : affectedRows) {
-                if (row == 0) {
-                    throw new DAOException("Failed to save entrance subjects.");
-                }
-            }
-            connection.commit();
-
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to update direction.", e);
         } finally {
             if(updateDirection != null) {
                 try {
                     updateDirection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(updateSubject != null) {
-                try {
-                    updateSubject.close();
                 } catch (SQLException e) {
                     //will log it
                 }

@@ -20,6 +20,13 @@ public class Direction extends NamedEntity {
         this.entranceSubjects = entranceSubjects;
     }
 
+    public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents, Long facultyId) {
+        super(id, name);
+        this.averageCoefficient = averageCoefficient;
+        this.countOfStudents = countOfStudents;
+        this.facultyId = facultyId;
+    }
+
     public Direction(Long id, String name, BigDecimal averageCoefficient, int countOfStudents, Long facultyId,
                      Map<Long, BigDecimal> entranceSubjects) {
         super(id, name);
