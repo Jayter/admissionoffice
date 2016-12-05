@@ -52,7 +52,7 @@ public class ServiceVerifier {
         if(Objects.isNull(coef)) {
             throw new ServiceVerificationException(String.format(NULLABLE, "Coefficient"));
         }
-        if(coef.compareTo(BigDecimal.ZERO) <= 0 || coef.compareTo(BigDecimal.ONE) <= 0) {
+        if(coef.compareTo(BigDecimal.ZERO) <= 0 || coef.compareTo(BigDecimal.ONE) >= 0) {
             throw new ServiceVerificationException(String.format(INCORRECT_COEF, coef.doubleValue()));
         }
     }
