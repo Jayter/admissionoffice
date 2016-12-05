@@ -16,6 +16,6 @@ public interface DirectionService extends Service<Direction> {
     void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId)
             throws ServiceException;
     List<Direction> getByFaculty(Long facultyId) throws ServiceException;
-    void addEntranceSubject(Direction direction, Long subjectId, BigDecimal coef) throws ServiceException;
+    void addEntranceSubject(Long directionId, Long subjectId, BigDecimal coef) throws ServiceException;
     boolean deleteEntranceSubject(Long directionId, Long subjectId) throws ServiceException;
 }

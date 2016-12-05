@@ -103,21 +103,21 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public synchronized void addEntranceSubject(Direction direction, Long subjectId, BigDecimal coef)
+    public synchronized void addEntranceSubject(Long directionId, Long subjectId, BigDecimal coef)
             throws ServiceException {
         ServiceVerifier.verifyIds(subjectId);
         ServiceVerifier.verifyCoef(coef);
 
-        Map<Long, BigDecimal> subjects;
+        Direction direction;
 
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            subjects = directionDao.getByDirection(direction.getId());
+            direction = directionDao.get(directionId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        subjects.put(subjectId, coef);
-        verifySubjectsData(direction.getAverageCoefficient(), subjects);
+        direction.getEntranceSubjects().put(subjectId, coef);
+        verifySubjectsData(direction.getAverageCoefficient(), direction.getEntranceSubjects());
 
         try {
             directionDao.addSubject(direction.getId(), subjectId, coef);
