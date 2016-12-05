@@ -53,13 +53,12 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId,
-                       Map<Long, BigDecimal> subjects) throws ServiceException {
+    public void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId) throws ServiceException {
         ServiceVerifier.verifyIds(id, facultyId);
         verifyDirectionData(name, countOfStudents);
-        verifySubjectsData(averageCoef, subjects);
+        ServiceVerifier.verifyCoef(averageCoef);
 
-        Direction direction = new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects);
+        Direction direction = new Direction(id, name, averageCoef, countOfStudents, facultyId);
 
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
@@ -167,9 +166,8 @@ public class DirectionServiceImpl implements DirectionService {
             ServiceVerifier.verifyId(pair.getKey());
             ServiceVerifier.verifyCoef(pair.getValue());
         }
-
         BigDecimal sum = averageCoef;
-        subjects.values().stream().reduce(sum, BigDecimal::add);
+        sum = subjects.values().stream().reduce(sum, BigDecimal::add);
         if(sum.compareTo(BigDecimal.ONE) != 0) {
             throw new ServiceVerificationException("Sum of coefficients must be strictly equal to 1.");
         }

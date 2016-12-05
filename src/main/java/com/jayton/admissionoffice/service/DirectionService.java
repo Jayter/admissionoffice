@@ -13,8 +13,8 @@ import java.util.Map;
 public interface DirectionService extends Service<Direction> {
     Long add(String name, BigDecimal averageCoef, int countOfStudents, Long facultyId, Map<Long, BigDecimal> subjects)
             throws ServiceException;
-    void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId,
-                Map<Long, BigDecimal> subjects) throws ServiceException;
+    void update(Long id, String name, BigDecimal averageCoef, int countOfStudents, Long facultyId)
+            throws ServiceException;
     List<Direction> getByFaculty(Long facultyId) throws ServiceException;
     void addEntranceSubject(Direction direction, Long subjectId, BigDecimal coef) throws ServiceException;
     boolean deleteEntranceSubject(Long directionId, Long subjectId) throws ServiceException;
