@@ -120,9 +120,9 @@ public class TestData {
     public static final Application APPLICATION3 = new Application(START_SEQ + 21, USER1.getId(), DIRECTION3.getId(),
             LocalDateTime.of(2016, 11, 30, 18, 1, 45), Status.REJECTED, scale(new BigDecimal(178.2)));
     public static final Application NEW_APPLICATION = new Application(USER1.getId(), DIRECTION4.getId(),
-            scale(new BigDecimal(123.4)));
+            LocalDateTime.now(), scale(new BigDecimal(123.4)));
     public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId(),
-            scale(new BigDecimal(192.3)));
+            LocalDateTime.now(), scale(new BigDecimal(192.3)));
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
             LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED, scale(new BigDecimal(180.5)));
 

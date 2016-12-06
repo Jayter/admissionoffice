@@ -14,9 +14,10 @@ public class Application {
     private BigDecimal mark;
     private Status status;
 
-    public Application(Long userId, Long directionId, BigDecimal mark) {
+    public Application(Long userId, Long directionId, LocalDateTime creationTime, BigDecimal mark) {
         this.userId = userId;
         this.directionId = directionId;
+        this.creationTime = creationTime;
         this.mark = mark;
     }
 

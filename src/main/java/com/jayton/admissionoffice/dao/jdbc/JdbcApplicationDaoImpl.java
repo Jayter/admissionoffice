@@ -23,8 +23,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     public static final String SQL_GET_BY_DIRECTION = "SELECT * FROM applications WHERE direction_id=?" +
             " ORDER BY created_time ASC";
     public static final String SQL_GET = "SELECT * FROM applications WHERE id=?";
-    public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, mark)" +
-            " VALUES (?, ?, ?)";
+    public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, created_time, mark)" +
+            " VALUES (?, ?, ?, ?)";
     public static final String SQL_UPDATE = "UPDATE applications SET status=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM applications WHERE id=?";
 
@@ -42,7 +42,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             statement.setLong(1, application.getUserId());
             statement.setLong(2, application.getDirectionId());
-            statement.setBigDecimal(3, scale(application.getMark(), 2));
+            statement.setTimestamp(3, Timestamp.valueOf(application.getCreationTime()));
+            statement.setBigDecimal(4, scale(application.getMark(), 2));
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
