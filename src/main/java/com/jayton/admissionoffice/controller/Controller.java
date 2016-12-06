@@ -14,7 +14,7 @@ import java.io.IOException;
 public class Controller extends HttpServlet {
 
     private static final String COMMAND = "command";
-    private static final String ERROR_PAGE = "WEB_INF/jsp/404.jsp";
+    private static final String ERROR_PAGE = "/WEB_INF/jsp/404.jsp";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
