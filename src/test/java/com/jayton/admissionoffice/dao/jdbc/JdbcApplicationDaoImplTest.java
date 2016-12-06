@@ -65,6 +65,8 @@ public class JdbcApplicationDaoImplTest {
         Assert.assertEquals(Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2),
                 applicationDao.getByUser(USER1.getId()));
 
+        Assert.assertEquals(Collections.singletonList(APPLICATION2), applicationDao.getByDirection(DIRECTION1.getId()));
+
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }
 

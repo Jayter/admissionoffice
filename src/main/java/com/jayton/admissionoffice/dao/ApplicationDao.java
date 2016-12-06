@@ -15,4 +15,5 @@ public interface ApplicationDao {
     void update(Long id, Status status) throws DAOException;
     boolean delete(Long id) throws DAOException;
     List<Application> getByUser(Long userId) throws DAOException;
+    List<Application> getByDirection(Long directionId) throws DAOException;
 }

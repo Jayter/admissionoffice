@@ -19,7 +19,9 @@ import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
  */
 public class JdbcApplicationDaoImpl implements ApplicationDao {
 
-    public static final String GET_BY_USER = "SELECT * FROM applications WHERE user_id=? ORDER BY created_time ASC";
+    public static final String SQL_GET_BY_USER = "SELECT * FROM applications WHERE user_id=? ORDER BY created_time ASC";
+    public static final String SQL_GET_BY_DIRECTION = "SELECT * FROM applications WHERE direction_id=?" +
+            " ORDER BY created_time ASC";
     public static final String SQL_GET = "SELECT * FROM applications WHERE id=?";
     public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, mark)" +
             " VALUES (?, ?, ?)";
@@ -194,7 +196,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(GET_BY_USER);
+            statement = connection.prepareStatement(SQL_GET_BY_USER);
             statement.setLong(1, userId);
 
             List<Application> applications = new ArrayList<>();
@@ -203,6 +205,51 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 while(rs.next()) {
                     Long id = rs.getLong("id");
                     Long directionId = rs.getLong("direction_id");
+                    LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
+                    String status = rs.getString("status");
+                    BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
+
+                    applications.add(new Application(id, userId, directionId, created, Status.getByValue(status), mark));
+                }
+            }
+            return applications;
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to get applications.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<Application> getByDirection(Long directionId) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_GET_BY_DIRECTION);
+            statement.setLong(1, directionId);
+
+            List<Application> applications = new ArrayList<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while(rs.next()) {
+                    Long id = rs.getLong("id");
+                    Long userId = rs.getLong("user_id");
                     LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                     String status = rs.getString("status");
                     BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
