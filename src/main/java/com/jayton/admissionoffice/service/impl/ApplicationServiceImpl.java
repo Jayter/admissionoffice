@@ -21,7 +21,8 @@ import java.util.Map;
  */
 public class ApplicationServiceImpl implements ApplicationService {
     @Override
-    public Long add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
+    public synchronized Long add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
+        ServiceVerifier.verifyObject(user);
         ServiceVerifier.verifyId(directionId);
         verifyApplicationDate(applied);
 
@@ -32,6 +33,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             Direction direction = directionDao.get(directionId);
             BigDecimal mark = getMark(user, direction);
             Application application = new Application(user.getId(), directionId, applied, mark);
+            List<Application> retrieved = applicationDao.getByUser(user.getId());
+            verifyApplications(retrieved, directionId);
 
             return applicationDao.add(application);
         } catch (DAOException e) {
@@ -97,6 +100,18 @@ public class ApplicationServiceImpl implements ApplicationService {
             return applicationDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        }
+    }
+
+    private void verifyApplications(List<Application> applications, Long directionId) throws ServiceException {
+        if(applications.size() >= 5) {
+            throw new ServiceVerificationException("You can apply only for 5 directions.");
+        }
+
+        for(Application restoredApp : applications) {
+            if(restoredApp.getDirectionId().equals(directionId)) {
+                throw new ServiceVerificationException("Application already exists.");
+            }
         }
     }
 
