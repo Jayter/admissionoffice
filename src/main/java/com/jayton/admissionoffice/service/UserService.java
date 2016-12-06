@@ -18,4 +18,5 @@ public interface UserService extends Service<User> {
     void addResult(Long userId, Long subjectId, BigDecimal mark) throws ServiceException;
     boolean deleteResult(Long userId, Long subjectId) throws ServiceException;
     boolean authorize(String login, String password) throws ServiceException;
+    User getByEmail(String email) throws ServiceException;
 }

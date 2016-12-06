@@ -56,6 +56,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByEmail(String email) throws ServiceException {
+        ServiceVerifier.verifyEmail(email);
+
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
+        try {
+            return userDao.getByEmail(email);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public void update(Long id, String name, String lastName, String address, String phoneNumber, LocalDate birthDate,
                        BigDecimal averageCoef, Map<Long, BigDecimal> results) throws ServiceException {
         ServiceVerifier.verifyId(id);
