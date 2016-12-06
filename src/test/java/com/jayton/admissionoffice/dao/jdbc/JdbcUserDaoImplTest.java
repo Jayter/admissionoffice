@@ -43,6 +43,9 @@ public class JdbcUserDaoImplTest {
         Assert.assertEquals(USER1, retrieved);
         Assert.assertNull(retrieved.getPassword());
 
+        User retrievedByEmail = userDao.getByEmail(USER1.getEmail());
+        Assert.assertEquals(USER1, retrievedByEmail);
+
         Assert.assertNull(userDao.get(INCORRECT_ID));
     }
 

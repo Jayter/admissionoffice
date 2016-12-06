@@ -22,6 +22,7 @@ import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
 public class JdbcUserDaoImpl implements UserDao {
 
     public static final String SQL_GET = "SELECT * FROM users WHERE id=?";
+    public static final String SQL_GET_BY_EMAIL = "SELECT * FROM users WHERE email=?";
     public static final String SQL_GET_ALL = "SELECT * FROM users";
     public static final String SQL_ADD = "INSERT INTO users (name, last_name, address, email, phone_number, birth_date, average_mark)" +
             " VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -132,7 +133,6 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
-
     @Override
     public User get(Long id) throws DAOException {
         PreparedStatement getUserSt = null;
@@ -169,7 +169,62 @@ public class JdbcUserDaoImpl implements UserDao {
                 return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
             }
         } catch (SQLException e) {
-            throw new DAOException("Failed to load enrollee.", e);
+            throw new DAOException("Failed to load user.", e);
+        } finally {
+            if(getUserSt != null) {
+                try {
+                    getUserSt.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public User getByEmail(String email) throws DAOException {
+        PreparedStatement getUserSt = null;
+        PreparedStatement getResultsSt = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            getUserSt = connection.prepareStatement(SQL_GET_BY_EMAIL);
+            getResultsSt = connection.prepareStatement(SQL_GET_RESULTS);
+            getUserSt.setString(1, email);
+
+            try(ResultSet userRs = getUserSt.executeQuery()) {
+                if(!userRs.next()) {
+                    return null;
+                }
+
+                Long id = userRs.getLong("id");
+                String name = userRs.getString("name");
+                String secondName = userRs.getString("last_name");
+                String address = userRs.getString("address");
+                String phoneNumber = userRs.getString("phone_number");
+                LocalDate birthDate = userRs.getDate("birth_date").toLocalDate();
+                BigDecimal averageMark = scale(userRs.getBigDecimal("average_mark"), 2);
+
+                getResultsSt.setLong(1, id);
+
+                Map<Long, BigDecimal> results = new HashMap<>();
+                try(ResultSet resultRs = getResultsSt.executeQuery()) {
+                    while (resultRs.next()) {
+                        results.put(resultRs.getLong("subject_id"), scale(resultRs.getBigDecimal("mark"), 2));
+                    }
+                }
+                return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load user.", e);
         } finally {
             if(getUserSt != null) {
                 try {

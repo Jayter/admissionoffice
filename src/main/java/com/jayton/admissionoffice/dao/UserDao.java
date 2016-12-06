@@ -14,6 +14,7 @@ import java.util.Map;
 public interface UserDao extends BaseDao<User> {
     void addResult(Long userId, Long subjectId, BigDecimal mark) throws DAOException;
     boolean deleteResult(Long userId, Long subjectId) throws DAOException;
+    User getByEmail(String email) throws DAOException;
     Map<Long, BigDecimal> getByUser(Long userId) throws DAOException;
     AuthorizationResult authorize(String login, String password) throws DAOException;
     int checkEmail(String email) throws DAOException;
