@@ -13,6 +13,7 @@ public class ServiceFactory {
     private final SubjectService subjectService = new SubjectServiceImpl();
     private final UniversityService universityService = new UniversityServiceImpl();
     private final UserService userService = new UserServiceImpl();
+    private final ApplicationService applicationService = new ApplicationServiceImpl();
 
     private ServiceFactory() {
     }
@@ -39,5 +40,9 @@ public class ServiceFactory {
 
     public UserService getUserService() {
         return userService;
+    }
+
+    public ApplicationService getApplicationService() {
+        return applicationService;
     }
 }

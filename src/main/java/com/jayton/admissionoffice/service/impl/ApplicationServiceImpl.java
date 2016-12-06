@@ -21,19 +21,17 @@ import java.util.Map;
  */
 public class ApplicationServiceImpl implements ApplicationService {
     @Override
-    public Long add(Long userId, Long directionId, LocalDateTime applied) throws ServiceException {
-        ServiceVerifier.verifyIds(userId, directionId);
+    public Long add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
+        ServiceVerifier.verifyId(directionId);
         verifyApplicationDate(applied);
 
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
 
         try {
-            User user = userDao.get(userId);
             Direction direction = directionDao.get(directionId);
             BigDecimal mark = getMark(user, direction);
-            Application application = new Application(userId, directionId, applied, mark);
+            Application application = new Application(user.getId(), directionId, applied, mark);
 
             return applicationDao.add(application);
         } catch (DAOException e) {
