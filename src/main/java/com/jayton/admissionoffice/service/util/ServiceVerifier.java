@@ -21,6 +21,12 @@ public class ServiceVerifier {
 
     private ServiceVerifier(){}
 
+    public static void verifyObject(Object o) throws ServiceVerificationException {
+        if(o == null) {
+            throw new ServiceVerificationException(String.format(NULLABLE, "Param"));
+        }
+    }
+
     public static void verifyPassword(String password) throws ServiceVerificationException {
         if(Objects.isNull(password)) {
             throw new ServiceVerificationException(String.format(NULLABLE, "Password"));
