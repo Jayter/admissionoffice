@@ -1,5 +1,6 @@
 package com.jayton.admissionoffice.model.to;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -10,19 +11,22 @@ public class Application {
     private Long userId;
     private Long directionId;
     private LocalDateTime creationTime;
+    private BigDecimal mark;
     private Status status;
 
-    public Application(Long userId, Long directionId) {
+    public Application(Long userId, Long directionId, BigDecimal mark) {
         this.userId = userId;
         this.directionId = directionId;
+        this.mark = mark;
     }
 
-    public Application(Long id, Long userId, Long directionId, LocalDateTime created, Status status) {
+    public Application(Long id, Long userId, Long directionId, LocalDateTime created, Status status, BigDecimal mark) {
         this.id = id;
         this.userId = userId;
         this.directionId = directionId;
         this.creationTime = created;
         this.status = status;
+        this.mark = mark;
     }
 
     public Long getId() {
@@ -45,6 +49,8 @@ public class Application {
         return status;
     }
 
+    public BigDecimal getMark() {return mark;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,6 +62,7 @@ public class Application {
         if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
         if (directionId != null ? !directionId.equals(that.directionId) : that.directionId != null) return false;
         if (creationTime != null ? !creationTime.equals(that.creationTime) : that.creationTime != null) return false;
+        if (mark != null ? !(mark.compareTo(that.mark) == 0) : that.mark != null) return false;
         return status == that.status;
 
     }
@@ -66,6 +73,7 @@ public class Application {
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (directionId != null ? directionId.hashCode() : 0);
         result = 31 * result + (creationTime != null ? creationTime.hashCode() : 0);
+        result = 31 * result + (mark != null ? mark.intValue() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }

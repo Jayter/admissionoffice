@@ -114,15 +114,17 @@ public class TestData {
             put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
 
     public static final Application APPLICATION1 = new Application(START_SEQ + 19, USER1.getId(), DIRECTION2.getId(),
-            LocalDateTime.of(2016, 11, 29, 12, 15, 55), Status.APPROVED);
+            LocalDateTime.of(2016, 11, 29, 12, 15, 55), Status.APPROVED, scale(new BigDecimal(192.3)));
     public static final Application APPLICATION2 = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
-            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.CREATED);
+            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.CREATED, scale(new BigDecimal(180.5)));
     public static final Application APPLICATION3 = new Application(START_SEQ + 21, USER1.getId(), DIRECTION3.getId(),
-            LocalDateTime.of(2016, 11, 30, 18, 1, 45), Status.REJECTED);
-    public static final Application NEW_APPLICATION = new Application(USER1.getId(), DIRECTION4.getId());
-    public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId());
+            LocalDateTime.of(2016, 11, 30, 18, 1, 45), Status.REJECTED, scale(new BigDecimal(178.2)));
+    public static final Application NEW_APPLICATION = new Application(USER1.getId(), DIRECTION4.getId(),
+            scale(new BigDecimal(123.4)));
+    public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId(),
+            scale(new BigDecimal(192.3)));
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
-            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED);
+            LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED, scale(new BigDecimal(180.5)));
 
     public static final String ADMIN_LOGIN = "admin";
     public static final String ADMIN_PASSWORD = "a1D2m3I4n4I2s2Ch1E";

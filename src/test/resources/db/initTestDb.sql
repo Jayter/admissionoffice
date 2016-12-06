@@ -32,7 +32,7 @@ CREATE TABLE users (
   email VARCHAR UNIQUE NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date TIMESTAMP NOT NULL,
-  average_mark REAL
+  average_mark REAL NOT NULL
 );
 
 CREATE TABLE subjects (
@@ -43,7 +43,7 @@ CREATE TABLE subjects (
 CREATE TABLE exam_results (
   user_id BIGINT,
   subject_id BIGINT,
-  mark REAL,
+  mark REAL NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
@@ -68,7 +68,7 @@ CREATE TABLE faculties (
 CREATE TABLE directions (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL,
-  average_coef REAl,
+  average_coef REAl NOT NULL,
   count_Of_Students SMALLINT,
   faculty_id BIGINT NOT NULL,
   FOREIGN KEY (faculty_id) REFERENCES faculties(id) ON DELETE CASCADE
@@ -77,7 +77,7 @@ CREATE TABLE directions (
 CREATE TABLE entrance_subjects (
   direction_id BIGINT NOT NULL,
   subject_id BIGINT NOT NULL,
-  coefficient REAL,
+  coefficient REAL NOT NULL,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );
@@ -88,6 +88,7 @@ CREATE TABLE applications (
   direction_id BIGINT UNIQUE NOT NULL,
   created_time TIMESTAMP NOT NULL DEFAULT now(),
   status VARCHAR NOT NULL DEFAULT 'Created',
+  mark REAL NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE
 );

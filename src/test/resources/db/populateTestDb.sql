@@ -69,7 +69,7 @@ INSERT INTO entrance_subjects (direction_id, subject_id, coefficient) VALUES
   (10015, 10001, 0.3),
   (10015, 10002, 0.25);
 
-INSERT INTO applications (user_id, direction_id, created_time, status) VALUES
-  (10004, 10015, '2016-11-29 12:15:55', 'Approved'),
-  (10004, 10014, '2016-11-30 20:49:30', 'Created'),
-  (10004, 10016, '2016-11-30 18:01:45', 'Rejected');
+INSERT INTO applications (user_id, direction_id, created_time, status, mark) VALUES
+  (10004, 10015, '2016-11-29 12:15:55', 'Approved', 192.3),
+  (10004, 10014, '2016-11-30 20:49:30', 'Created', 180.5),
+  (10004, 10016, '2016-11-30 18:01:45', 'Rejected', 178.2);

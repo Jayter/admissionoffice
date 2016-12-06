@@ -6,10 +6,13 @@ import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
 
 /**
  * Created by Jayton on 30.11.2016.
@@ -18,8 +21,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     public static final String GET_BY_USER = "SELECT * FROM applications WHERE user_id=? ORDER BY created_time ASC";
     public static final String SQL_GET = "SELECT * FROM applications WHERE id=?";
-    public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id)" +
-            " VALUES (?, ?)";
+    public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, mark)" +
+            " VALUES (?, ?, ?)";
     public static final String SQL_UPDATE = "UPDATE applications SET status=? WHERE id=?";
     public static final String SQL_DELETE = "DELETE FROM applications WHERE id=?";
 
@@ -37,6 +40,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             statement.setLong(1, application.getUserId());
             statement.setLong(2, application.getDirectionId());
+            statement.setBigDecimal(3, scale(application.getMark(), 2));
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
@@ -159,8 +163,9 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 Long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                 String status = rs.getString("status");
+                BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
 
-                return new Application(id, userId, directionId, created, Status.getByValue(status));
+                return new Application(id, userId, directionId, created, Status.getByValue(status), mark);
             }
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to get applications.", e);
@@ -200,8 +205,9 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                     Long directionId = rs.getLong("direction_id");
                     LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                     String status = rs.getString("status");
+                    BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
 
-                    applications.add(new Application(id, userId, directionId, created, Status.getByValue(status)));
+                    applications.add(new Application(id, userId, directionId, created, Status.getByValue(status), mark));
                 }
             }
             return applications;
