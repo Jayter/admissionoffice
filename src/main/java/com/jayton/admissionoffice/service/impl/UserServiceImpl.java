@@ -187,8 +187,8 @@ public class UserServiceImpl implements UserService {
         if(Objects.isNull(results)) {
             throw new ServiceVerificationException(String.format(NULLABLE, "Results"));
         }
-        if(results.size() < 3 || results.size() > 4) {
-            throw new ServiceVerificationException(String.format("Count of results must be either 3 or 4, but was: %d.",
+        if(results.size() > 4) {
+            throw new ServiceVerificationException(String.format("Count of results must be less than 4, but was: %d.",
                     results.size()));
         }
         if(results.keySet().size() != results.values().size()) {
