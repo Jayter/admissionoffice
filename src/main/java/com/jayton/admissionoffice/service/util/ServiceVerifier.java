@@ -50,7 +50,7 @@ public class ServiceVerifier {
         if(Objects.isNull(result)) {
             throw new ServiceVerificationException(String.format(NULLABLE, "Exam result"));
         }
-        if(result.compareTo(BigDecimal.valueOf(100)) <= 0 && result.compareTo(BigDecimal.valueOf(200)) > 0) {
+        if(result.compareTo(BigDecimal.valueOf(100)) <= 0 || result.compareTo(BigDecimal.valueOf(200)) > 0) {
             throw new ServiceVerificationException(String.format(INCORRECT_RESULT, result.doubleValue()));
         }
     }
