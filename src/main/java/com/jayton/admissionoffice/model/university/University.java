@@ -6,6 +6,9 @@ public class University extends NamedEntity {
     private String city;
     private String address;
 
+    public University() {
+    }
+
     public University(String name, String city, String address) {
         super(name);
         this.city = city;

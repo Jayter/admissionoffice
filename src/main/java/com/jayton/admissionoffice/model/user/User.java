@@ -16,8 +16,11 @@ public class User extends NamedEntity {
     private BigDecimal averageMark;
     private Map<Long, BigDecimal> results;
 
+    public User() {
+    }
+
     public User(String name, String lastName, String address, String email, String password,
-                String phoneNumber, LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
+                String phoneNumber, LocalDate birthDate, BigDecimal averageMark) {
         super(name);
         this.lastName = lastName;
         this.address = address;
@@ -26,19 +29,16 @@ public class User extends NamedEntity {
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.averageMark = averageMark;
-        this.results = results;
     }
 
     public User(Long id, String name, String lastName, String address, String phoneNumber,
-                LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
+                LocalDate birthDate, BigDecimal averageMark) {
         super(id, name);
         this.lastName = lastName;
         this.address = address;
-        this.email = email;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.averageMark = averageMark;
-        this.results = results;
     }
 
     public User(Long id, String name, String lastName, String address, String email, String phoneNumber,
@@ -96,7 +96,6 @@ public class User extends NamedEntity {
         if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
         if (address != null ? !address.equals(user.address) : user.address != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) return false;
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
         if (averageMark != null ? !(averageMark.compareTo(user.averageMark) == 0) : user.averageMark != null) return false;
@@ -109,10 +108,9 @@ public class User extends NamedEntity {
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
-        result = 31 * result + (averageMark != null ? averageMark.hashCode() : 0);
+        result = 31 * result + (averageMark != null ? averageMark.intValue() : 0);
         result = 31 * result + (results != null ? results.hashCode() : 0);
         return result;
     }

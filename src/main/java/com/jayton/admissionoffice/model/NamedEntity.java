@@ -6,6 +6,9 @@ public class NamedEntity implements Serializable {
     private Long id;
     protected String name;
 
+    public NamedEntity() {
+        //used only in commands
+    }
     public NamedEntity(String name) {
         this.name = name;
     }

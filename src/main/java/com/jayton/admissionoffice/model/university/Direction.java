@@ -11,6 +11,9 @@ public class Direction extends NamedEntity {
     private Long facultyId;
     private Map<Long, BigDecimal> entranceSubjects;
 
+    public Direction() {
+    }
+
     public Direction(String name, BigDecimal averageCoefficient, int countOfStudents, Long facultyId,
                      Map<Long, BigDecimal> entranceSubjects) {
         super(name);
