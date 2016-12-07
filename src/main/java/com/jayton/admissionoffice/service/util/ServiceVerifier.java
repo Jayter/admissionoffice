@@ -12,6 +12,7 @@ import java.util.Objects;
 public class ServiceVerifier {
 
     public static final String INCORRECT_COEF = "Coefficient must be less than 1 and greater than 0, but was: %f.";
+    public static final String INCORRECT_MARK = "Mark must be less than 12 and greater than 0, but was: %f.";
     public static final String INCORRECT_RESULT = "Exam result must be less than 200 and greater than 100, but was: %f.";
     public static final String INCORRECT_ID = "Id must be positive, but was: %d.";
     public static final String INCORRECT_PASSWORD = "Password must be longer than 5 symbols..";
@@ -51,6 +52,15 @@ public class ServiceVerifier {
         }
         if(result.compareTo(BigDecimal.valueOf(100)) <= 0 && result.compareTo(BigDecimal.valueOf(200)) > 0) {
             throw new ServiceVerificationException(String.format(INCORRECT_RESULT, result.doubleValue()));
+        }
+    }
+
+    public static void verifyMark(BigDecimal mark) throws ServiceVerificationException {
+        if(Objects.isNull(mark)) {
+            throw new ServiceVerificationException(String.format(NULLABLE, "Mark"));
+        }
+        if(mark.compareTo(BigDecimal.ZERO) <= 0 || mark.compareTo(BigDecimal.valueOf(12.0)) >= 0) {
+            throw new ServiceVerificationException(String.format(INCORRECT_MARK, mark.doubleValue()));
         }
     }
 
