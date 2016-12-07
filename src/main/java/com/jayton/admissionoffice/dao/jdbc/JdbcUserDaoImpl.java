@@ -46,14 +46,12 @@ public class JdbcUserDaoImpl implements UserDao {
     public Long add(User user) throws DAOException {
         PreparedStatement addUserSt = null;
         PreparedStatement addCredentialsSt = null;
-        PreparedStatement addResultsSt = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             addUserSt = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
             addCredentialsSt = connection.prepareStatement(SQL_ADD_CREDENTIALS);
-            addResultsSt = connection.prepareStatement(SQL_ADD_RESULT);
             connection.setAutoCommit(false);
 
             addUserSt.setString(1, user.getName());
@@ -74,30 +72,15 @@ public class JdbcUserDaoImpl implements UserDao {
                 throw new DAOException("Failed to save user.");
             }
 
-            Long id;
+            connection.commit();
+
             try (ResultSet rs = addUserSt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    id =  rs.getLong(1);
+                    return rs.getLong(1);
                 } else {
                     throw new DAOException("Failed to get user`s id.");
                 }
             }
-
-            for(Map.Entry<Long, BigDecimal> results: user.getResults().entrySet()) {
-                addResultsSt.setLong(1, id);
-                addResultsSt.setLong(2, results.getKey());
-                addResultsSt.setBigDecimal(3, scale(results.getValue(), 2));
-                addResultsSt.addBatch();
-            }
-            int[] affectedRows = addResultsSt.executeBatch();
-
-            for(int row: affectedRows) {
-                if(row == 0) {
-                    throw new DAOException("Failed to save user`s subject.");
-                }
-            }
-            connection.commit();
-            return id;
 
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to save user.", e);
@@ -112,13 +95,6 @@ public class JdbcUserDaoImpl implements UserDao {
             if(addCredentialsSt != null) {
                 try {
                     addCredentialsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(addResultsSt != null) {
-                try {
-                    addResultsSt.close();
                 } catch (SQLException e) {
                     //will log it
                 }
@@ -313,14 +289,11 @@ public class JdbcUserDaoImpl implements UserDao {
     @Override
     public void update(User user) throws DAOException {
         PreparedStatement updateUserSt = null;
-        PreparedStatement updateResultSt = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             updateUserSt = connection.prepareStatement(SQL_UPDATE);
-            updateResultSt = connection.prepareStatement(SQL_UPDATE_RESULT);
-            connection.setAutoCommit(false);
 
             updateUserSt.setString(1, user.getName());
             updateUserSt.setString(2, user.getLastName());
@@ -335,28 +308,11 @@ public class JdbcUserDaoImpl implements UserDao {
                 throw new DAOException("Failed to update user.");
             }
 
-            for(Map.Entry<Long, BigDecimal> results: user.getResults().entrySet()) {
-                updateResultSt.setBigDecimal(1, scale(results.getValue(), 2));
-                updateResultSt.setLong(2, user.getId());
-                updateResultSt.setLong(3, results.getKey());
-                updateResultSt.addBatch();
-            }
-            updateResultSt.executeBatch();
-
-            connection.commit();
-
         } catch (SQLException | NullPointerException e) {throw new DAOException("Failed to update user.", e);
         } finally {
             if(updateUserSt != null) {
                 try {
                     updateUserSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(updateResultSt != null) {
-                try {
-                    updateResultSt.close();
                 } catch (SQLException e) {
                     //will log it
                 }

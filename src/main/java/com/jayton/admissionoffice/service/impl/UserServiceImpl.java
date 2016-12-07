@@ -25,15 +25,14 @@ import static com.jayton.admissionoffice.service.util.ServiceVerifier.NULLABLE;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public synchronized Long add(String name, String lastName, String address, String email, String phoneNumber, LocalDate birthDate,
-                    BigDecimal averageCoef, String password, Map<Long, BigDecimal> results) throws ServiceException {
+    public synchronized Long add(String name, String lastName, String address, String email, String password,
+                                 String phoneNumber, LocalDate birthDate, BigDecimal averageMark) throws ServiceException {
         ServiceVerifier.verifyEmail(email);
         checkEmail(email);
         ServiceVerifier.verifyPassword(email);
-        verifyUser(name, lastName, address, phoneNumber, birthDate, averageCoef);
-        verifyResults(results);
+        verifyUser(name, lastName, address, phoneNumber, birthDate, averageMark);
 
-        User user = new User(name, lastName, address, email, password, phoneNumber, birthDate, averageCoef, results);
+        User user = new User(name, lastName, address, email, password, phoneNumber, birthDate, averageMark);
 
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
@@ -69,12 +68,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(Long id, String name, String lastName, String address, String phoneNumber, LocalDate birthDate,
-                       BigDecimal averageCoef, Map<Long, BigDecimal> results) throws ServiceException {
+                       BigDecimal averageMark) throws ServiceException {
         ServiceVerifier.verifyId(id);
-        verifyUser(name, lastName, address, phoneNumber, birthDate, averageCoef);
-        verifyResults(results);
+        verifyUser(name, lastName, address, phoneNumber, birthDate, averageMark);
 
-        User user = new User(id, name, lastName, address, phoneNumber, birthDate, averageCoef, results);
+        User user = new User(id, name, lastName, address, phoneNumber, birthDate, averageMark);
 
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
@@ -176,13 +174,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private void verifyUser(String name, String lastName, String address, String phoneNumber,
-                            LocalDate birthDate, BigDecimal averageCoef) throws ServiceException {
+                            LocalDate birthDate, BigDecimal averageMark) throws ServiceException {
         ServiceVerifier.verifyStrings(name, lastName, address, phoneNumber);
         if(Objects.isNull(birthDate)) {
             throw new ServiceVerificationException(String.format(NULLABLE, "Date"));
         }
 
-        ServiceVerifier.verifyCoef(averageCoef);
+        ServiceVerifier.verifyMark(averageMark);
     }
 
     private void verifyResults(Map<Long, BigDecimal> results) throws ServiceException {

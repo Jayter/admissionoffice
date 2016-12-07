@@ -69,7 +69,7 @@ public class JdbcUserDaoImplTest {
     @Test
     public void update() throws Exception {
         userDao.update(UPDATED_USER);
-        Assert.assertEquals(UPDATED_USER, userDao.get(USER2.getId()));
+        Assert.assertEquals(UPDATED_USER, userDao.get(USER3.getId()));
 
         //updating user that was not saved in db
         expected.expect(DAOException.class);

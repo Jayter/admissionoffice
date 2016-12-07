@@ -50,19 +50,13 @@ public class TestData {
             "pan_max@gmail.com", "+380952235616", LocalDate.of(2001, Month.JANUARY, 2), BigDecimal.valueOf(8.7),
             Collections.emptyMap());
     public static final User NEW_USER = new User("Анна", "Мохир", "Боярка, Шевченка 45", "anna.moch@yandex.ru",
-            "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
-            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
-                put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
+            "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0));
     public static final User NEW_USER_WITHOUT_CREDENTIALS = new User(NEW_ID, "Анна", "Мохир", "Боярка, Шевченка 45",
-            "anna.moch@yandex.ru", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0),
-            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
-                put(SUBJECT3.getId(), scale(new BigDecimal(181.5))); put(SUBJECT4.getId(), scale(new BigDecimal(173.6)));}});
-    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null,
-            Collections.emptyMap());
-    public static final User UPDATED_USER = new User(START_SEQ + 5, "Катерина", "Руденко", "Дніпропетровськ, Орловська 13",
-            "kate2000@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), BigDecimal.valueOf(9.8),
-            new HashMap(){{put(SUBJECT1.getId(), scale(new BigDecimal(190.6))); put(SUBJECT2.getId(), scale(new BigDecimal(184.22)));
-                put(SUBJECT3.getId(), scale(new BigDecimal(182.5)));}});
+            "anna.moch@yandex.ru", "+380991329782", LocalDate.of(1990, Month.JULY, 7), BigDecimal.valueOf(12.0), new HashMap());
+    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", null, null, null, null, null);
+    public static final User UPDATED_USER = new User(START_SEQ + 6, "Катерина", "Руденко", "Дніпропетровськ, Орловська 13",
+            "pan_max@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), BigDecimal.valueOf(9.8),
+            new HashMap());
 
     public static final University UNIVERSITY1 = new University(START_SEQ + 7,
             "Київський національний університет ім. Тараса Шевченка", "Київ", "вул. Володимирська, 60");
