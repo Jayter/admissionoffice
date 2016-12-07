@@ -156,7 +156,7 @@ public class DirectionServiceImpl implements DirectionService {
             throw new ServiceException(e);
         }
         if(!subjects.containsKey(compulsory.getId())) {
-            throw new ServiceVerificationException("Subjects does not contain compulsory.");
+            throw new ServiceVerificationException("Subjects does not contain a compulsory one.");
         }
         if(subjects.keySet().size() != subjects.values().size()) {
             throw new ServiceVerificationException("Subjects must be different.");
