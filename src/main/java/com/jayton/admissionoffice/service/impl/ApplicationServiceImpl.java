@@ -60,7 +60,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
-            return applicationDao.getByDirection(userId);
+            return applicationDao.getByUser(userId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
