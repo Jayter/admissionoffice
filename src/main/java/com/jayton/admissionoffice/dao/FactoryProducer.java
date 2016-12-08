@@ -6,7 +6,7 @@ import com.jayton.admissionoffice.dao.jdbc.PostgresDaoFactory;
  * Created by Jayton on 03.12.2016.
  */
 public class FactoryProducer {
-    private PostgresDaoFactory postgresDaoFactory;
+    private final PostgresDaoFactory postgresDaoFactory = new PostgresDaoFactory();
 
     private static final FactoryProducer instance = new FactoryProducer();
 
@@ -18,9 +18,6 @@ public class FactoryProducer {
     }
 
     public synchronized PostgresDaoFactory getPostgresDaoFactory() {
-        if(postgresDaoFactory == null) {
-            postgresDaoFactory = new PostgresDaoFactory();
-        }
         return postgresDaoFactory;
     }
 }
