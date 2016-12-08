@@ -14,5 +14,4 @@ public interface DirectionDao extends BaseDao<Direction> {
     List<Direction> getByFaculty(Long facultyId) throws DAOException;
     boolean deleteSubject(Long directionId, Long subjectId) throws DAOException;
     void addSubject(Long directionId, Long subjectId, BigDecimal coef) throws DAOException;
-    Map<Long, BigDecimal> getByDirection(Long directionId) throws DAOException;
 }

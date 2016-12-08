@@ -7,10 +7,7 @@ import com.jayton.admissionoffice.model.university.Direction;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
 
@@ -19,20 +16,7 @@ import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
  */
 public class JdbcDirectionDaoImpl implements DirectionDao {
 
-    public static final String SQL_GET = "SELECT * FROM directions WHERE id=?";
-    public static final String SQL_GET_BY_FACULTY = "SELECT * FROM directions WHERE faculty_id=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM directions";
-    public static final String SQL_ADD = "INSERT INTO directions (name, average_coef, count_of_students, faculty_id)" +
-            " VALUES (?, ?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE directions SET name=?, average_coef=?, count_of_students=? WHERE id=?";
-    public static final String SQL_DELETE = "DELETE FROM directions WHERE id=?";
-
-    public static final String SQL_ADD_SUBJECT = "INSERT INTO entrance_subjects (direction_id, subject_id, coefficient)" +
-            " VALUES (?, ?, ?)";
-    public static final String SQL_UPDATE_SUBJECT = "UPDATE entrance_subjects SET coefficient=?" +
-            "WHERE direction_id=? AND subject_id=?";
-    public static final String SQL_GET_SUBJECTS = "SELECT subject_id, coefficient FROM entrance_subjects WHERE direction_id=?";
-    public static final String SQL_DELETE_SUBJECT = "DELETE FROM entrance_subjects WHERE direction_id=? AND subject_id=?";
+    private final ResourceBundle directionQueries = ResourceBundle.getBundle("db.queries.directionQueries");
 
     JdbcDirectionDaoImpl() {
     }
@@ -44,8 +28,9 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            addDirectionSt = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
-            addSubjectSt = connection.prepareStatement(SQL_ADD_SUBJECT);
+            addDirectionSt = connection.prepareStatement(directionQueries.getString("direction.add"),
+                    Statement.RETURN_GENERATED_KEYS);
+            addSubjectSt = connection.prepareStatement(directionQueries.getString("subject.add"));
             connection.setAutoCommit(false);
 
             addDirectionSt.setString(1, direction.getName());
@@ -118,8 +103,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getDirectionSt = connection.prepareStatement(SQL_GET);
-            getSubjectsSt = connection.prepareStatement(SQL_GET_SUBJECTS);
+            getDirectionSt = connection.prepareStatement(directionQueries.getString("direction.get"));
+            getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
             connection.setAutoCommit(false);
 
             getDirectionSt.setLong(1, id);
@@ -181,8 +166,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getByFacultySt = connection.prepareStatement(SQL_GET_BY_FACULTY);
-            getSubjectsSt = connection.prepareStatement(SQL_GET_SUBJECTS);
+            getByFacultySt = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
+            getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
             connection.setAutoCommit(false);
 
             getByFacultySt.setLong(1, facultyId);
@@ -249,8 +234,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getByFacultySt = connection.prepareStatement(SQL_GET_ALL);
-            getSubjectsSt = connection.prepareStatement(SQL_GET_SUBJECTS);
+            getByFacultySt = connection.prepareStatement(directionQueries.getString("direction.get.all"));
+            getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
             connection.setAutoCommit(false);
 
             List<Direction> directions = new ArrayList<>();
@@ -315,7 +300,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            updateDirection = connection.prepareStatement(SQL_UPDATE);
+            updateDirection = connection.prepareStatement(directionQueries.getString("direction.update"));
 
             updateDirection.setString(1, direction.getName());
             updateDirection.setBigDecimal(2, scale(direction.getAverageCoefficient(), 2));
@@ -354,7 +339,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
+            statement = connection.prepareStatement(directionQueries.getString("direction.delete"));
 
             statement.setLong(1, id);
 
@@ -388,7 +373,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD_SUBJECT);
+            statement = connection.prepareStatement(directionQueries.getString("subject.add"));
 
             statement.setLong(1, directionId);
             statement.setLong(2, subjectId);
@@ -426,7 +411,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE_SUBJECT);
+            statement = connection.prepareStatement(directionQueries.getString("subject.delete"));
 
             statement.setLong(1, directionId);
             statement.setLong(2, subjectId);
@@ -454,45 +439,4 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         }
     }
 
-    @Override
-    public Map<Long, BigDecimal> getByDirection(Long directionId) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_SUBJECTS);
-            statement.setLong(1, directionId);
-
-            Map<Long, BigDecimal> results = new HashMap<>();
-
-            try(ResultSet rs = statement.executeQuery()) {
-                while(rs.next()) {
-                    Long subjectId = rs.getLong("subject_id");
-                    BigDecimal coef = scale(rs.getBigDecimal("coefficient"), 2);
-
-                    results.put(subjectId, coef);
-                }
-            }
-            return results;
-
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to get subjects.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
 }

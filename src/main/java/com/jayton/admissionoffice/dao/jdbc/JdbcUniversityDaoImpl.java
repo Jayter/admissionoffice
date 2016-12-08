@@ -8,18 +8,14 @@ import com.jayton.admissionoffice.model.university.University;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Jayton on 26.11.2016.
  */
 public class JdbcUniversityDaoImpl implements UniversityDao {
 
-    public static final String SQL_GET = "SELECT * FROM universities WHERE id=?";
-    public static final String SQL_GET_BY_CITY = "SELECT * FROM universities WHERE city=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM universities";
-    public static final String SQL_ADD = "INSERT INTO universities (name, city, address) VALUES (?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE universities SET name=?, city=?, address=? WHERE id=?";
-    public static final String SQL_DELETE = "DELETE FROM universities WHERE id=?";
+    private final ResourceBundle universityQueries = ResourceBundle.getBundle("db.queries.universityQueries");
 
     JdbcUniversityDaoImpl() {
     }
@@ -31,7 +27,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET);
+            statement = connection.prepareStatement(universityQueries.getString("university.get"));
             statement.setLong(1, id);
 
             try(ResultSet rs = statement.executeQuery()) {
@@ -73,7 +69,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_BY_CITY);
+            statement = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             statement.setString(1, city);
 
             List<University> universities = new ArrayList<>();
@@ -117,7 +113,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_ALL);
+            statement = connection.prepareStatement(universityQueries.getString("university.get.all"));
 
             List<University> universities = new ArrayList<>();
 
@@ -160,7 +156,8 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(universityQueries.getString("university.add"),
+                    Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
@@ -206,7 +203,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
+            statement = connection.prepareStatement(universityQueries.getString("university.update"));
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
@@ -246,7 +243,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
+            statement = connection.prepareStatement(universityQueries.getString("university.delete"));
 
             statement.setLong(1, id);
 

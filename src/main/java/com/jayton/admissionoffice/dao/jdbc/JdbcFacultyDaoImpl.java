@@ -8,19 +8,14 @@ import com.jayton.admissionoffice.model.university.Faculty;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Jayton on 27.11.2016.
  */
 public class JdbcFacultyDaoImpl implements FacultyDao {
 
-    public static final String SQL_GET = "SELECT * FROM faculties WHERE id=?";
-    public static final String SQL_GET_BY_UNIVERSITY = "SELECT * FROM faculties WHERE university_id=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM faculties";
-    public static final String SQL_ADD = "INSERT INTO faculties (name, office_phone, office_email, address, university_id)" +
-            " VALUES (?, ?, ?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE faculties SET name=?, office_phone=?, office_email=?, address=? WHERE id=?";
-    public static final String SQL_DELETE = "DELETE FROM faculties WHERE id=?";
+    private final ResourceBundle facultyQueries = ResourceBundle.getBundle("db.queries.facultyQueries");
 
     JdbcFacultyDaoImpl() {
     }
@@ -32,7 +27,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.get"));
             statement.setLong(1, id);
 
             try(ResultSet rs = statement.executeQuery()) {
@@ -75,7 +70,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_BY_UNIVERSITY);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
             statement.setLong(1, universityId);
 
             List<Faculty> faculties = new ArrayList<>();
@@ -120,7 +115,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_ALL);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all"));
 
             List<Faculty> faculties = new ArrayList<>();
 
@@ -165,7 +160,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.add"), Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, faculty.getName());
             statement.setString(2, faculty.getOfficePhone());
@@ -213,7 +208,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.update"));
 
             statement.setString(1, faculty.getName());
             statement.setString(2, faculty.getOfficePhone());
@@ -254,7 +249,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.delete"));
 
             statement.setLong(1, id);
 

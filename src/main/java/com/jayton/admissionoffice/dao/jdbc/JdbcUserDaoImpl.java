@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
 
@@ -21,27 +22,12 @@ import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
  */
 public class JdbcUserDaoImpl implements UserDao {
 
-    public static final String SQL_GET = "SELECT * FROM users WHERE id=?";
-    public static final String SQL_GET_BY_EMAIL = "SELECT * FROM users WHERE email=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM users";
-    public static final String SQL_ADD = "INSERT INTO users (name, last_name, address, email, phone_number, birth_date, average_mark)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE users SET name=?, last_name=?, address=?," +
-            " phone_number=?, birth_date=?, average_mark=? WHERE id=?";
-    public static final String SQL_DELETE = "DELETE FROM users WHERE id=?";
-    public static final String SQL_GET_COUNT = "SELECT COUNT(*) FROM users WHERE email=?";
-
-    public static final String SQL_GET_RESULTS = "SELECT subject_id, mark FROM exam_results WHERE user_id=?";
-    public static final String SQL_ADD_RESULT = "INSERT INTO exam_results (user_id, subject_id, mark) values (?, ?, ?)";
-    public static final String SQL_UPDATE_RESULT = "UPDATE exam_results SET mark=? WHERE user_id=? AND subject_id=?";
-    public static final String SQL_DELETE_RESULT = "DELETE FROM exam_results WHERE user_id=? AND subject_id=?";
-
-    public static final String SQL_ADD_CREDENTIALS = "INSERT INTO credentials(login, password) VALUES (?, ?)";
-    public static final String SQL_AUTHORIZE = "SELECT is_admin FROM credentials WHERE login=? and password=?";
+    private final ResourceBundle userQueries = ResourceBundle.getBundle("db.queries.userQueries");
 
     JdbcUserDaoImpl() {
     }
 
+    //return User instead of Long
     @Override
     public Long add(User user) throws DAOException {
         PreparedStatement addUserSt = null;
@@ -50,8 +36,8 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            addUserSt = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
-            addCredentialsSt = connection.prepareStatement(SQL_ADD_CREDENTIALS);
+            addUserSt = connection.prepareStatement(userQueries.getString("user.add"), Statement.RETURN_GENERATED_KEYS);
+            addCredentialsSt = connection.prepareStatement(userQueries.getString("credentials.add"));
             connection.setAutoCommit(false);
 
             addUserSt.setString(1, user.getName());
@@ -71,7 +57,7 @@ public class JdbcUserDaoImpl implements UserDao {
             if(affectedUsers == 0 || affectedCredentials == 0) {
                 throw new DAOException("Failed to save user.");
             }
-
+            //add rollback and log
             connection.commit();
 
             try (ResultSet rs = addUserSt.getGeneratedKeys()) {
@@ -83,6 +69,7 @@ public class JdbcUserDaoImpl implements UserDao {
             }
 
         } catch (SQLException | NullPointerException e) {
+            //add rollback
             throw new DAOException("Failed to save user.", e);
         } finally {
             if(addUserSt != null) {
@@ -109,6 +96,7 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
+    //replace by join
     @Override
     public User get(Long id) throws DAOException {
         PreparedStatement getUserSt = null;
@@ -117,9 +105,10 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUserSt = connection.prepareStatement(SQL_GET);
-            getResultsSt = connection.prepareStatement(SQL_GET_RESULTS);
+            getUserSt = connection.prepareStatement(userQueries.getString("user.get"));
+            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
             getUserSt.setLong(1, id);
+            //connection.setAuto///false
 
             try(ResultSet userRs = getUserSt.executeQuery()) {
                 if(!userRs.next()) {
@@ -142,6 +131,8 @@ public class JdbcUserDaoImpl implements UserDao {
                         results.put(resultRs.getLong("subject_id"), scale(resultRs.getBigDecimal("mark"), 2));
                     }
                 }
+
+                connection.commit();
                 return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
             }
         } catch (SQLException e) {
@@ -172,10 +163,11 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUserSt = connection.prepareStatement(SQL_GET_BY_EMAIL);
-            getResultsSt = connection.prepareStatement(SQL_GET_RESULTS);
+            getUserSt = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
+            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
             getUserSt.setString(1, email);
 
+            //replace to first try//finally
             try(ResultSet userRs = getUserSt.executeQuery()) {
                 if(!userRs.next()) {
                     return null;
@@ -219,6 +211,8 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
+    //offset count
+    //add paging
     @Override
     public List<User> getAll() throws DAOException {
         PreparedStatement getUsersSt = null;
@@ -227,8 +221,8 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUsersSt = connection.prepareStatement(SQL_GET_ALL);
-            getResultsSt = connection.prepareStatement(SQL_GET_RESULTS);
+            getUsersSt = connection.prepareStatement(userQueries.getString("user.get.all"));
+            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
             connection.setAutoCommit(false);
 
             List<User> users = new ArrayList<>();
@@ -293,7 +287,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            updateUserSt = connection.prepareStatement(SQL_UPDATE);
+            updateUserSt = connection.prepareStatement(userQueries.getString("user.update"));
 
             updateUserSt.setString(1, user.getName());
             updateUserSt.setString(2, user.getLastName());
@@ -327,20 +321,22 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
+    //create utildao
     @Override
     public boolean delete(Long id) throws DAOException {
+        //UtilDao.delet(id, SQL_DELETE);
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
+            statement = connection.prepareStatement(userQueries.getString("user.delete"));
 
             statement.setLong(1, id);
 
             int affectedRows = statement.executeUpdate();
             return affectedRows != 0;
-
+            //get rid of null-pointer verification
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to delete enrollee.", e);
         } finally {
@@ -349,6 +345,7 @@ public class JdbcUserDaoImpl implements UserDao {
                     statement.close();
                 } catch (SQLException e) {
                     //will log it
+                    //if use logger
                 }
             }
             if(connection != null) {
@@ -368,7 +365,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD_RESULT);
+            statement = connection.prepareStatement(userQueries.getString("result.add"));
 
             statement.setLong(1, userId);
             statement.setLong(2, subjectId);
@@ -406,7 +403,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_AUTHORIZE);
+            statement = connection.prepareStatement(userQueries.getString("user.authorize"));
 
             statement.setString(1, login);
             statement.setString(2, password);
@@ -419,7 +416,7 @@ public class JdbcUserDaoImpl implements UserDao {
                     return AuthorizationResult.USER;
                 }
                 else {
-                    return AuthorizationResult.NULL;
+                    return AuthorizationResult.ABSENT;
                 }
             }
 
@@ -450,7 +447,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_RESULTS);
+            statement = connection.prepareStatement(userQueries.getString("result.get.all"));
             statement.setLong(1, userId);
 
             Map<Long, BigDecimal> results = new HashMap<>();
@@ -492,7 +489,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE_RESULT);
+            statement = connection.prepareStatement(userQueries.getString("result.delete"));
 
             statement.setLong(1, userId);
             statement.setLong(2, subjectId);
@@ -527,7 +524,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_COUNT);
+            statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));
 
             statement.setString(1, email);
 

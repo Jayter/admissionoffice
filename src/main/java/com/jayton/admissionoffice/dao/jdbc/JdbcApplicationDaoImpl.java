@@ -11,6 +11,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
 
@@ -19,15 +20,7 @@ import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
  */
 public class JdbcApplicationDaoImpl implements ApplicationDao {
 
-    public static final String SQL_GET_BY_USER = "SELECT * FROM applications WHERE user_id=? ORDER BY created_time ASC";
-    public static final String SQL_GET_BY_DIRECTION = "SELECT * FROM applications WHERE direction_id=?" +
-            " ORDER BY created_time ASC";
-    public static final String SQL_GET = "SELECT * FROM applications WHERE id=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM applications ORDER BY user_id ASC, created_time ASC";
-    public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, created_time, mark)" +
-            " VALUES (?, ?, ?, ?)";
-    public static final String SQL_UPDATE = "UPDATE applications SET status=? WHERE id=?";
-    public static final String SQL_DELETE = "DELETE FROM applications WHERE id=?";
+    private final ResourceBundle applicationQueries = ResourceBundle.getBundle("db.queries.applicationQueries");
 
     JdbcApplicationDaoImpl() {
     }
@@ -39,7 +32,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(applicationQueries.getString("application.add"),
+                    Statement.RETURN_GENERATED_KEYS);
 
             statement.setLong(1, application.getUserId());
             statement.setLong(2, application.getDirectionId());
@@ -80,82 +74,13 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public void update(Long id, Status status) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
-
-            statement.setInt(1, status.ordinal());
-            statement.setLong(2, id);
-
-            int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to update application");
-            }
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to get application.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean delete(Long id) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
-            statement.setLong(1, id);
-
-            int affectedRows = statement.executeUpdate();
-
-            return affectedRows != 0;
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to delete application.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
     public Application get(Long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET);
+            statement = connection.prepareStatement(applicationQueries.getString("application.get"));
             statement.setLong(1, id);
 
             try(ResultSet rs = statement.executeQuery()) {
@@ -192,13 +117,82 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
+    public void update(Long id, Status status) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(applicationQueries.getString("application.update"));
+
+            statement.setInt(1, status.ordinal());
+            statement.setLong(2, id);
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
+                throw new DAOException("Failed to update application");
+            }
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to get application.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(applicationQueries.getString("application.delete"));
+            statement.setLong(1, id);
+
+            int affectedRows = statement.executeUpdate();
+
+            return affectedRows != 0;
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to delete application.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
+    @Override
     public List<Application> getByUser(Long userId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_BY_USER);
+            statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_user"));
             statement.setLong(1, userId);
 
             List<Application> applications = new ArrayList<>();
@@ -243,7 +237,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_BY_DIRECTION);
+            statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
             statement.setLong(1, directionId);
 
             List<Application> applications = new ArrayList<>();
@@ -288,7 +282,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_ALL);
+            statement = connection.prepareStatement(applicationQueries.getString("application.get.all"));
 
             List<Application> applications = new ArrayList<>();
 
@@ -325,5 +319,4 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             }
         }
     }
-
 }

@@ -6,18 +6,18 @@ import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.model.NamedEntity;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Jayton on 06.12.2016.
  */
 public class JdbcUtilDaoImpl implements UtilDao {
-    public static final String SQL_GET_SESSION_DATE = "SELECT * FROM session_info WHERE year=?";
-    public static final String SQL_GET_ALL = "SELECT * FROM subjects";
+
+    private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
 
     @Override
     public List<LocalDateTime> getSessionDate(Integer currentYear) throws DAOException {
@@ -26,7 +26,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_SESSION_DATE);
+            statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"));
 
             statement.setInt(1, currentYear);
 
@@ -69,7 +69,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(SQL_GET_ALL);
+            statement = connection.prepareStatement(utilQueries.getString("subject.get.all"));
 
             List<NamedEntity> subjects = new ArrayList<>();
 
