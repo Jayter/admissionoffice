@@ -13,9 +13,12 @@ public class User extends NamedEntity {
     private String password;
     private String phoneNumber;
     private LocalDate birthDate;
+    //округлить до инта(байта)
     private BigDecimal averageMark;
+    //округлить до инта(байта)
     private Map<Long, BigDecimal> results;
 
+    //убрать
     public User() {
     }
 

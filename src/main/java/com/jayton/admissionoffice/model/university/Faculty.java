@@ -8,9 +8,6 @@ public class Faculty extends NamedEntity {
     private String officeAddress;
     private Long universityId;
 
-    public Faculty() {
-    }
-
     public Faculty(String name, String officePhone, String officeEmail, String officeAddress, Long universityId) {
         super(name);
         this.officePhone = officePhone;
