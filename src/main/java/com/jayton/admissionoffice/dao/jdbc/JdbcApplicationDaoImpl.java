@@ -23,6 +23,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     public static final String SQL_GET_BY_DIRECTION = "SELECT * FROM applications WHERE direction_id=?" +
             " ORDER BY created_time ASC";
     public static final String SQL_GET = "SELECT * FROM applications WHERE id=?";
+    public static final String SQL_GET_ALL = "SELECT * FROM applications ORDER BY user_id ASC, created_time ASC";
     public static final String SQL_ADD = "INSERT INTO applications (user_id, direction_id, created_time, mark)" +
             " VALUES (?, ?, ?, ?)";
     public static final String SQL_UPDATE = "UPDATE applications SET status=? WHERE id=?";
@@ -87,7 +88,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
 
-            statement.setString(1, status.getValue());
+            statement.setInt(1, status.ordinal());
             statement.setLong(2, id);
 
             int affectedRows = statement.executeUpdate();
@@ -165,10 +166,10 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 Long userId = rs.getLong("user_id");
                 Long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
-                String status = rs.getString("status");
+                Integer status = rs.getInt("status");
                 BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
 
-                return new Application(id, userId, directionId, created, Status.getByValue(status), mark);
+                return new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark);
             }
         } catch (SQLException | NullPointerException e) {
             throw new DAOException("Failed to get applications.", e);
@@ -207,10 +208,10 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                     Long id = rs.getLong("id");
                     Long directionId = rs.getLong("direction_id");
                     LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
-                    String status = rs.getString("status");
+                    Integer status = rs.getInt("status");
                     BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
 
-                    applications.add(new Application(id, userId, directionId, created, Status.getByValue(status), mark));
+                    applications.add(new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark));
                 }
             }
             return applications;
@@ -252,10 +253,10 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                     Long id = rs.getLong("id");
                     Long userId = rs.getLong("user_id");
                     LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
-                    String status = rs.getString("status");
+                    Integer status = rs.getInt("status");
                     BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
 
-                    applications.add(new Application(id, userId, directionId, created, Status.getByValue(status), mark));
+                    applications.add(new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark));
                 }
             }
             return applications;
@@ -279,4 +280,50 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             }
         }
     }
+
+    @Override
+    public List<Application> getAll() throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(SQL_GET_ALL);
+
+            List<Application> applications = new ArrayList<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while(rs.next()) {
+                    Long id = rs.getLong("id");
+                    Long userId = rs.getLong("user_id");
+                    Long directionId = rs.getLong("direction_id");
+                    LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
+                    Integer status = rs.getInt("status");
+                    BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
+
+                    applications.add(new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark));
+                }
+            }
+            return applications;
+
+        } catch (SQLException | NullPointerException e) {
+            throw new DAOException("Failed to get applications.", e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    //will log it
+                }
+            }
+        }
+    }
+
 }

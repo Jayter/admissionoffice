@@ -4,29 +4,17 @@ package com.jayton.admissionoffice.model.to;
  * Created by Jayton on 30.11.2016.
  */
 public enum Status {
-    CREATED("Created"),
-    APPROVED("Approved"),
-    REJECTED("Rejected");
-    private String value;
+    CREATED,
+    APPROVED;
 
-    Status(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public static Status getByValue(String s) {
-        if("Created".equals(s)) {
-            return CREATED;
+    public static Status getByOrdinal(int key) {
+        switch (key) {
+            case 0:
+                return CREATED;
+            case 1:
+                return APPROVED;
+            default:
+                throw new IllegalArgumentException("There is no status available by key " + key);
         }
-        if("Approved".equals(s)) {
-            return APPROVED;
-        }
-        if("Rejected".equals(s)) {
-            return REJECTED;
-        }
-        throw new IllegalArgumentException("There is no status available by key " + s);
     }
 }

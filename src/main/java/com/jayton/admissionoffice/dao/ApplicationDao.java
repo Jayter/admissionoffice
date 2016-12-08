@@ -16,4 +16,5 @@ public interface ApplicationDao {
     boolean delete(Long id) throws DAOException;
     List<Application> getByUser(Long userId) throws DAOException;
     List<Application> getByDirection(Long directionId) throws DAOException;
+    List<Application> getAll() throws DAOException;
 }

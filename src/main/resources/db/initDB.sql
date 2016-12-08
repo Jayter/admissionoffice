@@ -87,7 +87,7 @@ CREATE TABLE applications (
   user_id BIGINT NOT NULL,
   direction_id BIGINT UNIQUE NOT NULL,
   created_time TIMESTAMP NOT NULL DEFAULT now(),
-  status VARCHAR NOT NULL DEFAULT 'Created',
+  status BIT NOT NULL DEFAULT 0,
   mark REAL NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE
