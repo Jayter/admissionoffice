@@ -2,7 +2,6 @@ package com.jayton.admissionoffice.model.user;
 
 import com.jayton.admissionoffice.model.NamedEntity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -13,17 +12,11 @@ public class User extends NamedEntity {
     private String password;
     private String phoneNumber;
     private LocalDate birthDate;
-    //округлить до инта(байта)
-    private BigDecimal averageMark;
-    //округлить до инта(байта)
-    private Map<Long, BigDecimal> results;
-
-    //убрать
-    public User() {
-    }
+    private Byte averageMark;
+    private Map<Long, Short> results;
 
     public User(String name, String lastName, String address, String email, String password,
-                String phoneNumber, LocalDate birthDate, BigDecimal averageMark) {
+                String phoneNumber, LocalDate birthDate, Byte averageMark) {
         super(name);
         this.lastName = lastName;
         this.address = address;
@@ -35,7 +28,7 @@ public class User extends NamedEntity {
     }
 
     public User(Long id, String name, String lastName, String address, String phoneNumber,
-                LocalDate birthDate, BigDecimal averageMark) {
+                LocalDate birthDate, Byte averageMark) {
         super(id, name);
         this.lastName = lastName;
         this.address = address;
@@ -45,7 +38,7 @@ public class User extends NamedEntity {
     }
 
     public User(Long id, String name, String lastName, String address, String email, String phoneNumber,
-                LocalDate birthDate, BigDecimal averageMark, Map<Long, BigDecimal> results) {
+                LocalDate birthDate, Byte averageMark, Map<Long, Short> results) {
         super(id, name);
         this.lastName = lastName;
         this.address = address;
@@ -56,7 +49,7 @@ public class User extends NamedEntity {
         this.results = results;
     }
 
-    public BigDecimal getAverageMark() {
+    public Byte getAverageMark() {
         return averageMark;
     }
 
@@ -84,7 +77,7 @@ public class User extends NamedEntity {
         return birthDate;
     }
 
-    public Map<Long, BigDecimal> getResults() {
+    public Map<Long, Short> getResults() {
         return results;
     }
 
@@ -101,7 +94,7 @@ public class User extends NamedEntity {
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) return false;
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
-        if (averageMark != null ? !(averageMark.compareTo(user.averageMark) == 0) : user.averageMark != null) return false;
+        if (averageMark != null ? !(averageMark.equals(user.averageMark)) : user.averageMark != null) return false;
         return results != null ? results.equals(user.results) : user.results == null;
     }
 
@@ -113,7 +106,7 @@ public class User extends NamedEntity {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
-        result = 31 * result + (averageMark != null ? averageMark.intValue() : 0);
+        result = 31 * result + (averageMark != null ? averageMark : 0);
         result = 31 * result + (results != null ? results.hashCode() : 0);
         return result;
     }
