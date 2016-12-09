@@ -9,7 +9,7 @@ import java.util.List;
 public interface ApplicationDao {
     Application get(Long id) throws DAOException;
     Application add(Application application) throws DAOException;
-    Application update(Application application, Status status) throws DAOException;
+    void update(Long id, Status status) throws DAOException;
     void delete(Long id) throws DAOException;
     List<Application> getByUser(Long userId) throws DAOException;
     List<Application> getByDirection(Long directionId) throws DAOException;

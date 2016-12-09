@@ -88,7 +88,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public Application update(Application application, Status status) throws DAOException {
+    public void update(Long id, Status status) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -97,15 +97,12 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             statement = connection.prepareStatement(applicationQueries.getString("application.update"));
 
             statement.setInt(1, status.ordinal());
-            statement.setLong(2, application.getId());
+            statement.setLong(2, id);
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
                 throw new DAOException("Failed to update application");
             }
-
-            return new Application(application.getId(), application.getUserId(), application.getDirectionId(),
-                    application.getCreationTime(), status, application.getMark());
         } catch (SQLException e) {
             throw new DAOException("Failed to get application.", e);
         } finally {
