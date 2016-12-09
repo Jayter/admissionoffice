@@ -2,6 +2,8 @@ package com.jayton.admissionoffice.dao.jdbc.util;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DaoHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(DaoHelper.class);
 
     private DaoHelper() {
     }
@@ -45,7 +49,7 @@ public class DaoHelper {
             try {
                 connection.rollback();
             } catch (SQLException e) {
-                //log
+                logger.error("Failed to rollback connection.", e);
             }
         }
     }
@@ -63,7 +67,7 @@ public class DaoHelper {
                 connection.close();
             }
         } catch (SQLException e) {
-            //log
+            logger.error("Failed to close db resources.", e);
         }
     }
 }

@@ -2,13 +2,14 @@ package com.jayton.admissionoffice.dao.jdbc.pool;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ResourceBundle;
 
-/**
- * Created by Jayton on 24.11.2016.
- */
 public class PoolHelper {
+
+    private final Logger logger = LoggerFactory.getLogger(PoolHelper.class);
 
     private static final String STANDARD_DB_PROPERTIES = "db.db";
 
@@ -31,13 +32,13 @@ public class PoolHelper {
         return instance;
     }
 
-
-    //should be called from listener
     public void initStandardDataSource() {
         initDataSource(STANDARD_DB_PROPERTIES);
     }
 
     public void initDataSource(String path) {
+        logger.info("Data source is initialized.");
+
         ResourceBundle resourceBundle = ResourceBundle.getBundle(path);
 
         String url = resourceBundle.getString(JDBC_URL);
@@ -55,6 +56,7 @@ public class PoolHelper {
     }
 
     public void destroyDataSource() {
+        logger.info("Data source is destroyed.");
         dataSource.close();
     }
 

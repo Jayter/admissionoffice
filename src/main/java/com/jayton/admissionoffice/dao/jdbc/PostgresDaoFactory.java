@@ -2,9 +2,6 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.*;
 
-/**
- * Created by Jayton on 03.12.2016.
- */
 public class PostgresDaoFactory implements DaoFactory {
     private final JdbcApplicationDaoImpl jdbcApplicationDao = new JdbcApplicationDaoImpl();
     private final JdbcDirectionDaoImpl jdbcDirectionDao = new JdbcDirectionDaoImpl();
