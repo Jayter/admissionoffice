@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.UtilDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.NamedEntity;
 
 import java.sql.*;
@@ -12,9 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- * Created by Jayton on 06.12.2016.
- */
 public class JdbcUtilDaoImpl implements UtilDao {
 
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
@@ -40,26 +38,11 @@ public class JdbcUtilDaoImpl implements UtilDao {
                     throw new DAOException("Failed to load session dates.");
                 }
             }
-
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DAOException("Failed to load session dates.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
-
     }
 
     @Override
@@ -86,20 +69,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load subjects.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
     }
 }

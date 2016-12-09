@@ -3,17 +3,13 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.university.Direction;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
-import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
-
-/**
- * Created by Jayton on 27.11.2016.
- */
 public class JdbcDirectionDaoImpl implements DirectionDao {
 
     private final ResourceBundle directionQueries = ResourceBundle.getBundle("db.queries.directionQueries");
@@ -21,7 +17,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     JdbcDirectionDaoImpl() {
     }
 
-    public Long add(Direction direction) throws DAOException {
+    public Direction add(Direction direction) throws DAOException {
         PreparedStatement addDirectionSt = null;
         PreparedStatement addSubjectSt = null;
         Connection connection = null;
@@ -34,7 +30,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             connection.setAutoCommit(false);
 
             addDirectionSt.setString(1, direction.getName());
-            addDirectionSt.setBigDecimal(2, scale(direction.getAverageCoefficient(), 2));
+            addDirectionSt.setBigDecimal(2, direction.getAverageCoefficient());
             addDirectionSt.setInt(3, direction.getCountOfStudents());
             addDirectionSt.setLong(4, direction.getFacultyId());
 
@@ -55,7 +51,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             for(Map.Entry<Long, BigDecimal> pair: direction.getEntranceSubjects().entrySet()) {
                 addSubjectSt.setLong(1, id);
                 addSubjectSt.setLong(2, pair.getKey());
-                addSubjectSt.setBigDecimal(3, scale(pair.getValue(), 2));
+                addSubjectSt.setBigDecimal(3, pair.getValue());
                 addSubjectSt.addBatch();
             }
 
@@ -67,302 +63,139 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             }
             connection.commit();
 
-            return id;
-        } catch (SQLException | NullPointerException e) {
+            return new Direction(id, direction.getName(), direction.getAverageCoefficient(),
+                    direction.getCountOfStudents(), direction.getFacultyId(), direction.getEntranceSubjects());
+        } catch (SQLException e) {
             throw new DAOException("Failed to save direction.", e);
         } finally {
-            if(addDirectionSt != null) {
-                try {
-                    addDirectionSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(addSubjectSt != null) {
-                try {
-                    addSubjectSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, addDirectionSt, addSubjectSt);
         }
     }
 
     @Override
     public Direction get(Long id) throws DAOException {
         PreparedStatement getDirectionSt = null;
-        PreparedStatement getSubjectsSt = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             getDirectionSt = connection.prepareStatement(directionQueries.getString("direction.get"));
-            getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
-            connection.setAutoCommit(false);
 
             getDirectionSt.setLong(1, id);
-            getSubjectsSt.setLong(1, id);
 
-            try(ResultSet directionRs = getDirectionSt.executeQuery()) {
-                if(!directionRs.next()) {
+            try(ResultSet rs = getDirectionSt.executeQuery()) {
+                if(!rs.next()) {
                     return null;
                 }
 
-                String name = directionRs.getString("name");
-                BigDecimal averageCoef = scale(directionRs.getBigDecimal("average_coef"), 2);
-                Integer countOfStudents = directionRs.getInt("count_of_students");
-                Long facultyId = directionRs.getLong("faculty_id");
+                String name = rs.getString("name");
+                BigDecimal averageCoef = rs.getBigDecimal("average_coef");
+                Integer countOfStudents = rs.getInt("count_of_students");
+                Long facultyId = rs.getLong("faculty_id");
 
                 Map<Long, BigDecimal> subjects = new HashMap<>();
 
-                try(ResultSet subjectRs = getSubjectsSt.executeQuery()) {
-                    while (subjectRs.next()) {
-                        subjects.put(subjectRs.getLong("subject_id"), scale(subjectRs.getBigDecimal("coefficient"), 2));
-                    }
+                Long subjectId = rs.getLong("subject_id");
+                BigDecimal coefficient = rs.getBigDecimal("coefficient");
+
+                if(subjectId != null && coefficient != null) {
+                    subjects.put(subjectId, coefficient);
                 }
-                connection.commit();
+                while (rs.next()) {
+                    subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                }
 
                 return new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects);
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to load direction.", e);
         } finally {
-            if(getDirectionSt != null) {
-                try {
-                    getDirectionSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(getSubjectsSt != null) {
-                try {
-                    getSubjectsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, getDirectionSt);
         }
     }
 
     @Override
-    public List<Direction> getByFaculty(Long facultyId) throws DAOException {
-        PreparedStatement getByFacultySt = null;
+    public Direction update(Direction direction) throws DAOException {
+        PreparedStatement updateDirectionSt = null;
         PreparedStatement getSubjectsSt = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getByFacultySt = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
+            updateDirectionSt = connection.prepareStatement(directionQueries.getString("direction.update"));
             getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
             connection.setAutoCommit(false);
 
-            getByFacultySt.setLong(1, facultyId);
+            updateDirectionSt.setString(1, direction.getName());
+            updateDirectionSt.setBigDecimal(2, direction.getAverageCoefficient());
+            updateDirectionSt.setInt(3, direction.getCountOfStudents());
+            updateDirectionSt.setLong(4, direction.getId());
 
-            List<Direction> directions = new ArrayList<>();
-
-            try(ResultSet rs = getByFacultySt.executeQuery()) {
-                while (rs.next()) {
-
-                    Long id = rs.getLong("id");
-                    String name = rs.getString("name");
-                    BigDecimal averageCoef = scale(rs.getBigDecimal("average_coef"), 2);
-                    Integer countOfStudents = rs.getInt("count_of_students");
-
-                    getSubjectsSt.setLong(1, id);
-
-                    Map<Long, BigDecimal> subjects = new HashMap<>();
-
-                    try(ResultSet subjectRs = getSubjectsSt.executeQuery()) {
-                        while (subjectRs.next()) {
-                            subjects.put(subjectRs.getLong("subject_id"), scale(subjectRs.getBigDecimal("coefficient"),2));
-                        }
-                    }
-
-                    directions.add(new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects));
-                }
-            }
-            connection.commit();
-
-            return directions;
-
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load directions.", e);
-        } finally {
-            if(getByFacultySt != null) {
-                try {
-                    getByFacultySt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(getSubjectsSt != null) {
-                try {
-                    getSubjectsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
-    public List<Direction> getAll() throws DAOException {
-        PreparedStatement getByFacultySt = null;
-        PreparedStatement getSubjectsSt = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getByFacultySt = connection.prepareStatement(directionQueries.getString("direction.get.all"));
-            getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
-            connection.setAutoCommit(false);
-
-            List<Direction> directions = new ArrayList<>();
-
-            try(ResultSet rs = getByFacultySt.executeQuery()) {
-                while (rs.next()) {
-
-                    Long id = rs.getLong("id");
-                    String name = rs.getString("name");
-                    BigDecimal averageCoef = scale(rs.getBigDecimal("average_coef"), 2);
-                    Integer countOfStudents = rs.getInt("count_of_students");
-                    Long facultyId = rs.getLong("faculty_id");
-
-                    getSubjectsSt.setLong(1, id);
-
-                    Map<Long, BigDecimal> subjects = new HashMap<>();
-
-                    try(ResultSet subjectRs = getSubjectsSt.executeQuery()) {
-                        while (subjectRs.next()) {
-                            subjects.put(subjectRs.getLong("subject_id"), scale(subjectRs.getBigDecimal("coefficient"), 2));
-                        }
-                    }
-
-                    directions.add(new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects));
-                }
-            }
-            connection.commit();
-
-            return directions;
-
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load directions.", e);
-        } finally {
-            if(getByFacultySt != null) {
-                try {
-                    getByFacultySt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(getSubjectsSt != null) {
-                try {
-                    getSubjectsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
-    public void update(Direction direction) throws DAOException {
-        PreparedStatement updateDirection = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            updateDirection = connection.prepareStatement(directionQueries.getString("direction.update"));
-
-            updateDirection.setString(1, direction.getName());
-            updateDirection.setBigDecimal(2, scale(direction.getAverageCoefficient(), 2));
-            updateDirection.setInt(3, direction.getCountOfStudents());
-            updateDirection.setLong(4, direction.getId());
-
-            int affectedRow = updateDirection.executeUpdate();
+            int affectedRow = updateDirectionSt.executeUpdate();
             if(affectedRow == 0) {
                 throw new DAOException("Failed to update direction.");
             }
 
-        } catch (SQLException | NullPointerException e) {
+            Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
+
+            getSubjectsSt.setLong(1, direction.getId());
+
+            try(ResultSet rs = getSubjectsSt.executeQuery()) {
+                while (rs.next()) {
+                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                }
+            }
+            connection.commit();
+
+            return new Direction(direction.getId(), direction.getName(), direction.getAverageCoefficient(),
+                    direction.getCountOfStudents(), direction.getFacultyId(), entranceSubjects);
+        } catch (SQLException e) {
+            DaoHelper.rollback(connection);
             throw new DAOException("Failed to update direction.", e);
         } finally {
-            if(updateDirection != null) {
-                try {
-                    updateDirection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, updateDirectionSt, getSubjectsSt);
         }
     }
 
     @Override
-    public boolean delete(Long id) throws DAOException {
+    public void delete(Long id) throws DAOException {
+        DaoHelper.delete(directionQueries.getString("direction.delete"), "Failed to delete direction.", id);
+    }
+
+    @Override
+    public List<Direction> getAll() throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("direction.delete"));
+            statement = connection.prepareStatement(directionQueries.getString("direction.get.all"));
 
-            statement.setLong(1, id);
+            return getByStatement(statement);
 
-            int affectedRows = statement.executeUpdate();
-            return affectedRows != 0;
-
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to delete direction.", e);
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load directions.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public List<Direction> getByFaculty(Long facultyId) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
+            statement.setLong(1, facultyId);
+
+            return getByStatement(statement);
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load directions.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
@@ -384,59 +217,51 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 throw new DAOException("Failed to save entrance subject.");
             }
 
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DAOException("Failed to save entrance subject.", e);
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public boolean deleteSubject(Long directionId, Long subjectId) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("subject.delete"));
-
-            statement.setLong(1, directionId);
-            statement.setLong(2, subjectId);
-
-            int affectedRows = statement.executeUpdate();
-            return affectedRows != 0;
-
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to delete entrance subject.", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
+    public void deleteSubject(Long directionId, Long subjectId) throws DAOException {
+        DaoHelper.delete(directionQueries.getString("subject.delete"), "Failed to delete entrance subject.",
+                directionId, subjectId);
     }
 
+    private List<Direction> getByStatement(PreparedStatement statement) throws SQLException {
+        List<Direction> directions = new ArrayList<>();
+
+        try (ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                Long id = rs.getLong("id");
+                Long facultyId = rs.getLong("faculty_id");
+                String name = rs.getString("name");
+                BigDecimal averageCoef = rs.getBigDecimal("average_coef");
+                Integer countOfStudents = rs.getInt("count_of_students");
+
+                Map<Long, BigDecimal> subjects = new HashMap<>();
+
+                Long subjectId = rs.getLong("subject_id");
+                BigDecimal coefficient = rs.getBigDecimal("coefficient");
+
+                if(subjectId != null && coefficient != null) {
+                    subjects.put(subjectId, coefficient);
+                }
+
+                while (rs.next()) {
+                    Long nextId = rs.getLong("id");
+                    if (id.equals(nextId)) {
+                        subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                    } else {
+                        rs.previous();
+                        break;
+                    }
+                }
+                directions.add(new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects));
+            }
+        }
+        return directions;
+    }
 }

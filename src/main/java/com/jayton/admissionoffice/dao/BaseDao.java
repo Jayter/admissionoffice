@@ -5,13 +5,10 @@ import com.jayton.admissionoffice.model.NamedEntity;
 
 import java.util.List;
 
-/**
- * Created by Jayton on 24.11.2016.
- */
 public interface BaseDao<T extends NamedEntity> {
     T get(Long id) throws DAOException;
-    Long add(T entity) throws DAOException;
-    void update(T entity) throws DAOException;
-    boolean delete(Long id) throws DAOException;
+    T add(T entity) throws DAOException;
+    T update(T entity) throws DAOException;
+    void delete(Long id) throws DAOException;
     List<T> getAll() throws DAOException;
 }

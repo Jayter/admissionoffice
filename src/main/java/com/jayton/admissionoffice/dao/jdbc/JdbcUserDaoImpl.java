@@ -3,23 +3,15 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 
-import java.math.BigDecimal;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
-import static com.jayton.admissionoffice.dao.jdbc.util.NumericHelper.scale;
-
-/**
- * Created by Jayton on 27.11.2016.
- */
 public class JdbcUserDaoImpl implements UserDao {
 
     private final ResourceBundle userQueries = ResourceBundle.getBundle("db.queries.userQueries");
@@ -27,9 +19,8 @@ public class JdbcUserDaoImpl implements UserDao {
     JdbcUserDaoImpl() {
     }
 
-    //return User instead of Long
     @Override
-    public Long add(User user) throws DAOException {
+    public User add(User user) throws DAOException {
         PreparedStatement addUserSt = null;
         PreparedStatement addCredentialsSt = null;
         Connection connection = null;
@@ -46,7 +37,7 @@ public class JdbcUserDaoImpl implements UserDao {
             addUserSt.setString(4, user.getEmail());
             addUserSt.setString(5, user.getPhoneNumber());
             addUserSt.setDate(6, Date.valueOf(user.getBirthDate()));
-            addUserSt.setBigDecimal(7, scale(user.getAverageMark(), 2));
+            addUserSt.setByte(7, user.getAverageMark());
 
             addCredentialsSt.setString(1, user.getEmail());
             addCredentialsSt.setString(2, user.getPassword());
@@ -57,244 +48,62 @@ public class JdbcUserDaoImpl implements UserDao {
             if(affectedUsers == 0 || affectedCredentials == 0) {
                 throw new DAOException("Failed to save user.");
             }
-            //add rollback and log
             connection.commit();
 
             try (ResultSet rs = addUserSt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return rs.getLong(1);
+                    Long id = rs.getLong(1);
+                    return new User(id, user.getName(), user.getLastName(), user.getAddress(), user.getEmail(),
+                            user.getPhoneNumber(), user.getBirthDate(), user.getAverageMark(), Collections.emptyMap());
                 } else {
                     throw new DAOException("Failed to get user`s id.");
                 }
             }
-
-        } catch (SQLException | NullPointerException e) {
-            //add rollback
+        } catch (SQLException e) {
+            DaoHelper.rollback(connection);
             throw new DAOException("Failed to save user.", e);
         } finally {
-            if(addUserSt != null) {
-                try {
-                    addUserSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(addCredentialsSt != null) {
-                try {
-                    addCredentialsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, addUserSt, addCredentialsSt);
         }
     }
 
-    //replace by join
     @Override
     public User get(Long id) throws DAOException {
-        PreparedStatement getUserSt = null;
-        PreparedStatement getResultsSt = null;
+        PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUserSt = connection.prepareStatement(userQueries.getString("user.get"));
-            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
-            getUserSt.setLong(1, id);
-            //connection.setAuto///false
+            statement = connection.prepareStatement(userQueries.getString("user.get"));
+            statement.setLong(1, id);
 
-            try(ResultSet userRs = getUserSt.executeQuery()) {
-                if(!userRs.next()) {
-                    return null;
-                }
+            return getSingleByStatement(statement);
 
-                String name = userRs.getString("name");
-                String secondName = userRs.getString("last_name");
-                String address = userRs.getString("address");
-                String email = userRs.getString("email");
-                String phoneNumber = userRs.getString("phone_number");
-                LocalDate birthDate = userRs.getDate("birth_date").toLocalDate();
-                BigDecimal averageMark = scale(userRs.getBigDecimal("average_mark"), 2);
-
-                getResultsSt.setLong(1, id);
-
-                Map<Long, BigDecimal> results = new HashMap<>();
-                try(ResultSet resultRs = getResultsSt.executeQuery()) {
-                    while (resultRs.next()) {
-                        results.put(resultRs.getLong("subject_id"), scale(resultRs.getBigDecimal("mark"), 2));
-                    }
-                }
-
-                connection.commit();
-                return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
-            }
         } catch (SQLException e) {
             throw new DAOException("Failed to load user.", e);
         } finally {
-            if(getUserSt != null) {
-                try {
-                    getUserSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public User getByEmail(String email) throws DAOException {
-        PreparedStatement getUserSt = null;
-        PreparedStatement getResultsSt = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUserSt = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
-            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
-            getUserSt.setString(1, email);
-
-            //replace to first try//finally
-            try(ResultSet userRs = getUserSt.executeQuery()) {
-                if(!userRs.next()) {
-                    return null;
-                }
-
-                Long id = userRs.getLong("id");
-                String name = userRs.getString("name");
-                String secondName = userRs.getString("last_name");
-                String address = userRs.getString("address");
-                String phoneNumber = userRs.getString("phone_number");
-                LocalDate birthDate = userRs.getDate("birth_date").toLocalDate();
-                BigDecimal averageMark = scale(userRs.getBigDecimal("average_mark"), 2);
-
-                getResultsSt.setLong(1, id);
-
-                Map<Long, BigDecimal> results = new HashMap<>();
-                try(ResultSet resultRs = getResultsSt.executeQuery()) {
-                    while (resultRs.next()) {
-                        results.put(resultRs.getLong("subject_id"), scale(resultRs.getBigDecimal("mark"), 2));
-                    }
-                }
-                return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load user.", e);
-        } finally {
-            if(getUserSt != null) {
-                try {
-                    getUserSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    //offset count
-    //add paging
-    @Override
-    public List<User> getAll() throws DAOException {
-        PreparedStatement getUsersSt = null;
-        PreparedStatement getResultsSt = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            getUsersSt = connection.prepareStatement(userQueries.getString("user.get.all"));
-            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
-            connection.setAutoCommit(false);
-
-            List<User> users = new ArrayList<>();
-
-            try(ResultSet rs = getUsersSt.executeQuery()) {
-                while(rs.next()) {
-                    Long id = rs.getLong("id");
-                    String name = rs.getString("name");
-                    String secondName = rs.getString("last_name");
-                    String address = rs.getString("address");
-                    String email = rs.getString("email");
-                    String phoneNumber = rs.getString("phone_number");
-                    LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
-                    BigDecimal averageMark = scale(rs.getBigDecimal("average_mark"), 2);
-
-                    getResultsSt.setLong(1, id);
-
-                    Map<Long, BigDecimal> results = new HashMap<>();
-                    try(ResultSet resultRs = getResultsSt.executeQuery()) {
-                        while (resultRs.next()) {
-                            results.put(resultRs.getLong("subject_id"), scale(resultRs.getBigDecimal("mark"), 2));
-                        }
-                    }
-
-                    users.add(new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results));
-                }
-            }
-            connection.commit();
-            return users;
-
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load users.", e);
-        } finally {
-            if(getUsersSt != null) {
-                try {
-                    getUsersSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(getResultsSt != null) {
-                try {
-                    getResultsSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
-    public void update(User user) throws DAOException {
+    public User update(User user) throws DAOException {
         PreparedStatement updateUserSt = null;
+        PreparedStatement getResultsSt = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             updateUserSt = connection.prepareStatement(userQueries.getString("user.update"));
+            getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
+            connection.setAutoCommit(false);
 
             updateUserSt.setString(1, user.getName());
             updateUserSt.setString(2, user.getLastName());
             updateUserSt.setString(3, user.getAddress());
             updateUserSt.setString(4, user.getPhoneNumber());
             updateUserSt.setDate(5, Date.valueOf(user.getBirthDate()));
-            updateUserSt.setBigDecimal(6, scale(user.getAverageMark(), 2));
+            updateUserSt.setByte(6, user.getAverageMark());
             updateUserSt.setLong(7, user.getId());
 
             int affectedRow = updateUserSt.executeUpdate();
@@ -302,64 +111,72 @@ public class JdbcUserDaoImpl implements UserDao {
                 throw new DAOException("Failed to update user.");
             }
 
-        } catch (SQLException | NullPointerException e) {throw new DAOException("Failed to update user.", e);
+            Map<Long, Short> examResults = new HashMap<>();
+
+            getResultsSt.setLong(1, user.getId());
+
+            try(ResultSet rs = getResultsSt.executeQuery()) {
+                while (rs.next()) {
+                    examResults.put(rs.getLong("subject_id"), rs.getShort("mark"));
+                }
+            }
+            connection.commit();
+
+            return new User(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getAddress(),
+                    user.getPhoneNumber(), user.getBirthDate(), user.getAverageMark(), examResults);
+
+        } catch (SQLException e) {
+            DaoHelper.rollback(connection);
+            throw new DAOException("Failed to update user.", e);
         } finally {
-            if(updateUserSt != null) {
-                try {
-                    updateUserSt.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, updateUserSt, getResultsSt);
         }
     }
 
-    //create utildao
     @Override
-    public boolean delete(Long id) throws DAOException {
-        //UtilDao.delet(id, SQL_DELETE);
+    public void delete(Long id) throws DAOException {
+        DaoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
+    }
+
+    @Override
+    public List<User> getAll() throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(userQueries.getString("user.delete"));
+            statement = connection.prepareStatement(userQueries.getString("user.get.all"));
 
-            statement.setLong(1, id);
+            return getAllByStatement(statement);
 
-            int affectedRows = statement.executeUpdate();
-            return affectedRows != 0;
-            //get rid of null-pointer verification
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to delete enrollee.", e);
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load users.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                    //if use logger
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public void addResult(Long userId, Long subjectId, BigDecimal mark) throws DAOException {
+    public User getByEmail(String email) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
+            statement.setString(1, email);
+
+            return getSingleByStatement(statement);
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load user.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public void addResult(Long userId, Long subjectId, Short mark) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -369,30 +186,73 @@ public class JdbcUserDaoImpl implements UserDao {
 
             statement.setLong(1, userId);
             statement.setLong(2, subjectId);
-            statement.setBigDecimal(3, scale(mark, 2));
+            statement.setShort(3, mark);
 
             int affectedRows = statement.executeUpdate();
             if(affectedRows == 0) {
                 throw new DAOException("Failed to save result.");
             }
-
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DAOException("Failed to save result.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public Map<Long, Short> getResultsOfUser(Long userId) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(userQueries.getString("result.get.all"));
+            statement.setLong(1, userId);
+
+            Map<Long, Short> results = new HashMap<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while(rs.next()) {
+                    results.put(rs.getLong("subject_id"), rs.getShort("mark"));
                 }
             }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
+            return results;
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get results.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public void deleteResult(Long userId, Long subjectId) throws DAOException {
+        DaoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
+    }
+
+    @Override
+    public int checkEmail(String email) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));
+
+            statement.setString(1, email);
+
+            try(ResultSet rs = statement.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+                else {
+                    throw new DAOException("Failed to check email.");
                 }
             }
+        } catch (SQLException e) {
+            throw new DAOException("Failed to check email.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
@@ -419,141 +279,80 @@ public class JdbcUserDaoImpl implements UserDao {
                     return AuthorizationResult.ABSENT;
                 }
             }
-
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
             throw new DAOException("Failed to authorize.", e);
         } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
+            DaoHelper.closeResources(connection, statement);
         }
     }
 
-    @Override
-    public Map<Long, BigDecimal> getByUser(Long userId) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
+    private User getSingleByStatement(PreparedStatement statement) throws SQLException {
+        try (ResultSet rs = statement.executeQuery()) {
+            if (!rs.next()) {
+                return null;
+            }
 
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(userQueries.getString("result.get.all"));
-            statement.setLong(1, userId);
+            Long id = rs.getLong("id");
+            String name = rs.getString("name");
+            String secondName = rs.getString("last_name");
+            String address = rs.getString("address");
+            String email = rs.getString("email");
+            String phoneNumber = rs.getString("phone_number");
+            LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
+            Byte averageMark = rs.getByte("average_mark");
 
-            Map<Long, BigDecimal> results = new HashMap<>();
+            Map<Long, Short> results = new HashMap<>();
 
-            try(ResultSet rs = statement.executeQuery()) {
-                while(rs.next()) {
-                    Long subjectId = rs.getLong("subject_id");
-                    BigDecimal mark = scale(rs.getBigDecimal("mark"), 2);
+            Long subjectId = rs.getLong("subject_id");
+            Short mark = rs.getShort("mark");
 
+            if (subjectId != null && mark != null) {
+                results.put(subjectId, mark);
+            }
+
+            while (rs.next()) {
+                results.put(rs.getLong("subject_id"), rs.getShort("mark"));
+            }
+
+            return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
+        }
+    }
+
+    private List<User> getAllByStatement(PreparedStatement statement) throws SQLException {
+        List<User> users = new ArrayList<>();
+
+        try(ResultSet rs = statement.executeQuery()) {
+            while(rs.next()) {
+                Long id = rs.getLong("id");
+                String name = rs.getString("name");
+                String secondName = rs.getString("last_name");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String phoneNumber = rs.getString("phone_number");
+                LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
+                Byte averageMark = rs.getByte("average_mark");
+
+                Map<Long, Short> results = new HashMap<>();
+
+                Long subjectId = rs.getLong("subject_id");
+                Short mark = rs.getShort("mark");
+
+                if (subjectId != null && mark != null) {
                     results.put(subjectId, mark);
                 }
-            }
-            return results;
 
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to get results.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
+                while (rs.next()) {
+                    Long nextId = rs.getLong("id");
+                    if(id.equals(nextId)) {
+                        results.put(rs.getLong("subject_id"), rs.getShort("mark"));
+                    } else {
+                        rs.previous();
+                        break;
+                    }
                 }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
+                users.add(new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results));
             }
         }
-    }
-
-    @Override
-    public boolean deleteResult(Long userId, Long subjectId) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(userQueries.getString("result.delete"));
-
-            statement.setLong(1, userId);
-            statement.setLong(2, subjectId);
-
-            int affectedRows = statement.executeUpdate();
-            return affectedRows != 0;
-
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to delete result.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
-    }
-
-    @Override
-    public int checkEmail(String email) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));
-
-            statement.setString(1, email);
-
-            try(ResultSet rs = statement.executeQuery()) {
-                if(rs.next()) {
-                    return rs.getInt(1);
-                }
-                else {
-                    throw new DAOException("Failed to check email.");
-                }
-            }
-
-        } catch (SQLException | NullPointerException e) {
-            throw new DAOException("Failed to check email.", e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    //will log it
-                }
-            }
-        }
+        return users;
     }
 }

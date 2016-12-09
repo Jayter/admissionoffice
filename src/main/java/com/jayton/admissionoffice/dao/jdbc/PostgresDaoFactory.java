@@ -10,7 +10,6 @@ public class PostgresDaoFactory implements DaoFactory {
     private final JdbcDirectionDaoImpl jdbcDirectionDao = new JdbcDirectionDaoImpl();
     private final JdbcFacultyDaoImpl jdbcFacultyDao = new JdbcFacultyDaoImpl();
     private final JdbcUniversityDaoImpl jdbcUniversityDao = new JdbcUniversityDaoImpl();
-    private final JdbcSubjectDaoImpl jdbcSubjectDao = new JdbcSubjectDaoImpl();
     private final JdbcUserDaoImpl jdbcUserDao = new JdbcUserDaoImpl();
     private final JdbcUtilDaoImpl jdbcUtilDao = new JdbcUtilDaoImpl();
 
@@ -32,11 +31,6 @@ public class PostgresDaoFactory implements DaoFactory {
     @Override
     public UniversityDao getUniversityDao() {
         return jdbcUniversityDao;
-    }
-
-    @Override
-    public SubjectDao getSubjectDao() {
-        return jdbcSubjectDao;
     }
 
     @Override

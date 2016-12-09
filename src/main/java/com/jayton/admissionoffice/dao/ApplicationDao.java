@@ -6,14 +6,11 @@ import com.jayton.admissionoffice.model.to.Status;
 
 import java.util.List;
 
-/**
- * Created by Jayton on 30.11.2016.
- */
 public interface ApplicationDao {
     Application get(Long id) throws DAOException;
-    Long add(Application application) throws DAOException;
-    void update(Long id, Status status) throws DAOException;
-    boolean delete(Long id) throws DAOException;
+    Application add(Application application) throws DAOException;
+    Application update(Application application, Status status) throws DAOException;
+    void delete(Long id) throws DAOException;
     List<Application> getByUser(Long userId) throws DAOException;
     List<Application> getByDirection(Long directionId) throws DAOException;
     List<Application> getAll() throws DAOException;
