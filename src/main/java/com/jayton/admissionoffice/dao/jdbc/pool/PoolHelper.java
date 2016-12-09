@@ -1,15 +1,14 @@
 package com.jayton.admissionoffice.dao.jdbc.pool;
 
+import com.jayton.admissionoffice.dao.exception.FailedInitializationException;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class PoolHelper {
-
-    private final Logger logger = LoggerFactory.getLogger(PoolHelper.class);
 
     private static final String STANDARD_DB_PROPERTIES = "db.db";
 
@@ -32,13 +31,11 @@ public class PoolHelper {
         return instance;
     }
 
-    public void initStandardDataSource() {
+    public void initStandardDataSource() throws FailedInitializationException {
         initDataSource(STANDARD_DB_PROPERTIES);
     }
 
-    public void initDataSource(String path) {
-        logger.info("Data source is initialized.");
-
+    public void initDataSource(String path) throws FailedInitializationException {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(path);
 
         String url = resourceBundle.getString(JDBC_URL);
@@ -53,10 +50,15 @@ public class PoolHelper {
         properties.setPassword(password);
 
         dataSource = new DataSource(properties);
+
+        try {
+            Connection connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new FailedInitializationException("Failed to init data source.", e);
+        }
     }
 
     public void destroyDataSource() {
-        logger.info("Data source is destroyed.");
         dataSource.close();
     }
 
