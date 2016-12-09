@@ -5,11 +5,11 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.NamedEntity;
+import com.jayton.admissionoffice.model.to.SessionTerms;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -18,7 +18,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
 
     @Override
-    public List<LocalDateTime> getSessionDate(Integer currentYear) throws DAOException {
+    public SessionTerms getSessionTerms(Short currentYear) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -26,20 +26,20 @@ public class JdbcUtilDaoImpl implements UtilDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"));
 
-            statement.setInt(1, currentYear);
+            statement.setShort(1, currentYear);
 
             try(ResultSet rs = statement.executeQuery()) {
                 if(rs.next()) {
                     LocalDateTime start = rs.getTimestamp("session_start").toLocalDateTime();
                     LocalDateTime end = rs.getTimestamp("session_end").toLocalDateTime();
 
-                    return new ArrayList<>(Arrays.asList(start, end));
+                    return new SessionTerms(currentYear, start, end);
                 } else {
-                    throw new DAOException("Failed to load session dates.");
+                    throw new DAOException("Failed to load session terms.");
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException("Failed to load session dates.", e);
+            throw new DAOException("Failed to load session terms.", e);
         } finally {
             DaoHelper.closeResources(connection, statement);
         }
