@@ -3,38 +3,43 @@ package com.jayton.admissionoffice.service.impl;
 import com.jayton.admissionoffice.dao.*;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
+import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
-import com.jayton.admissionoffice.service.util.ServiceVerifier;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Jayton on 06.12.2016.
- */
 public class ApplicationServiceImpl implements ApplicationService {
+
     @Override
-    public synchronized Long add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
-        ServiceVerifier.verifyObject(user);
-        ServiceVerifier.verifyId(directionId);
+    public synchronized Application add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
         verifyApplicationDate(applied);
 
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
 
         try {
+            List<Application> retrieved = applicationDao.getByUser(user.getId());
+            if(retrieved.size() >= 5) {
+                throw new ServiceVerificationException("You can apply only for 5 directions.");
+            }
+
+            long countOfDuplicated = retrieved.stream().filter(app -> app.getDirectionId().equals(directionId)).count();
+            if(countOfDuplicated != 0) {
+                throw new ServiceVerificationException("You have already applied for this direction.");
+            }
+
             Direction direction = directionDao.get(directionId);
             BigDecimal mark = getMark(user, direction);
+
             Application application = new Application(user.getId(), directionId, applied, mark);
-            List<Application> retrieved = applicationDao.getByUser(user.getId());
-            verifyApplications(retrieved, directionId);
 
             return applicationDao.add(application);
         } catch (DAOException e) {
@@ -44,8 +49,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application get(Long id) throws ServiceException {
-        ServiceVerifier.verifyId(id);
-
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.get(id);
@@ -56,8 +59,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> getByUser(Long userId) throws ServiceException {
-        ServiceVerifier.verifyId(userId);
-
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByUser(userId);
@@ -68,8 +69,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> getByDirection(Long directionId) throws ServiceException {
-        ServiceVerifier.verifyId(directionId);
-
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByDirection(directionId);
@@ -80,9 +79,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void update(Long id, Status status) throws ServiceException {
-        ServiceVerifier.verifyId(id);
-        ServiceVerifier.verifyObject(status);
-
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.update(id, status);
@@ -92,50 +88,41 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public boolean delete(Long id) throws ServiceException {
-        ServiceVerifier.verifyId(id);
-
+    public void delete(Long id) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
-            return applicationDao.delete(id);
+            applicationDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
-        }
-    }
-
-    private void verifyApplications(List<Application> applications, Long directionId) throws ServiceException {
-        if(applications.size() >= 5) {
-            throw new ServiceVerificationException("You can apply only for 5 directions.");
-        }
-
-        for(Application restoredApp : applications) {
-            if(restoredApp.getDirectionId().equals(directionId)) {
-                throw new ServiceVerificationException("Application already exists.");
-            }
         }
     }
 
     private void verifyApplicationDate(LocalDateTime applied) throws ServiceException {
         UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
 
-        List<LocalDateTime> terms;
+        SessionTerms terms;
         try {
-            terms = utilDao.getSessionDate(applied.getYear());
+            terms = utilDao.getSessionTerms((short)applied.getYear());
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        if(terms.get(0).isAfter(applied) || terms.get(1).isBefore(applied)) {
+
+        if(applied.isBefore(terms.getSessionStart()) || applied.isAfter(terms.getSessionEnd())) {
             throw new ServiceException("Application period has already expired!");
         }
     }
 
     private BigDecimal getMark(User user, Direction direction) throws ServiceException {
-        BigDecimal result = user.getAverageMark().multiply(direction.getAverageCoefficient());
+        BigDecimal averageMark = BigDecimal.valueOf(user.getAverageMark());
+        BigDecimal result = direction.getAverageCoefficient().multiply(averageMark);
+
         for(Map.Entry<Long, BigDecimal> entrancePair: direction.getEntranceSubjects().entrySet()) {
             if(!user.getResults().containsKey(entrancePair.getKey())) {
                 throw new ServiceVerificationException("Inappropriate direction. Exam result is not found");
             }
-            result = result.add(user.getResults().get(entrancePair.getKey()).multiply(entrancePair.getValue()));
+            BigDecimal examResult = BigDecimal.valueOf(user.getResults().get(entrancePair.getKey()));
+            BigDecimal examCoefficient = entrancePair.getValue();
+            result = result.add(examCoefficient.multiply(examResult));
         }
         return result.setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
