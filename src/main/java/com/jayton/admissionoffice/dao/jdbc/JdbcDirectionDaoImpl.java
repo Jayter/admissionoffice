@@ -230,6 +230,32 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 directionId, subjectId);
     }
 
+    @Override
+    public Map<Long, BigDecimal> getEntranceSubjects(Long directionId) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getConnection();
+            statement = connection.prepareStatement(directionQueries.getString("subject.get.all"));
+            statement.setLong(1, directionId);
+
+            Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                }
+            }
+            return entranceSubjects;
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get entrance subjects.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
     private List<Direction> getByStatement(PreparedStatement statement) throws SQLException {
         List<Direction> directions = new ArrayList<>();
 
