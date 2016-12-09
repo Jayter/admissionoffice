@@ -35,7 +35,6 @@ public class NamedEntity implements Serializable {
         NamedEntity that = (NamedEntity) o;
 
         return name != null ? name.equals(that.name) : that.name == null;
-
     }
 
     @Override

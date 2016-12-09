@@ -36,7 +36,6 @@ public class University extends NamedEntity {
 
         if (city != null ? !city.equals(that.city) : that.city != null) return false;
         return address != null ? address.equals(that.address) : that.address == null;
-
     }
 
     @Override

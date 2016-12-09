@@ -3,9 +3,6 @@ package com.jayton.admissionoffice.model.to;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Created by Jayton on 30.11.2016.
- */
 public class Application {
     private Long id;
     private Long userId;
@@ -65,7 +62,6 @@ public class Application {
         if (creationTime != null ? !creationTime.equals(that.creationTime) : that.creationTime != null) return false;
         if (mark != null ? !(mark.compareTo(that.mark) == 0) : that.mark != null) return false;
         return status == that.status;
-
     }
 
     @Override
