@@ -24,4 +24,25 @@ public class SessionTerms {
     public LocalDateTime getSessionEnd() {
         return sessionEnd;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SessionTerms terms = (SessionTerms) o;
+
+        if (year != null ? !year.equals(terms.year) : terms.year != null) return false;
+        if (sessionStart != null ? !sessionStart.equals(terms.sessionStart) : terms.sessionStart != null) return false;
+        return sessionEnd != null ? sessionEnd.equals(terms.sessionEnd) : terms.sessionEnd == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = year != null ? year.hashCode() : 0;
+        result = 31 * result + (sessionStart != null ? sessionStart.hashCode() : 0);
+        result = 31 * result + (sessionEnd != null ? sessionEnd.hashCode() : 0);
+        return result;
+    }
 }
