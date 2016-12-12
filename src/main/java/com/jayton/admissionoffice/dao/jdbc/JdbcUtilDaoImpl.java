@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.dao.UtilDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
-import com.jayton.admissionoffice.model.NamedEntity;
+import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 
 import java.sql.*;
@@ -18,7 +18,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
 
     @Override
-    public SessionTerms getSessionTerms(Short currentYear) throws DAOException {
+    public SessionTerms getSessionTerms(short currentYear) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -46,7 +46,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
     }
 
     @Override
-    public List<NamedEntity> getAllSubjects() throws DAOException {
+    public List<Subject> getAllSubjects() throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -54,14 +54,14 @@ public class JdbcUtilDaoImpl implements UtilDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("subject.get.all"));
 
-            List<NamedEntity> subjects = new ArrayList<>();
+            List<Subject> subjects = new ArrayList<>();
 
             try(ResultSet rs = statement.executeQuery()) {
                 while(rs.next()) {
-                    Long id = rs.getLong("id");
+                    long id = rs.getLong("id");
                     String name = rs.getString("name");
 
-                    subjects.add(new NamedEntity(id, name));
+                    subjects.add(new Subject(id, name));
                 }
             }
             return subjects;

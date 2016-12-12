@@ -7,11 +7,11 @@ import com.jayton.admissionoffice.model.to.Status;
 import java.util.List;
 
 public interface ApplicationDao {
-    Application get(Long id) throws DAOException;
+    Application get(long id) throws DAOException;
     Application add(Application application) throws DAOException;
-    void update(Long id, Status status) throws DAOException;
-    void delete(Long id) throws DAOException;
-    List<Application> getByUser(Long userId) throws DAOException;
-    List<Application> getByDirection(Long directionId) throws DAOException;
+    void update(long id, Status status) throws DAOException;
+    void delete(long id) throws DAOException;
+    List<Application> getByUser(long userId) throws DAOException;
+    List<Application> getByDirection(long directionId) throws DAOException;
     List<Application> getAll() throws DAOException;
 }

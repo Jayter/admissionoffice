@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(Long id) throws ServiceException {
+    public User get(long id) throws ServiceException {
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.get(id);
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException {
+    public void delete(long id) throws ServiceException {
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             userDao.delete(id);
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public synchronized void addResult(Long userId, Long subjectId, Short mark) throws ServiceException {
+    public synchronized void addResult(long userId, long subjectId, short mark) throws ServiceException {
         Map<Long, Short> results;
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteResult(Long userId, Long subjectId) throws ServiceException {
+    public void deleteResult(long userId, long subjectId) throws ServiceException {
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             userDao.deleteResult(userId, subjectId);

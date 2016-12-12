@@ -22,7 +22,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public University get(Long id) throws ServiceException {
+    public University get(long id) throws ServiceException {
         UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
             return universityDao.get(id);
@@ -42,7 +42,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException {
+    public void delete(long id) throws ServiceException {
         UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
             universityDao.delete(id);

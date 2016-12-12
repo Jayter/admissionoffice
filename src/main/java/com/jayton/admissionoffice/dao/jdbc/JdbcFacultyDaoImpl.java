@@ -55,7 +55,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    public Faculty get(Long id) throws DAOException {
+    public Faculty get(long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -73,7 +73,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
                 String phone = rs.getString("office_phone");
                 String email = rs.getString("office_email");
                 String address = rs.getString("address");
-                Long universityId = rs.getLong("university_id");
+                long universityId = rs.getLong("university_id");
 
                 return new Faculty(id, name, phone, email, address, universityId);
             }
@@ -114,12 +114,12 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    public void delete(Long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         DaoHelper.delete(facultyQueries.getString("faculty.delete"), "Failed to delete faculty.", id);
     }
 
     @Override
-    public List<Faculty> getByUniversity(Long universityId) throws DAOException {
+    public List<Faculty> getByUniversity(long universityId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -160,12 +160,12 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
         try(ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                Long id = rs.getLong("id");
+                long id = rs.getLong("id");
                 String name = rs.getString("name");
                 String phone = rs.getString("office_phone");
                 String email = rs.getString("office_email");
                 String address = rs.getString("address");
-                Long universityId = rs.getLong("university_id");
+                long universityId = rs.getLong("university_id");
 
                 faculties.add(new Faculty(id, name, phone, email, address, universityId));
             }

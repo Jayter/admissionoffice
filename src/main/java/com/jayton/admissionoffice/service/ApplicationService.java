@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ApplicationService {
-    Application add(User user, Long directionId, LocalDateTime applied) throws ServiceException;
-    Application get(Long id) throws ServiceException;
-    List<Application> getByUser(Long userId) throws ServiceException;
-    List<Application> getByDirection(Long directionId) throws ServiceException;
-    void update(Long id, Status status) throws ServiceException;
-    void delete(Long id) throws ServiceException;
+    Application add(User user, long directionId, LocalDateTime applied) throws ServiceException;
+    Application get(long id) throws ServiceException;
+    List<Application> getByUser(long userId) throws ServiceException;
+    List<Application> getByDirection(long directionId) throws ServiceException;
+    void update(long id, Status status) throws ServiceException;
+    void delete(long id) throws ServiceException;
 }

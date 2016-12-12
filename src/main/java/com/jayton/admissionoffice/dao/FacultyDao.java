@@ -5,6 +5,6 @@ import com.jayton.admissionoffice.model.university.Faculty;
 
 import java.util.List;
 
-public interface FacultyDao extends BaseDao<Faculty> {
-    List<Faculty> getByUniversity(Long universityId) throws DAOException;
+public interface FacultyDao extends Dao<Faculty> {
+    List<Faculty> getByUniversity(long universityId) throws DAOException;
 }

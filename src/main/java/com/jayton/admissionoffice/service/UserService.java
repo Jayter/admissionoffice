@@ -7,8 +7,8 @@ import com.jayton.admissionoffice.service.exception.ServiceException;
 public interface UserService extends Service<User> {
     User add(User user) throws ServiceException;
     User update(User user) throws ServiceException;
-    void addResult(Long userId, Long subjectId, Short mark) throws ServiceException;
-    void deleteResult(Long userId, Long subjectId) throws ServiceException;
+    void addResult(long userId, long subjectId, short mark) throws ServiceException;
+    void deleteResult(long userId, long subjectId) throws ServiceException;
     AuthorizationResult authorize(String login, String password) throws ServiceException;
     User getByEmail(String email) throws ServiceException;
 }

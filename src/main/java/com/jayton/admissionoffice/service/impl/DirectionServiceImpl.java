@@ -25,7 +25,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public Direction get(Long id) throws ServiceException {
+    public Direction get(long id) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             return directionDao.get(id);
@@ -45,7 +45,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException {
+    public void delete(long id) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             directionDao.delete(id);
@@ -65,7 +65,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public List<Direction> getByFaculty(Long facultyId) throws ServiceException {
+    public List<Direction> getByFaculty(long facultyId) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             return directionDao.getByFaculty(facultyId);
@@ -75,7 +75,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public synchronized void addEntranceSubject(Long directionId, Long subjectId, BigDecimal coef) throws ServiceException {
+    public synchronized void addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
 
         Map<Long, BigDecimal> entranceSubjects;
@@ -100,7 +100,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public void deleteEntranceSubject(Long directionId, Long subjectId) throws ServiceException {
+    public void deleteEntranceSubject(long directionId, long subjectId) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             directionDao.deleteSubject(directionId, subjectId);

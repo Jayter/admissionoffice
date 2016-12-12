@@ -3,17 +3,17 @@ package com.jayton.admissionoffice.model.to;
 import java.time.LocalDateTime;
 
 public class SessionTerms {
-    private Short year;
+    private short year;
     private LocalDateTime sessionStart;
     private LocalDateTime sessionEnd;
 
-    public SessionTerms(Short year, LocalDateTime sessionStart, LocalDateTime sessionEnd) {
+    public SessionTerms(short year, LocalDateTime sessionStart, LocalDateTime sessionEnd) {
         this.year = year;
         this.sessionStart = sessionStart;
         this.sessionEnd = sessionEnd;
     }
 
-    public Short getYear() {
+    public short getYear() {
         return year;
     }
 
@@ -32,15 +32,14 @@ public class SessionTerms {
 
         SessionTerms terms = (SessionTerms) o;
 
-        if (year != null ? !year.equals(terms.year) : terms.year != null) return false;
+        if (year != terms.year) return false;
         if (sessionStart != null ? !sessionStart.equals(terms.sessionStart) : terms.sessionStart != null) return false;
         return sessionEnd != null ? sessionEnd.equals(terms.sessionEnd) : terms.sessionEnd == null;
-
     }
 
     @Override
     public int hashCode() {
-        int result = year != null ? year.hashCode() : 0;
+        int result = (int) year;
         result = 31 * result + (sessionStart != null ? sessionStart.hashCode() : 0);
         result = 31 * result + (sessionEnd != null ? sessionEnd.hashCode() : 0);
         return result;

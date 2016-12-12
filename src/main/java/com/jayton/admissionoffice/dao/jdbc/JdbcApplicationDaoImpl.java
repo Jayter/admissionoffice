@@ -58,7 +58,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public Application get(Long id) throws DAOException {
+    public Application get(long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -72,8 +72,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                     return null;
                 }
 
-                Long userId = rs.getLong("user_id");
-                Long directionId = rs.getLong("direction_id");
+                long userId = rs.getLong("user_id");
+                long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                 byte status = rs.getByte("status");
                 BigDecimal mark = rs.getBigDecimal("mark");
@@ -88,7 +88,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public void update(Long id, Status status) throws DAOException {
+    public void update(long id, Status status) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -111,12 +111,12 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public void delete(Long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         DaoHelper.delete(applicationQueries.getString("application.delete"), "Failed to delete application.", id);
     }
 
     @Override
-    public List<Application> getByDirection(Long directionId) throws DAOException {
+    public List<Application> getByDirection(long directionId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -135,7 +135,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> getByUser(Long userId) throws DAOException {
+    public List<Application> getByUser(long userId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -176,9 +176,9 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
         try (ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                Long id = rs.getLong("id");
-                Long userId = rs.getLong("user_id");
-                Long directionId = rs.getLong("direction_id");
+                long id = rs.getLong("id");
+                long userId = rs.getLong("user_id");
+                long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                 byte status = rs.getByte("status");
                 BigDecimal mark = rs.getBigDecimal("mark");

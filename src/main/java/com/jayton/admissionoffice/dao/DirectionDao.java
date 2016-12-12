@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-public interface DirectionDao extends BaseDao<Direction> {
-    List<Direction> getByFaculty(Long facultyId) throws DAOException;
-    void deleteSubject(Long directionId, Long subjectId) throws DAOException;
-    void addSubject(Long directionId, Long subjectId, BigDecimal coef) throws DAOException;
-    Map<Long, BigDecimal> getEntranceSubjects(Long directionId) throws DAOException;
+public interface DirectionDao extends Dao<Direction> {
+    List<Direction> getByFaculty(long facultyId) throws DAOException;
+    void deleteSubject(long directionId, long subjectId) throws DAOException;
+    void addSubject(long directionId, long subjectId, BigDecimal coef) throws DAOException;
+    Map<Long, BigDecimal> getEntranceSubjects(long directionId) throws DAOException;
 }

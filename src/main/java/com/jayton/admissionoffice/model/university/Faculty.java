@@ -1,27 +1,36 @@
 package com.jayton.admissionoffice.model.university;
 
-import com.jayton.admissionoffice.model.NamedEntity;
-
-public class Faculty extends NamedEntity {
+public class Faculty {
+    private long id;
+    private String name;
     private String officePhone;
     private String officeEmail;
     private String officeAddress;
-    private Long universityId;
+    private long universityId;
 
-    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, Long universityId) {
-        super(name);
+    public Faculty(String name, String officePhone, String officeEmail, String officeAddress, long universityId) {
+        this.name = name;
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.officeAddress = officeAddress;
         this.universityId = universityId;
     }
 
-    public Faculty(Long id, String name, String officePhone, String officeEmail, String officeAddress, Long owner) {
-        super(id, name);
+    public Faculty(long id, String name, String officePhone, String officeEmail, String officeAddress, long universityId) {
+        this.id = id;
+        this.name = name;
         this.officePhone = officePhone;
         this.officeEmail = officeEmail;
         this.officeAddress = officeAddress;
-        this.universityId = owner;
+        this.universityId = universityId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getOfficePhone() {
@@ -32,7 +41,7 @@ public class Faculty extends NamedEntity {
         return officeEmail;
     }
 
-    public Long getUniversityId() {
+    public long getUniversityId() {
         return universityId;
     }
 
@@ -44,25 +53,24 @@ public class Faculty extends NamedEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         Faculty faculty = (Faculty) o;
 
+        if (universityId != faculty.universityId) return false;
+        if (name != null ? !name.equals(faculty.name) : faculty.name != null) return false;
         if (officePhone != null ? !officePhone.equals(faculty.officePhone) : faculty.officePhone != null) return false;
         if (officeEmail != null ? !officeEmail.equals(faculty.officeEmail) : faculty.officeEmail != null) return false;
-        if (officeAddress != null ? !officeAddress.equals(faculty.officeAddress) : faculty.officeAddress != null)
-            return false;
-        return universityId != null ? universityId.equals(faculty.universityId) : faculty.universityId == null;
+        return officeAddress != null ? officeAddress.equals(faculty.officeAddress) : faculty.officeAddress == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (officePhone != null ? officePhone.hashCode() : 0);
         result = 31 * result + (officeEmail != null ? officeEmail.hashCode() : 0);
         result = 31 * result + (officeAddress != null ? officeAddress.hashCode() : 0);
-        result = 31 * result + (universityId != null ? universityId.hashCode() : 0);
+        result = 31 * result + (int) (universityId ^ (universityId >>> 32));
         return result;
     }
 }

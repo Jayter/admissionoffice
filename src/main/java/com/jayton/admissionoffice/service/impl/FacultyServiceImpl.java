@@ -22,7 +22,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty get(Long id) throws ServiceException {
+    public Faculty get(long id) throws ServiceException {
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.get(id);
@@ -42,7 +42,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException {
+    public void delete(long id) throws ServiceException {
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             facultyDao.delete(id);
@@ -62,7 +62,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public List<Faculty> getByUniversity(Long universityId) throws ServiceException {
+    public List<Faculty> getByUniversity(long universityId) throws ServiceException {
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.getByUniversity(universityId);

@@ -19,7 +19,7 @@ import java.util.Map;
 public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
-    public synchronized Application add(User user, Long directionId, LocalDateTime applied) throws ServiceException {
+    public synchronized Application add(User user, long directionId, LocalDateTime applied) throws ServiceException {
         verifyApplicationDate(applied);
 
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
@@ -31,7 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 throw new ServiceVerificationException("You can apply only for 5 directions.");
             }
 
-            long countOfDuplicated = retrieved.stream().filter(app -> app.getDirectionId().equals(directionId)).count();
+            long countOfDuplicated = retrieved.stream().filter(app -> app.getDirectionId()== directionId).count();
             if(countOfDuplicated != 0) {
                 throw new ServiceVerificationException("You have already applied for this direction.");
             }
@@ -48,7 +48,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Application get(Long id) throws ServiceException {
+    public Application get(long id) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.get(id);
@@ -58,7 +58,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getByUser(Long userId) throws ServiceException {
+    public List<Application> getByUser(long userId) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByUser(userId);
@@ -68,7 +68,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getByDirection(Long directionId) throws ServiceException {
+    public List<Application> getByDirection(long directionId) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByDirection(directionId);
@@ -78,7 +78,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void update(Long id, Status status) throws ServiceException {
+    public void update(long id, Status status) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.update(id, status);
@@ -88,7 +88,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException {
+    public void delete(long id) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.delete(id);

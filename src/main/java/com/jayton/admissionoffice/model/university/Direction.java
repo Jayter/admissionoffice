@@ -1,50 +1,60 @@
 package com.jayton.admissionoffice.model.university;
 
-import com.jayton.admissionoffice.model.NamedEntity;
-
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class Direction extends NamedEntity {
+public class Direction {
+    private long id;
+    private String name;
     private BigDecimal averageCoefficient;
-    private Integer countOfStudents;
-    private Long facultyId;
+    private int countOfStudents;
+    private long facultyId;
     private Map<Long, BigDecimal> entranceSubjects;
 
-    public Direction(String name, BigDecimal averageCoefficient, Integer countOfStudents, Long facultyId,
+    public Direction(String name, BigDecimal averageCoefficient, int countOfStudents, long facultyId,
                      Map<Long, BigDecimal> entranceSubjects) {
-        super(name);
+        this.name = name;
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
         this.facultyId = facultyId;
         this.entranceSubjects = entranceSubjects;
     }
 
-    public Direction(Long id, String name, BigDecimal averageCoefficient, Integer countOfStudents, Long facultyId) {
-        super(id, name);
+    public Direction(long id, String name, BigDecimal averageCoefficient, int countOfStudents, long facultyId) {
+        this.id = id;
+        this.name = name;
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
         this.facultyId = facultyId;
     }
 
-    public Direction(Long id, String name, BigDecimal averageCoefficient, Integer countOfStudents, Long facultyId,
+    public Direction(long id, String name, BigDecimal averageCoefficient, int countOfStudents, long facultyId,
                      Map<Long, BigDecimal> entranceSubjects) {
-        super(id, name);
+        this.id = id;
+        this.name = name;
         this.averageCoefficient = averageCoefficient;
         this.countOfStudents = countOfStudents;
         this.facultyId = facultyId;
         this.entranceSubjects = entranceSubjects;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public BigDecimal getAverageCoefficient() {
         return averageCoefficient;
     }
 
-    public Integer getCountOfStudents() {
+    public int getCountOfStudents() {
         return countOfStudents;
     }
 
-    public Long getFacultyId() {
+    public long getFacultyId() {
         return facultyId;
     }
 
@@ -56,25 +66,24 @@ public class Direction extends NamedEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         Direction direction = (Direction) o;
 
+        if (countOfStudents != direction.countOfStudents) return false;
+        if (facultyId != direction.facultyId) return false;
+        if (name != null ? !name.equals(direction.name) : direction.name != null) return false;
         if (averageCoefficient != null ? !averageCoefficient.equals(direction.averageCoefficient) : direction.averageCoefficient != null)
             return false;
-        if (countOfStudents != null ? !countOfStudents.equals(direction.countOfStudents) : direction.countOfStudents != null)
-            return false;
-        if (facultyId != null ? !facultyId.equals(direction.facultyId) : direction.facultyId != null) return false;
         return entranceSubjects != null ? entranceSubjects.equals(direction.entranceSubjects) : direction.entranceSubjects == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (averageCoefficient != null ? averageCoefficient.hashCode() : 0);
-        result = 31 * result + (countOfStudents != null ? countOfStudents.hashCode() : 0);
-        result = 31 * result + (facultyId != null ? facultyId.hashCode() : 0);
+        result = 31 * result + countOfStudents;
+        result = 31 * result + (int) (facultyId ^ (facultyId >>> 32));
         result = 31 * result + (entranceSubjects != null ? entranceSubjects.hashCode() : 0);
         return result;
     }

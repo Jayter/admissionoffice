@@ -53,7 +53,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public University get(Long id) throws DAOException {
+    public University get(long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -110,7 +110,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public void delete(Long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         DaoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
     }
 
@@ -156,7 +156,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
         try(ResultSet rs = statement.executeQuery()) {
             while(rs.next()) {
-                Long id = rs.getLong("id");
+                long id = rs.getLong("id");
                 String name = rs.getString("name");
                 String city = rs.getString("city");
                 String address = rs.getString("address");

@@ -4,21 +4,21 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Application {
-    private Long id;
-    private Long userId;
-    private Long directionId;
+    private long id;
+    private long userId;
+    private long directionId;
     private LocalDateTime creationTime;
     private BigDecimal mark;
     private Status status;
 
-    public Application(Long userId, Long directionId, LocalDateTime creationTime, BigDecimal mark) {
+    public Application(long userId, long directionId, LocalDateTime creationTime, BigDecimal mark) {
         this.userId = userId;
         this.directionId = directionId;
         this.creationTime = creationTime;
         this.mark = mark;
     }
 
-    public Application(Long id, Long userId, Long directionId, LocalDateTime created, Status status, BigDecimal mark) {
+    public Application(long id, long userId, long directionId, LocalDateTime created, Status status, BigDecimal mark) {
         this.id = id;
         this.userId = userId;
         this.directionId = directionId;
@@ -27,15 +27,15 @@ public class Application {
         this.mark = mark;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public Long getDirectionId() {
+    public long getDirectionId() {
         return directionId;
     }
 
@@ -56,9 +56,7 @@ public class Application {
 
         Application that = (Application) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
-        if (directionId != null ? !directionId.equals(that.directionId) : that.directionId != null) return false;
+        if (directionId != that.directionId) return false;
         if (creationTime != null ? !creationTime.equals(that.creationTime) : that.creationTime != null) return false;
         if (mark != null ? !(mark.compareTo(that.mark) == 0) : that.mark != null) return false;
         return status == that.status;
@@ -66,12 +64,23 @@ public class Application {
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
-        result = 31 * result + (directionId != null ? directionId.hashCode() : 0);
+        int result = (int) (userId ^ (userId >>> 32));
+        result = 31 * result + (int) (directionId ^ (directionId >>> 32));
         result = 31 * result + (creationTime != null ? creationTime.hashCode() : 0);
         result = 31 * result + (mark != null ? mark.intValue() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", directionId=" + directionId +
+                ", creationTime=" + creationTime +
+                ", mark=" + mark +
+                ", status=" + status +
+                '}';
     }
 }

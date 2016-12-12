@@ -52,8 +52,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             try (ResultSet rs = addUserSt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    Long id = rs.getLong(1);
-                    return new User(id, user.getName(), user.getLastName(), user.getAddress(), user.getEmail(),
+                    return new User(rs.getLong(1), user.getName(), user.getLastName(), user.getAddress(), user.getEmail(),
                             user.getPhoneNumber(), user.getBirthDate(), user.getAverageMark(), Collections.emptyMap());
                 } else {
                     throw new DAOException("Failed to get user`s id.");
@@ -68,7 +67,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(Long id) throws DAOException {
+    public User get(long id) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -134,7 +133,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public void delete(Long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         DaoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
     }
 
@@ -176,7 +175,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public void addResult(Long userId, Long subjectId, Short mark) throws DAOException {
+    public void addResult(long userId, long subjectId, short mark) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -200,7 +199,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public Map<Long, Short> getResultsOfUser(Long userId) throws DAOException {
+    public Map<Long, Short> getResultsOfUser(long userId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -226,7 +225,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteResult(Long userId, Long subjectId) throws DAOException {
+    public void deleteResult(long userId, long subjectId) throws DAOException {
         DaoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
     }
 
@@ -292,21 +291,21 @@ public class JdbcUserDaoImpl implements UserDao {
                 return null;
             }
 
-            Long id = rs.getLong("id");
+            long id = rs.getLong("id");
             String name = rs.getString("name");
             String secondName = rs.getString("last_name");
             String address = rs.getString("address");
             String email = rs.getString("email");
             String phoneNumber = rs.getString("phone_number");
             LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
-            Byte averageMark = rs.getByte("average_mark");
+            byte averageMark = rs.getByte("average_mark");
 
             Map<Long, Short> results = new HashMap<>();
 
-            Long subjectId = rs.getLong("subject_id");
-            Short mark = rs.getShort("mark");
+            long subjectId = rs.getLong("subject_id");
+            short mark = rs.getShort("mark");
 
-            if (subjectId != null && mark != null) {
+            if (subjectId != 0 && mark != 0) {
                 results.put(subjectId, mark);
             }
 
@@ -323,27 +322,27 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try(ResultSet rs = statement.executeQuery()) {
             while(rs.next()) {
-                Long id = rs.getLong("id");
+                long id = rs.getLong("id");
                 String name = rs.getString("name");
                 String secondName = rs.getString("last_name");
                 String address = rs.getString("address");
                 String email = rs.getString("email");
                 String phoneNumber = rs.getString("phone_number");
                 LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
-                Byte averageMark = rs.getByte("average_mark");
+                byte averageMark = rs.getByte("average_mark");
 
                 Map<Long, Short> results = new HashMap<>();
 
-                Long subjectId = rs.getLong("subject_id");
-                Short mark = rs.getShort("mark");
+                long subjectId = rs.getLong("subject_id");
+                short mark = rs.getShort("mark");
 
-                if (subjectId != null && mark != null) {
+                if (subjectId != 0 && mark != 0) {
                     results.put(subjectId, mark);
                 }
 
                 while (rs.next()) {
                     Long nextId = rs.getLong("id");
-                    if(id.equals(nextId)) {
+                    if(id == nextId) {
                         results.put(rs.getLong("subject_id"), rs.getShort("mark"));
                     } else {
                         rs.previous();

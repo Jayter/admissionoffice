@@ -2,29 +2,21 @@ package com.jayton.admissionoffice.model;
 
 import java.io.Serializable;
 
-public class NamedEntity implements Serializable {
-    private Long id;
-    protected String name;
+public class Subject implements Serializable {
+    private long id;
+    private String name;
 
-    public NamedEntity(String name) {
+    public Subject(String name) {
         this.name = name;
     }
 
-    public NamedEntity(Long id, String name) {
+    public Subject(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public boolean isNew() {
-        return this.id == null;
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -32,7 +24,7 @@ public class NamedEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        NamedEntity that = (NamedEntity) o;
+        Subject that = (Subject) o;
 
         return name != null ? name.equals(that.name) : that.name == null;
     }

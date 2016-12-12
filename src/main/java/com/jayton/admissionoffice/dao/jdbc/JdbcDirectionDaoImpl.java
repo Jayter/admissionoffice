@@ -39,7 +39,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 throw new DAOException("Failed to save direction.");
             }
 
-            Long id;
+            long id;
             try (ResultSet rs = addDirectionSt.getGeneratedKeys()) {
                 if (rs.next()) {
                     id = rs.getLong(1);
@@ -73,7 +73,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public Direction get(Long id) throws DAOException {
+    public Direction get(long id) throws DAOException {
         PreparedStatement getDirectionSt = null;
         Connection connection = null;
 
@@ -90,17 +90,18 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
                 String name = rs.getString("name");
                 BigDecimal averageCoef = rs.getBigDecimal("average_coef");
-                Integer countOfStudents = rs.getInt("count_of_students");
-                Long facultyId = rs.getLong("faculty_id");
+                int countOfStudents = rs.getInt("count_of_students");
+                long facultyId = rs.getLong("faculty_id");
 
                 Map<Long, BigDecimal> subjects = new HashMap<>();
 
-                Long subjectId = rs.getLong("subject_id");
+                long subjectId = rs.getLong("subject_id");
                 BigDecimal coefficient = rs.getBigDecimal("coefficient");
 
-                if(subjectId != null && coefficient != null) {
+                if(subjectId != 0 && coefficient != null) {
                     subjects.put(subjectId, coefficient);
                 }
+
                 while (rs.next()) {
                     subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
                 }
@@ -158,7 +159,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public void delete(Long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         DaoHelper.delete(directionQueries.getString("direction.delete"), "Failed to delete direction.", id);
     }
 
@@ -181,7 +182,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public List<Direction> getByFaculty(Long facultyId) throws DAOException {
+    public List<Direction> getByFaculty(long facultyId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -200,7 +201,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public void addSubject(Long directionId, Long subjectId, BigDecimal coef) throws DAOException {
+    public void addSubject(long directionId, long subjectId, BigDecimal coef) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -225,13 +226,13 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public void deleteSubject(Long directionId, Long subjectId) throws DAOException {
+    public void deleteSubject(long directionId, long subjectId) throws DAOException {
         DaoHelper.delete(directionQueries.getString("subject.delete"), "Failed to delete entrance subject.",
                 directionId, subjectId);
     }
 
     @Override
-    public Map<Long, BigDecimal> getEntranceSubjects(Long directionId) throws DAOException {
+    public Map<Long, BigDecimal> getEntranceSubjects(long directionId) throws DAOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -261,24 +262,24 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try (ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                Long id = rs.getLong("id");
-                Long facultyId = rs.getLong("faculty_id");
+                long id = rs.getLong("id");
+                long facultyId = rs.getLong("faculty_id");
                 String name = rs.getString("name");
                 BigDecimal averageCoef = rs.getBigDecimal("average_coef");
-                Integer countOfStudents = rs.getInt("count_of_students");
+                int countOfStudents = rs.getInt("count_of_students");
 
                 Map<Long, BigDecimal> subjects = new HashMap<>();
 
-                Long subjectId = rs.getLong("subject_id");
+                long subjectId = rs.getLong("subject_id");
                 BigDecimal coefficient = rs.getBigDecimal("coefficient");
 
-                if(subjectId != null && coefficient != null) {
+                if(subjectId != 0 && coefficient != null) {
                     subjects.put(subjectId, coefficient);
                 }
 
                 while (rs.next()) {
-                    Long nextId = rs.getLong("id");
-                    if (id.equals(nextId)) {
+                    long nextId = rs.getLong("id");
+                    if (id == nextId) {
                         subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
                     } else {
                         rs.previous();

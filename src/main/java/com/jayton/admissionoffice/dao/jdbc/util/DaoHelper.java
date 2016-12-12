@@ -29,7 +29,7 @@ public class DaoHelper {
                 throw new DAOException(errorMessage);
             }
             for(int i = 0; i < params.length; i++) {
-                statement.setLong(i, params[i]);
+                statement.setLong(i + 1, params[i]);
             }
 
             int affectedRows = statement.executeUpdate();

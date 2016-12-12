@@ -9,7 +9,7 @@ import java.util.List;
 public interface DirectionService extends Service<Direction> {
     Direction add(Direction direction) throws ServiceException;
     Direction update(Direction direction) throws ServiceException;
-    List<Direction> getByFaculty(Long facultyId) throws ServiceException;
-    void addEntranceSubject(Long directionId, Long subjectId, BigDecimal coef) throws ServiceException;
-    void deleteEntranceSubject(Long directionId, Long subjectId) throws ServiceException;
+    List<Direction> getByFaculty(long facultyId) throws ServiceException;
+    void addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException;
+    void deleteEntranceSubject(long directionId, long subjectId) throws ServiceException;
 }
