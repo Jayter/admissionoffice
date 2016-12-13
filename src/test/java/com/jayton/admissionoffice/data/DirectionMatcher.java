@@ -3,14 +3,13 @@ package com.jayton.admissionoffice.data;
 import com.jayton.admissionoffice.model.university.Direction;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class DirectionMatcher extends Matcher<Direction> {
 
     @Override
-    public boolean compare(Direction first, Direction second) {
+    public boolean equals(Direction first, Direction second) {
         if(!first.getName().equals(second.getName())) return false;
         if(!scale(first.getAverageCoefficient()).equals(scale(second.getAverageCoefficient()))) return false;
         if(first.getCountOfStudents() != second.getCountOfStudents()) return false;
@@ -28,13 +27,13 @@ public class DirectionMatcher extends Matcher<Direction> {
         return true;
     }
 
-    public boolean compareLists(List<Direction> first, List<Direction> second) {
+    public boolean equals(List<Direction> first, List<Direction> second) {
         first.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         second.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         boolean flag = first.size() == second.size();
         if(flag) {
             for(int i = 0; i < first.size(); i++) {
-                if(!(compare(first.get(i), second.get(i)))) {
+                if(!(equals(first.get(i), second.get(i)))) {
                     return false;
                 }
             }

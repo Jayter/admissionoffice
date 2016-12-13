@@ -8,7 +8,7 @@ import java.util.Map;
 public class UserMatcher extends Matcher<User> {
 
     @Override
-    public boolean compare(User first, User second) {
+    public boolean equals(User first, User second) {
         if(!first.getName().equals(second.getName())) return false;
         if(!first.getLastName().equals(second.getLastName())) return false;
         if(!first.getAddress().equals(second.getAddress())) return false;
@@ -35,7 +35,7 @@ public class UserMatcher extends Matcher<User> {
         boolean flag = first.size() == second.size();
         if(flag) {
             for(int i = 0; i < first.size(); i++) {
-                if(!(compare(first.get(i), second.get(i)))) {
+                if(!(equals(first.get(i), second.get(i)))) {
                     return false;
                 }
             }
