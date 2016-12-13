@@ -71,16 +71,4 @@ public class Application {
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "Application{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", directionId=" + directionId +
-                ", creationTime=" + creationTime +
-                ", mark=" + mark +
-                ", status=" + status +
-                '}';
-    }
 }
