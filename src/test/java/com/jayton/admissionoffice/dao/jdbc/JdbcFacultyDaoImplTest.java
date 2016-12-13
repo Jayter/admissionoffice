@@ -17,9 +17,6 @@ import java.util.List;
 
 import static com.jayton.admissionoffice.data.TestData.*;
 
-/**
- * Created by Jayton on 27.11.2016.
- */
 public class JdbcFacultyDaoImplTest {
 
     private FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
@@ -33,14 +30,14 @@ public class JdbcFacultyDaoImplTest {
     }
 
     @Test
-    public void get() throws Exception {
+    public void getTest() throws Exception {
         Assert.assertEquals(FACULTY1, facultyDao.get(FACULTY1.getId()));
 
         Assert.assertNull(facultyDao.get(INCORRECT_ID));
     }
 
     @Test
-    public void getByUniversity() throws Exception {
+    public void getByUniversityTest() throws Exception {
         List<Faculty> faculties = facultyDao.getByUniversity(UNIVERSITY2.getId());
 
         Assert.assertEquals(Arrays.asList(FACULTY3, FACULTY4), faculties);
@@ -49,15 +46,15 @@ public class JdbcFacultyDaoImplTest {
     }
 
     @Test
-    public void getAll() throws Exception {
+    public void getAllTest() throws Exception {
         List<Faculty> all = facultyDao.getAll();
 
         Assert.assertEquals(Arrays.asList(FACULTY1, FACULTY2, FACULTY3, FACULTY4), all);
     }
 
     @Test
-    public void add() throws Exception {
-        Assert.assertEquals(NEW_ID, facultyDao.add(NEW_FACULTY));
+    public void addTest() throws Exception {
+        Assert.assertEquals(NEW_ID, facultyDao.add(NEW_FACULTY).getId());
         Assert.assertEquals(Arrays.asList(FACULTY1, FACULTY2, FACULTY3, FACULTY4, NEW_FACULTY),
                 facultyDao.getAll());
 
@@ -67,7 +64,7 @@ public class JdbcFacultyDaoImplTest {
     }
 
     @Test
-    public void update() throws Exception {
+    public void updateTest() throws Exception {
         facultyDao.update(UPDATED_FACULTY);
 
         Assert.assertEquals(UPDATED_FACULTY, facultyDao.get(FACULTY1.getId()));
@@ -77,12 +74,12 @@ public class JdbcFacultyDaoImplTest {
     }
 
     @Test
-    public void delete() throws Exception {
-        Assert.assertTrue(facultyDao.delete(FACULTY3.getId()));
+    public void deleteTest() throws Exception {
+        facultyDao.delete(FACULTY3.getId());
 
         Assert.assertEquals(facultyDao.getAll(), Arrays.asList(FACULTY1, FACULTY2, FACULTY4));
 
-        Assert.assertFalse(facultyDao.delete(INCORRECT_ID));
+        expected.expect(DAOException.class);
+        facultyDao.delete(INCORRECT_ID);
     }
-
 }
