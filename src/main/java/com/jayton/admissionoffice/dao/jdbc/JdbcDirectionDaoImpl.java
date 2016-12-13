@@ -170,7 +170,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("direction.get.all"));
+            statement = connection.prepareStatement(directionQueries.getString("direction.get.all"),
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             return getByStatement(statement);
 
@@ -188,7 +189,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
+            statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"),
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY, ResultSet.CONCUR_READ_ONLY);
             statement.setLong(1, facultyId);
 
             return getByStatement(statement);

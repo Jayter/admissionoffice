@@ -144,7 +144,8 @@ public class JdbcUserDaoImpl implements UserDao {
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(userQueries.getString("user.get.all"));
+            statement = connection.prepareStatement(userQueries.getString("user.get.all"),
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             return getAllByStatement(statement);
 
