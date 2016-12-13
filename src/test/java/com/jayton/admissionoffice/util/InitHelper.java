@@ -1,5 +1,6 @@
 package com.jayton.admissionoffice.util;
 
+import com.jayton.admissionoffice.dao.exception.FailedInitializationException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 
 import java.io.BufferedReader;
@@ -8,9 +9,6 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * Created by Jayton on 25.11.2016.
- */
 public class InitHelper {
 
     private static final String TEST_DB_PROPERTIES = "db.testDb";
@@ -25,10 +23,14 @@ public class InitHelper {
         initDefaultDataSource();
     }
     public static void initDefaultDataSource() {
-        initDataSource(TEST_DB_PROPERTIES);
+        try {
+            initDataSource(TEST_DB_PROPERTIES);
+        } catch (FailedInitializationException e) {
+            throw new RuntimeException("Failed to init data source.", e);
+        }
     }
 
-    public static void initDataSource(String path) {
+    public static void initDataSource(String path) throws FailedInitializationException {
         if(dataSourceInitialized) {
             throw new UnsupportedOperationException("Data source is already initialized.");
         }
