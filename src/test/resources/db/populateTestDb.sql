@@ -1,4 +1,5 @@
 DELETE FROM applications;
+DELETE FROM session_info;
 DELETE FROM exam_results;
 DELETE FROM entrance_subjects;
 DELETE FROM credentials;
@@ -41,8 +42,8 @@ INSERT INTO exam_results (user_id, subject_id, mark) VALUES
 
 INSERT INTO universities (name, city, address) VALUES
   ('Київський національний університет ім. Тараса Шевченка', 'Київ', 'вул. Володимирська, 60'),
-  ('Національний університет "Києво-Могилянська Академія"', 'Київ', 'вул. Григорія Сковороди, 2'),
-  ('Національний університет "Львівська політехніка"', 'Львів', 'вул. Степана Бандери, 12');
+  ('Національний університет ''Києво-Могилянська Академія''', 'Київ', 'вул. Григорія Сковороди, 2'),
+  ('Національний університет ''Львівська політехніка''', 'Львів', 'вул. Степана Бандери, 12');
 
 INSERT INTO faculties (name, office_phone, office_email, address, university_id) VALUES
   ('Факультет інформаційних технологій', 'сайт не працює',
@@ -70,6 +71,6 @@ INSERT INTO entrance_subjects (direction_id, subject_id, coefficient) VALUES
   (10015, 10002, 0.25);
 
 INSERT INTO applications (user_id, direction_id, created_time, status, mark) VALUES
-  (10004, 10015, '2016-11-29 12:15:55', 'Approved', 192.3),
-  (10004, 10014, '2016-11-30 20:49:30', 'Created', 180.5),
-  (10004, 10016, '2016-11-30 18:01:45', 'Rejected', 178.2);
+  (10004, 10015, '2016-11-29 12:15:55', '1', 192.3),
+  (10004, 10014, '2016-11-30 20:49:30', '0', 180.5),
+  (10004, 10016, '2016-11-30 18:01:45', '0', 178.2);
