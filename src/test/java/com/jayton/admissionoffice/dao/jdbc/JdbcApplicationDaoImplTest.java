@@ -70,14 +70,14 @@ public class JdbcApplicationDaoImplTest {
     @Test
     public void getByUserTest() throws Exception {
         List<Application> list = Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2);
-        Assert.assertTrue(matcher.compareLists(list, applicationDao.getByUser(USER1.getId())));
+        Assert.assertTrue(matcher.equals(list, applicationDao.getByUser(USER1.getId())));
 
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }
 
     @Test
     public void getByDirectionTest() throws Exception {
-        Assert.assertTrue(matcher.compareLists(Collections.singletonList(APPLICATION2),
+        Assert.assertTrue(matcher.equals(Collections.singletonList(APPLICATION2),
                 applicationDao.getByDirection(DIRECTION1.getId())));
 
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
@@ -86,6 +86,6 @@ public class JdbcApplicationDaoImplTest {
     @Test
     public void getAllTest() throws Exception {
         List<Application> list = Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2);
-        Assert.assertTrue(matcher.compareLists(list, applicationDao.getAll()));
+        Assert.assertTrue(matcher.equals(list, applicationDao.getAll()));
     }
 }

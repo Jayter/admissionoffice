@@ -15,6 +15,7 @@ public class ApplicationMatcher extends Matcher<Application> {
         return flag && first.getStatus() == second.getStatus();
     }
 
+    @Override
     public boolean equals(List<Application> first, List<Application> second) {
         first.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         second.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));

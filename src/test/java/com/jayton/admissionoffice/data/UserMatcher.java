@@ -29,7 +29,8 @@ public class UserMatcher extends Matcher<User> {
         return true;
     }
 
-    public boolean compareLists(List<User> first, List<User> second) {
+    @Override
+    public boolean equals(List<User> first, List<User> second) {
         first.sort((u1, u2) -> (int)(u1.getId() - u2.getId()));
         second.sort((u1, u2) -> (int)(u1.getId() - u2.getId()));
         boolean flag = first.size() == second.size();

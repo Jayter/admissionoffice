@@ -27,6 +27,7 @@ public class DirectionMatcher extends Matcher<Direction> {
         return true;
     }
 
+    @Override
     public boolean equals(List<Direction> first, List<Direction> second) {
         first.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         second.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));

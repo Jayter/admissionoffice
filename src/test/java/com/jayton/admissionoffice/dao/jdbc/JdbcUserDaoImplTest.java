@@ -51,13 +51,13 @@ public class JdbcUserDaoImplTest {
     public void getAllTest() throws Exception {
         List<User> actual = userDao.getAll();
 
-        Assert.assertTrue(matcher.compareLists(actual, Arrays.asList(USER1, USER2, USER3)));
+        Assert.assertTrue(matcher.equals(actual, Arrays.asList(USER1, USER2, USER3)));
     }
 
     @Test
     public void addTest() throws Exception {
         Assert.assertEquals(NEW_ID, userDao.add(NEW_USER).getId());
-        Assert.assertTrue(matcher.compareLists(userDao.getAll(),
+        Assert.assertTrue(matcher.equals(userDao.getAll(),
                 Arrays.asList(USER1, USER2, USER3, NEW_USER_WITHOUT_CREDENTIALS) ));
 
         expected.expect(DAOException.class);
@@ -77,7 +77,7 @@ public class JdbcUserDaoImplTest {
     @Test
     public void deleteTest() throws Exception {
         userDao.delete(USER1.getId());
-        Assert.assertTrue(matcher.compareLists(Arrays.asList(USER2, USER3), userDao.getAll()));
+        Assert.assertTrue(matcher.equals(Arrays.asList(USER2, USER3), userDao.getAll()));
 
         expected.expect(DAOException.class);
         userDao.delete(INCORRECT_ID);

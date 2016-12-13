@@ -49,7 +49,7 @@ public class JdbcDirectionDaoImplTest {
     public void getByFacultyTest() throws Exception {
         List<Direction> retrieved = directionDao.getByFaculty(FACULTY1.getId());
 
-        Assert.assertTrue(matcher.compareLists(retrieved, Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
+        Assert.assertTrue(matcher.equals(retrieved, Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
 
         Assert.assertEquals(Collections.emptyList(), directionDao.getByFaculty(INCORRECT_ID));
     }
@@ -58,7 +58,7 @@ public class JdbcDirectionDaoImplTest {
     public void getAllTest() throws Exception {
         List<Direction> retrieved = directionDao.getAll();
 
-        Assert.assertTrue(matcher.compareLists(retrieved, Arrays.asList(DIRECTION1, DIRECTION2,
+        Assert.assertTrue(matcher.equals(retrieved, Arrays.asList(DIRECTION1, DIRECTION2,
                 DIRECTION4, DIRECTION5, DIRECTION3)));
     }
 
@@ -67,7 +67,7 @@ public class JdbcDirectionDaoImplTest {
         Assert.assertEquals(NEW_ID, directionDao.add(NEW_DIRECTION).getId());
 
         List<Direction> all = Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3, DIRECTION4, DIRECTION5, NEW_DIRECTION);
-        Assert.assertTrue(matcher.compareLists(directionDao.getAll(), all));
+        Assert.assertTrue(matcher.equals(directionDao.getAll(), all));
 
         expected.expect(DAOException.class);
         directionDao.add(DIRECTION_WITH_INCORRECT_OWNER);
@@ -85,7 +85,7 @@ public class JdbcDirectionDaoImplTest {
         directionDao.delete(DIRECTION2.getId());
 
         List<Direction> all = Arrays.asList(DIRECTION1, DIRECTION3, DIRECTION4, DIRECTION5);
-        Assert.assertTrue(matcher.compareLists(all, directionDao.getAll()));
+        Assert.assertTrue(matcher.equals(all, directionDao.getAll()));
 
         expected.expect(DAOException.class);
         directionDao.delete(NEW_DIRECTION.getId());
