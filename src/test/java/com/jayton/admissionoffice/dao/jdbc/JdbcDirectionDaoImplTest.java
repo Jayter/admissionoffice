@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.data.DirectionMatcher;
+import com.jayton.admissionoffice.dao.data.DirectionMatcher;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.util.InitHelper;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.jayton.admissionoffice.data.TestData.*;
+import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcDirectionDaoImplTest {
 

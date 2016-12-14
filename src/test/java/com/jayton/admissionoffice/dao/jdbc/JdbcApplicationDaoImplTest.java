@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.ApplicationDao;
 import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.data.ApplicationMatcher;
+import com.jayton.admissionoffice.dao.data.ApplicationMatcher;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.util.InitHelper;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.TestData.*;
+import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcApplicationDaoImplTest {
 
@@ -87,5 +87,15 @@ public class JdbcApplicationDaoImplTest {
     public void getAllTest() throws Exception {
         List<Application> list = Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2);
         Assert.assertTrue(matcher.equals(list, applicationDao.getAll()));
+    }
+
+    @Test
+    public void updateAllTest() throws Exception {
+        List<Application> list = Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2);
+        applicationDao.updateAll(list, Status.APPROVED);
+
+        for(Application application: applicationDao.getAll()) {
+            Assert.assertEquals(application.getStatus(), Status.APPROVED);
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.data.UserMatcher;
+import com.jayton.admissionoffice.dao.data.UserMatcher;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.InitHelper;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.TestData.*;
+import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcUserDaoImplTest {
 

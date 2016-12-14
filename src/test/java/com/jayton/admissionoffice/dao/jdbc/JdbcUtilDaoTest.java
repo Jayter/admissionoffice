@@ -15,7 +15,7 @@ import org.junit.rules.ExpectedException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.jayton.admissionoffice.data.TestData.*;
+import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcUtilDaoTest {
     private UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();

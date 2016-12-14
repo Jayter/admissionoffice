@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.data;
+package com.jayton.admissionoffice.dao.data;
 
 import com.jayton.admissionoffice.model.university.Direction;
 
