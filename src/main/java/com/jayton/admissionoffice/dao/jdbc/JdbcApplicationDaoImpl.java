@@ -116,6 +116,33 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
+    public void updateAll(List<Application> applications, Status status) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(applicationQueries.getString("application.update"));
+
+            for(Application application: applications) {
+                statement.setInt(1, status.ordinal());
+                statement.setLong(2, application.getId());
+                statement.addBatch();
+            }
+
+            for(int affectedRow: statement.executeBatch()) {
+                if(affectedRow == 0) {
+                    throw new DAOException("Failed to update applications.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Failed to update applications.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
     public List<Application> getByDirection(long directionId) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;

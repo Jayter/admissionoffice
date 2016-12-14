@@ -11,6 +11,7 @@ public interface ApplicationDao {
     Application add(Application application) throws DAOException;
     void update(long id, Status status) throws DAOException;
     void delete(long id) throws DAOException;
+    void updateAll(List<Application> applications, Status status) throws DAOException;
     List<Application> getByUser(long userId) throws DAOException;
     List<Application> getByDirection(long directionId) throws DAOException;
     List<Application> getAll() throws DAOException;
