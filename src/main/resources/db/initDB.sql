@@ -85,9 +85,9 @@ CREATE TABLE entrance_subjects (
 CREATE TABLE applications (
   id BIGINT PRIMARY KEY DEFAULT nextval('global_seq'),
   user_id BIGINT NOT NULL,
-  direction_id BIGINT UNIQUE NOT NULL,
+  direction_id BIGINT NOT NULL,
   created_time TIMESTAMP NOT NULL DEFAULT now(),
-  status BIT NOT NULL DEFAULT 0,
+  status SMALLINT NOT NULL DEFAULT 0,
   mark REAL NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (direction_id) REFERENCES directions(id) ON DELETE CASCADE
