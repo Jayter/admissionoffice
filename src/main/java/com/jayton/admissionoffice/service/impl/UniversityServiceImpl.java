@@ -52,20 +52,30 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public List<University> getAll() throws ServiceException {
+    public List<University> getAll(long offset, long count) throws ServiceException {
         UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return universityDao.getAll();
+            return universityDao.getAll(offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<University> getByCity(String city) throws ServiceException {
+    public List<University> getByCity(String city, long offset, long count) throws ServiceException {
         UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
         try {
-            return universityDao.getByCity(city);
+            return universityDao.getByCity(city, offset, count);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public long getTotalCount() throws ServiceException {
+        UniversityDao universityDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUniversityDao();
+        try {
+            return universityDao.getTotalCount();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

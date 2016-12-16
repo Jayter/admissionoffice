@@ -25,7 +25,7 @@ public class JdbcUtilDaoTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test

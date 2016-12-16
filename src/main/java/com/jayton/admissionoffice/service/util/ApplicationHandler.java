@@ -10,9 +10,13 @@ import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.stream.Collectors;
 
 public class ApplicationHandler {
+
+    private static ApplicationHandler instance = new ApplicationHandler();
 
     private final Comparator<Application> dateComparator =
             (app1, app2) -> app1.getCreationTime().compareTo(app2.getCreationTime());
@@ -20,6 +24,13 @@ public class ApplicationHandler {
             (app1, app2) -> app1.getMark().compareTo(app2.getMark());
 
     private Map<Long, Direction> directions;
+
+    private ApplicationHandler() {
+    }
+
+    public static ApplicationHandler getInstance() {
+        return instance;
+    }
 
     public void handleApplications() throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
@@ -32,9 +43,9 @@ public class ApplicationHandler {
         } catch (DAOException e) {
             throw new ServiceException("Failed to handle applications.", e);
         }
-        
-        Map<Long, PriorityQueue<Application>> userApplications = convertToUserQueue(applications);
-        Map<Long, PriorityQueue<Application>> acceptedApplications = distributeInDirections(userApplications);
+
+        Map<Long, PriorityBlockingQueue<Application>> userApplications = convertToUserQueue(applications);
+        Map<Long, PriorityBlockingQueue<Application>> acceptedApplications = distributeInDirections(userApplications);
 
         List<Application> applicationsToUpdate = new ArrayList<>();
         acceptedApplications.forEach((id, queue) -> applicationsToUpdate.addAll(queue));
@@ -46,22 +57,23 @@ public class ApplicationHandler {
         }
     }
 
-    public Map<Long, PriorityQueue<Application>> distributeInDirections(Map<Long, PriorityQueue<Application>> apps) {
-        Map<Long, PriorityQueue<Application>> destinationApplications = new HashMap<>();
-        for(Map.Entry<Long, PriorityQueue<Application>> pair: apps.entrySet()) {
+    public Map<Long, PriorityBlockingQueue<Application>> distributeInDirections(Map<Long, PriorityBlockingQueue<Application>> apps) {
+        Map<Long, PriorityBlockingQueue<Application>> destinationApplications = new ConcurrentHashMap<>();
+        for(Map.Entry<Long, PriorityBlockingQueue<Application>> pair: apps.entrySet()) {
             addFirstApplication(pair.getKey(), apps, destinationApplications);
         }
         return destinationApplications;
     }
 
-    private void addFirstApplication(Long userId, Map<Long, PriorityQueue<Application>> sourceApplications,
-                                     Map<Long, PriorityQueue<Application>> destinationApplications) {
-        PriorityQueue<Application> userQueue = sourceApplications.get(userId);
+    private void addFirstApplication(Long userId, Map<Long, PriorityBlockingQueue<Application>> sourceApplications,
+                                     Map<Long, PriorityBlockingQueue<Application>> destinationApplications) {
+        PriorityBlockingQueue<Application> userQueue = sourceApplications.get(userId);
         if(userQueue != null && !userQueue.isEmpty()) {
             Application firstApplication = userQueue.poll();
-            PriorityQueue<Application> directionQueue = destinationApplications.get(firstApplication.getDirectionId());
+            PriorityBlockingQueue<Application> directionQueue = destinationApplications.get(firstApplication.getDirectionId());
             if(directionQueue == null) {
-                directionQueue = new PriorityQueue<>(markComparator);
+                directionQueue = new PriorityBlockingQueue<>(directions.get(firstApplication.getDirectionId())
+                        .getCountOfStudents(), markComparator);
                 destinationApplications.put(firstApplication.getDirectionId(), directionQueue);
             }
 
@@ -73,12 +85,12 @@ public class ApplicationHandler {
         }
     }
 
-    private Map<Long, PriorityQueue<Application>> convertToUserQueue(List<Application> applications) {
-        Map<Long, PriorityQueue<Application>> result = new HashMap<>();
+    private Map<Long, PriorityBlockingQueue<Application>> convertToUserQueue(List<Application> applications) {
+        Map<Long, PriorityBlockingQueue<Application>> result = new ConcurrentHashMap<>();
 
         for(ListIterator<Application> iterator = applications.listIterator(); iterator.hasNext(); ) {
             Application first = iterator.next();
-            PriorityQueue<Application> queue = new PriorityQueue<>(dateComparator);
+            PriorityBlockingQueue<Application> queue = new PriorityBlockingQueue<>(5, dateComparator);
             queue.add(first);
 
             while (iterator.hasNext()) {

@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.controller.filter;
 
-import com.jayton.admissionoffice.command.PageNames;
 import com.jayton.admissionoffice.controller.CommandHelper;
 import com.jayton.admissionoffice.controller.CommandName;
 
@@ -13,14 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jayton on 07.12.2016.
- */
 public class UserFilter implements Filter {
 
-    private String COMMAND = "command";
-    private String EXCEPTION = "exception";
-    private String ACCESS_DENIED = "Access denied.";
+    private static final String COMMAND = "command";
+    private static final String EXCEPTION_PAGE = "error.jsp";
+    private static final String EXCEPTION = "exception";
+    private static final String ACCESS_DENIED = "Access denied.";
 
     private List<CommandName> adminCommands;
     private List<CommandName> userCommands;
@@ -50,6 +47,7 @@ public class UserFilter implements Filter {
         adminCommands.add(DELETE_DIRECTION);
         adminCommands.add(ADD_ENTRANCE_SUBJECT);
         adminCommands.add(DELETE_ENTRANCE_SUBJECT);
+        adminCommands.add(HANDLE_APPLICATIONS);
 
         userCommands.add(USER_APPLY);
         userCommands.add(USER_CANCEL_APPLICATION);
@@ -62,6 +60,7 @@ public class UserFilter implements Filter {
 
         if(commandName == null || commandName.isEmpty()) {
             chain.doFilter(request, servletResponse);
+            return;
         }
 
         CommandName command = CommandHelper.getInstance().getCommandName(commandName);
@@ -70,24 +69,26 @@ public class UserFilter implements Filter {
             if(session != null) {
                 Boolean isAuthorizedAdmin = (Boolean) session.getAttribute("isAuthorizedAdmin");
                 Boolean isAuthorizedUser = (Boolean) session.getAttribute("isAuthorizedUser");
-                if(isAuthorizedAdmin == null || isAuthorizedUser == null) {
+                if(isAuthorizedAdmin == null && isAuthorizedUser == null) {
                     request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
-                    request.getRequestDispatcher(PageNames.EXCEPTION).forward(request, servletResponse);
+                    request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                    return;
                 }
 
                 boolean isAdminCommandViolated = adminCommands.contains(command) && !isAuthorizedAdmin;
                 boolean isUserCommandViolated = userCommands.contains(command) && !isAuthorizedUser;
 
-                 if(isAdminCommandViolated || isUserCommandViolated) {
+                if(isAdminCommandViolated || isUserCommandViolated) {
                     request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
-                    request.getRequestDispatcher(PageNames.EXCEPTION).forward(request, servletResponse);
+                    request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                    return;
                 }
             } else {
                 request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
-                request.getRequestDispatcher(PageNames.EXCEPTION).forward(request, servletResponse);
+                request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                return;
             }
         }
-
         chain.doFilter(request, servletResponse);
     }
 

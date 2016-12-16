@@ -13,7 +13,7 @@ DROP SEQUENCE IF EXISTS global_seq;
 CREATE SEQUENCE global_seq START 10000;
 
 CREATE TABLE session_info (
-  year INTEGER UNIQUE PRIMARY KEY,
+  year SMALLINT UNIQUE PRIMARY KEY,
   session_start TIMESTAMP NOT NULL,
   session_end TIMESTAMP NOT NULL
 );
@@ -32,7 +32,7 @@ CREATE TABLE users (
   email VARCHAR UNIQUE NOT NULL,
   phone_number VARCHAR NOT NULL,
   birth_date TIMESTAMP NOT NULL,
-  average_mark REAL NOT NULL
+  average_mark SMALLINT NOT NULL
 );
 
 CREATE TABLE subjects (
@@ -43,7 +43,7 @@ CREATE TABLE subjects (
 CREATE TABLE exam_results (
   user_id BIGINT NOT NULL,
   subject_id BIGINT NOT NULL,
-  mark REAL NOT NULL,
+  mark SMALLINT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
 );

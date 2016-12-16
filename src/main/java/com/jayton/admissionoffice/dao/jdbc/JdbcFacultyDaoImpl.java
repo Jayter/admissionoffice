@@ -119,25 +119,6 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    public List<Faculty> getByUniversity(long universityId) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
-            statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
-            statement.setLong(1, universityId);
-
-            return getByStatement(statement);
-
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load faculties.", e);
-        } finally {
-            DaoHelper.closeResources(connection, statement);
-        }
-    }
-
-    @Override
     public List<Faculty> getAll() throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
@@ -153,6 +134,33 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } finally {
             DaoHelper.closeResources(connection, statement);
         }
+    }
+
+    @Override
+    public List<Faculty> getByUniversity(long universityId, long offset, long count) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
+            statement.setLong(1, universityId);
+            statement.setLong(2, count);
+            statement.setLong(3, offset);
+
+            return getByStatement(statement);
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load faculties.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public long getCount(long universityId) throws DAOException {
+        return DaoHelper.getCount(facultyQueries.getString("faculty.count"),
+                "Failed to get count of faculties.", universityId);
     }
 
     private List<Faculty> getByStatement(PreparedStatement statement) throws SQLException {

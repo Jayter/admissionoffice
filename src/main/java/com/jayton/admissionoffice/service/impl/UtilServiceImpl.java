@@ -7,6 +7,7 @@ import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
+import com.jayton.admissionoffice.service.util.ApplicationHandler;
 
 import java.util.List;
 
@@ -30,5 +31,11 @@ public class UtilServiceImpl implements UtilService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public void handleApplications() throws ServiceException {
+        ApplicationHandler handler = ApplicationHandler.getInstance();
+        handler.handleApplications();
     }
 }

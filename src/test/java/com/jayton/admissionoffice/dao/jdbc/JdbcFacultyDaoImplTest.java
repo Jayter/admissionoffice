@@ -26,7 +26,7 @@ public class JdbcFacultyDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
@@ -38,11 +38,11 @@ public class JdbcFacultyDaoImplTest {
 
     @Test
     public void getByUniversityTest() throws Exception {
-        List<Faculty> faculties = facultyDao.getByUniversity(UNIVERSITY2.getId());
+        List<Faculty> faculties = facultyDao.getByUniversity(UNIVERSITY2.getId(), 0, 100);
 
         Assert.assertEquals(Arrays.asList(FACULTY3, FACULTY4), faculties);
 
-        Assert.assertEquals(facultyDao.getByUniversity(INCORRECT_ID), Collections.emptyList());
+        Assert.assertEquals(facultyDao.getByUniversity(INCORRECT_ID, 0, 100), Collections.emptyList());
     }
 
     @Test

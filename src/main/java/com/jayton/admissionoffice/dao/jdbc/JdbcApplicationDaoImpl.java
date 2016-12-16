@@ -76,7 +76,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                 byte status = rs.getByte("status");
-                BigDecimal mark = rs.getBigDecimal("mark");
+                BigDecimal mark = rs.getBigDecimal("mark").setScale(2, BigDecimal.ROUND_HALF_UP);
 
                 return new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark);
             }
@@ -143,7 +143,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> getByDirection(long directionId) throws DAOException {
+    public List<Application> getByDirection(long directionId, long offset, long count) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -151,6 +151,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
             statement.setLong(1, directionId);
+            statement.setLong(2, count);
+            statement.setLong(3, offset);
 
             return getByStatement(statement);
 
@@ -198,6 +200,12 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         }
     }
 
+    @Override
+    public long getCount(long directionId) throws DAOException {
+        return DaoHelper.getCount(applicationQueries.getString("application.count"),
+                "Failed to get count of applications.", directionId);
+    }
+
     private List<Application> getByStatement(PreparedStatement statement) throws SQLException {
         List<Application> applications = new ArrayList<>();
 
@@ -208,7 +216,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 long directionId = rs.getLong("direction_id");
                 LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
                 byte status = rs.getByte("status");
-                BigDecimal mark = rs.getBigDecimal("mark");
+                BigDecimal mark = rs.getBigDecimal("mark").setScale(2, BigDecimal.ROUND_HALF_UP);
 
                 applications.add(new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark));
             }

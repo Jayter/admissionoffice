@@ -6,5 +6,7 @@ import com.jayton.admissionoffice.model.university.Faculty;
 import java.util.List;
 
 public interface FacultyDao extends Dao<Faculty> {
-    List<Faculty> getByUniversity(long universityId) throws DAOException;
+    List<Faculty> getByUniversity(long universityId, long offset, long count) throws DAOException;
+    List<Faculty> getAll() throws DAOException;
+    long getCount(long universityId) throws DAOException;
 }

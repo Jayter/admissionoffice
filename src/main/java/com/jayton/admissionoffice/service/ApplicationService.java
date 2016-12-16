@@ -12,7 +12,8 @@ public interface ApplicationService {
     Application add(User user, long directionId, LocalDateTime applied) throws ServiceException;
     Application get(long id) throws ServiceException;
     List<Application> getByUser(long userId) throws ServiceException;
-    List<Application> getByDirection(long directionId) throws ServiceException;
+    List<Application> getByDirection(long directionId, long offset, long count) throws ServiceException;
     void update(long id, Status status) throws ServiceException;
     void delete(long id) throws ServiceException;
+    long getCount(long directionId) throws ServiceException;
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>functions</short-name>
+    <uri>http://com.jayton.admissionoffice.functions</uri>
+
+    <function>
+        <name>formatDateTime</name>
+        <function-class>com.jayton.admissionoffice.util.DateHelper</function-class>
+        <function-signature>java.lang.String format(java.time.LocalDateTime)</function-signature>
+    </function>
+
+    <function>
+        <name>formatDate</name>
+        <function-class>com.jayton.admissionoffice.util.DateHelper</function-class>
+        <function-signature>java.lang.String format(java.time.LocalDate)</function-signature>
+    </function>
+
+    <function>
+        <name>isBetween</name>
+        <function-class>com.jayton.admissionoffice.util.DateHelper</function-class>
+        <function-signature>boolean isBetween(java.time.LocalDateTime, java.time.LocalDateTime)</function-signature>
+    </function>
+
+    <function>
+        <name>isBefore</name>
+        <function-class>com.jayton.admissionoffice.util.DateHelper</function-class>
+        <function-signature>boolean isBefore(java.time.LocalDateTime)</function-signature>
+    </function>
+
+    <function>
+        <name>isAfter</name>
+        <function-class>com.jayton.admissionoffice.util.DateHelper</function-class>
+        <function-signature>boolean isAfter(java.time.LocalDateTime)</function-signature>
+    </function>
+</taglib>

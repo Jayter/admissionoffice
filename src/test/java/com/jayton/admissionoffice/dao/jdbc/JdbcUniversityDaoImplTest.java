@@ -26,7 +26,7 @@ public class JdbcUniversityDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
@@ -38,17 +38,17 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void getByCityTest() throws Exception {
-        List<University> list = universityDao.getByCity(KYIV);
+        List<University> list = universityDao.getByCity(KYIV, 0, 100);
 
         Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
 
         //if call with name that does not exist, receive an empty list, not null
-        Assert.assertEquals(universityDao.getByCity(INCORRECT_STRING), Collections.emptyList());
+        Assert.assertEquals(universityDao.getByCity(INCORRECT_STRING, 0, 100), Collections.emptyList());
     }
 
     @Test
     public void getAllTest() throws Exception {
-        List<University> all = universityDao.getAll();
+        List<University> all = universityDao.getAll(0, 100);
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
     }
@@ -58,7 +58,7 @@ public class JdbcUniversityDaoImplTest {
         Assert.assertEquals(NEW_ID, universityDao.add(NEW_UNIVERSITY).getId());
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY),
-                universityDao.getAll());
+                universityDao.getAll(0, 100));
 
         expected.expect(DAOException.class);
         universityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
@@ -79,7 +79,7 @@ public class JdbcUniversityDaoImplTest {
     public void deleteTest() throws Exception {
         universityDao.delete(UNIVERSITY3.getId());
 
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getAll());
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getAll(0, 100));
 
         expected.expect(DAOException.class);
         universityDao.delete(INCORRECT_ID);

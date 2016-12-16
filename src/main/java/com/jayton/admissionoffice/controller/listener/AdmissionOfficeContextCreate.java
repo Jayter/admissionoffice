@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.controller.listener;
 
 import com.jayton.admissionoffice.dao.exception.FailedInitializationException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
-import com.jayton.admissionoffice.model.NamedEntity;
+import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.service.ServiceFactory;
 import com.jayton.admissionoffice.service.UtilService;
@@ -34,7 +34,7 @@ public class AdmissionOfficeContextCreate implements ServletContextListener {
         ServletContext context = servletContextEvent.getServletContext();
         UtilService utilService = ServiceFactory.getInstance().getUtilService();
 
-        List<NamedEntity> subjects;
+        List<Subject> subjects;
         SessionTerms sessionTerms;
 
         try {
@@ -45,7 +45,7 @@ public class AdmissionOfficeContextCreate implements ServletContextListener {
             throw new RuntimeException("Failed to load application data.", e);
         }
 
-        Map<Long, NamedEntity> subjectsMap = new HashMap<>();
+        Map<Long, Subject> subjectsMap = new HashMap<>();
         subjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
 
         context.setAttribute("subjects", subjectsMap);

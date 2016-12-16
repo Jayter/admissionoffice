@@ -13,6 +13,7 @@ public interface ApplicationDao {
     void delete(long id) throws DAOException;
     void updateAll(List<Application> applications, Status status) throws DAOException;
     List<Application> getByUser(long userId) throws DAOException;
-    List<Application> getByDirection(long directionId) throws DAOException;
+    List<Application> getByDirection(long directionId, long offset, long count) throws DAOException;
     List<Application> getAll() throws DAOException;
+    long getCount(long directionId) throws DAOException;
 }

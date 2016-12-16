@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <display-name>Hotel</display-name>
+
+    <servlet>
+        <display-name>Controller</display-name>
+        <servlet-name>Controller</servlet-name>
+        <servlet-class>com.jayton.admissionoffice.controller.Controller</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/Controller</url-pattern>
+    </servlet-mapping>
+    
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.jayton.admissionoffice.controller.filter.EncodingFilter</filter-class>
+        <init-param>
+            <param-name>characterEncoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter>
+        <filter-name>UserFilter</filter-name>
+        <filter-class>com.jayton.admissionoffice.controller.filter.UserFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/Controller</url-pattern>
+    </filter-mapping>
+
+
+    <listener>
+        <listener-class>com.jayton.admissionoffice.controller.listener.AdmissionOfficeContextCreate</listener-class>
+    </listener>
+</web-app>

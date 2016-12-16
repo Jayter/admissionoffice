@@ -138,7 +138,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAll() throws DAOException {
+    public List<User> getAll(long offset, long count) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -146,6 +146,8 @@ public class JdbcUserDaoImpl implements UserDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.all"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            statement.setLong(1, count);
+            statement.setLong(2, offset);
 
             return getAllByStatement(statement);
 
@@ -286,6 +288,12 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public long getTotalCount() throws DAOException {
+        return DaoHelper.getCount(userQueries.getString("user.count"),
+                "Failed to get count of users.");
+    }
+
     private User getSingleByStatement(PreparedStatement statement) throws SQLException {
         try (ResultSet rs = statement.executeQuery()) {
             if (!rs.next()) {
@@ -315,6 +323,32 @@ public class JdbcUserDaoImpl implements UserDao {
             }
 
             return new User(id, name, secondName, address, email, phoneNumber, birthDate, averageMark, results);
+        }
+    }
+
+    @Override
+    public Map<Long, String> getDirectionNames(long userId) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getConnection();
+            statement = connection.prepareStatement(userQueries.getString("user.get.directions"));
+            statement.setLong(1, userId);
+
+            Map<Long, String> names = new HashMap<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    names.put(rs.getLong("id"), rs.getString("name"));
+                }
+            }
+            return names;
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get direction names.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
         }
     }
 

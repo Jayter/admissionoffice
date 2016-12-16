@@ -52,20 +52,20 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public List<Faculty> getAll() throws ServiceException {
+    public List<Faculty> getByUniversity(long universityId, long offset, long count) throws ServiceException {
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
-            return facultyDao.getAll();
+            return facultyDao.getByUniversity(universityId, offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<Faculty> getByUniversity(long universityId) throws ServiceException {
+    public long getCount(long universityId) throws ServiceException {
         FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
-            return facultyDao.getByUniversity(universityId);
+            return facultyDao.getCount(universityId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

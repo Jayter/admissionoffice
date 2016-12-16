@@ -55,20 +55,20 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public List<Direction> getAll() throws ServiceException {
+    public List<Direction> getByFaculty(long facultyId, long offset, long count) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return directionDao.getAll();
+            return directionDao.getByFaculty(facultyId, offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<Direction> getByFaculty(long facultyId) throws ServiceException {
+    public long getCount(long facultyId) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
-            return directionDao.getByFaculty(facultyId);
+            return directionDao.getCount(facultyId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -104,6 +104,16 @@ public class DirectionServiceImpl implements DirectionService {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             directionDao.deleteSubject(directionId, subjectId);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public Map<Long, String> getUserNames(long directionId) throws ServiceException {
+        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
+        try {
+            return directionDao.getUserNames(directionId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

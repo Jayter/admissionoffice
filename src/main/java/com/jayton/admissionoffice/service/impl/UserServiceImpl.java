@@ -65,10 +65,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() throws ServiceException {
+    public List<User> getAll(long offset, long count) throws ServiceException {
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
-            return userDao.getAll();
+            return userDao.getAll(offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -114,6 +114,26 @@ public class UserServiceImpl implements UserService {
         UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.authorize(login, password);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public long getTotalCount() throws ServiceException {
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
+        try {
+            return userDao.getTotalCount();
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public Map<Long, String> getDirectionNames(long userId) throws ServiceException {
+        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
+        try {
+            return userDao.getDirectionNames(userId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

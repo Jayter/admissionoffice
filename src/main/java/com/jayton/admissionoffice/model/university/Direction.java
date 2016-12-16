@@ -69,6 +69,7 @@ public class Direction {
 
         Direction direction = (Direction) o;
 
+        if (id != direction.id) return false;
         if (countOfStudents != direction.countOfStudents) return false;
         if (facultyId != direction.facultyId) return false;
         if (name != null ? !name.equals(direction.name) : direction.name != null) return false;
@@ -80,11 +81,24 @@ public class Direction {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (averageCoefficient != null ? averageCoefficient.hashCode() : 0);
         result = 31 * result + countOfStudents;
         result = 31 * result + (int) (facultyId ^ (facultyId >>> 32));
         result = 31 * result + (entranceSubjects != null ? entranceSubjects.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Direction{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", averageCoefficient=" + averageCoefficient +
+                ", countOfStudents=" + countOfStudents +
+                ", facultyId=" + facultyId +
+                ", entranceSubjects=" + entranceSubjects +
+                '}';
     }
 }

@@ -115,7 +115,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public List<University> getByCity(String city) throws DAOException {
+    public List<University> getByCity(String city, long offset, long count) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -123,6 +123,8 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             statement.setString(1, city);
+            statement.setLong(2, count);
+            statement.setLong(3, offset);
 
             return getByStatement(statement);
 
@@ -134,13 +136,15 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public List<University> getAll() throws DAOException {
+    public List<University> getAll(long offset, long count) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
         try {
             connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all"));
+            statement.setLong(1, count);
+            statement.setLong(2, offset);
 
             return getByStatement(statement);
 
@@ -149,6 +153,12 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } finally {
             DaoHelper.closeResources(connection, statement);
         }
+    }
+
+    @Override
+    public long getTotalCount() throws DAOException {
+        return DaoHelper.getCount(universityQueries.getString("university.count"),
+                "Failed to get count of universities.");
     }
 
     private List<University> getByStatement(PreparedStatement statement) throws SQLException {

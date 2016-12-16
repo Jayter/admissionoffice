@@ -1,6 +1,7 @@
 package com.jayton.admissionoffice.controller;
 
 import com.jayton.admissionoffice.command.Command;
+import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by Jayton on 28.11.2016.
- */
 public class Controller extends HttpServlet {
 
     private static final String COMMAND = "command";
@@ -22,13 +20,14 @@ public class Controller extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String commandName = req.getParameter(COMMAND);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String commandName = request.getParameter(COMMAND);
         Command command = CommandHelper.getInstance().getCommand(commandName);
         if(command == null) {
-            req.getRequestDispatcher(ERROR_PAGE).forward(req, resp);
+            request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
         } else {
-            command.execute(req, resp);
+            String page = command.execute(new HttpServletRequestProxy(request));
+            request.getRequestDispatcher(page).forward(request, response);
         }
     }
 }

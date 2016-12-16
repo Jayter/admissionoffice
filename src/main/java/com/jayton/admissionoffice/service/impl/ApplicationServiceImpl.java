@@ -68,10 +68,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getByDirection(long directionId) throws ServiceException {
+    public List<Application> getByDirection(long directionId, long offset, long count) throws ServiceException {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
-            return applicationDao.getByDirection(directionId);
+            return applicationDao.getByDirection(directionId, offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -92,6 +92,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.delete(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public long getCount(long directionId) throws ServiceException {
+        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
+        try {
+            return applicationDao.getCount(directionId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

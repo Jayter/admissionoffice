@@ -30,7 +30,7 @@ public class JdbcApplicationDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class JdbcApplicationDaoImplTest {
     @Test
     public void getByDirectionTest() throws Exception {
         Assert.assertTrue(matcher.equals(Collections.singletonList(APPLICATION2),
-                applicationDao.getByDirection(DIRECTION1.getId())));
+                applicationDao.getByDirection(DIRECTION1.getId(), 0, 5)));
 
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }

@@ -9,5 +9,4 @@ public interface Dao<T> {
     T add(T entity) throws DAOException;
     T update(T entity) throws DAOException;
     void delete(long id) throws DAOException;
-    List<T> getAll() throws DAOException;
 }

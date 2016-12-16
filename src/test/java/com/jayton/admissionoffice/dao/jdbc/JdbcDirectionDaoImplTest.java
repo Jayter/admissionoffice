@@ -31,7 +31,7 @@ public class JdbcDirectionDaoImplTest {
 
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
@@ -47,11 +47,11 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void getByFacultyTest() throws Exception {
-        List<Direction> retrieved = directionDao.getByFaculty(FACULTY1.getId());
+        List<Direction> retrieved = directionDao.getByFaculty(FACULTY1.getId(), 0, 100);
 
         Assert.assertTrue(matcher.equals(retrieved, Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
 
-        Assert.assertEquals(Collections.emptyList(), directionDao.getByFaculty(INCORRECT_ID));
+        Assert.assertEquals(Collections.emptyList(), directionDao.getByFaculty(INCORRECT_ID, 0, 100));
     }
 
     @Test

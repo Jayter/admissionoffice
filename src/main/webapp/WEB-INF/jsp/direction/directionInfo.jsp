@@ -1,0 +1,151 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
+<%@ taglib prefix="functions" uri="http://com.jayton.admissionoffice.functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<fmt:setBundle basename="locale.locale" var="loc"/>
+
+<fmt:message bundle="${loc}" key="direction.title" var="title"/>
+<fmt:message bundle="${loc}" key="direction.name" var="directionName"/>
+<fmt:message bundle="${loc}" key="direction.coefficient" var="directionCoefficient"/>
+<fmt:message bundle="${loc}" key="direction.count" var="directionCount"/>
+<fmt:message bundle="${loc}" key="direction.subjects" var="directionSubjects"/>
+<fmt:message bundle="${loc}" key="direction.empty_subjects" var="directionEmptySubjects"/>
+<fmt:message bundle="${loc}" key="direction.applications" var="directionApplications"/>
+<fmt:message bundle="${loc}" key="direction.empty_applications" var="directionEmptyApplications"/>
+<fmt:message bundle="${loc}" key="subject.name" var="subjectName"/>
+<fmt:message bundle="${loc}" key="subject.coefficient" var="subjectCoefficient"/>
+<fmt:message bundle="${loc}" key="application.user" var="applicationUser"/>
+<fmt:message bundle="${loc}" key="application.created" var="applicationCreated"/>
+<fmt:message bundle="${loc}" key="application.status" var="applicationStatus"/>
+<fmt:message bundle="${loc}" key="application.mark" var="applicationMark"/>
+<fmt:message bundle="${loc}" key="button.next" var="next"/>
+<fmt:message bundle="${loc}" key="button.previous" var="previous"/>
+<fmt:message bundle="${loc}" key="button.add" var="add"/>
+<fmt:message bundle="${loc}" key="button.apply" var="apply"/>
+<fmt:message bundle="${loc}" key="button.edit" var="edit"/>
+<fmt:message bundle="${loc}" key="button.delete" var="delete"/>
+
+<html>
+<head>
+    <title>${title}</title>
+</head>
+<body>
+<jsp:include page="../fragments/header.jsp"/>
+<jsp:useBean id="direction" type="com.jayton.admissionoffice.model.university.Direction" scope="request"/>
+<table>
+    <tr>
+        <th>${directionName}</th>
+        <td>${direction.name}</td>
+    </tr>
+    <tr>
+        <th>${directionCount}</th>
+        <td>${direction.countOfStudents}</td>
+    </tr>
+    <tr>
+        <th>${directionCoefficient}</th>
+        <td>${direction.averageCoefficient}</td>
+    </tr>
+</table>
+<c:if test="${sessionScope.isAuthorizedAdmin}">
+    <form method="post" action="Controller?command=edit-direction">
+        <input type="hidden" name="id" value="${direction.id}"/>
+        <input type="submit" value="${edit}"/>
+    </form>
+</c:if>
+<p/>
+${directionSubjects}:
+<c:choose>
+    <c:when test="${not empty direction.entranceSubjects}">
+        <table>
+            <tr>
+                <th>${subjectName}</th>
+                <th>${subjectCoefficient}</th>
+                <th></th>
+            </tr>
+            <c:forEach items="${direction.entranceSubjects}" var="entry">
+                <tr>
+                    <td>${applicationScope.subjects[entry.key].name}</td>
+                    <td>${entry.value}</td>
+                    <td>
+                        <c:if test="${sessionScope.isAuthorizedAdmin}">
+                            <form method="post" action="Controller?command=delete-entrance-subject">
+                                <input type="hidden" name="directionId" value="${direction.id}"/>
+                                <input type="hidden" name="subjectId" value="${entry.key}"/>
+                                <input type="submit" value="${delete}"/>
+                            </form>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
+                             applicationScope.sessionTerms.sessionEnd)}">
+            <form method="post" action="Controller?command=user-apply">
+                <input type="hidden" name="directionId" value="${direction.id}"/>
+                <input type="submit" value="${apply}"/>
+            </form>
+        </c:if>
+    </c:when>
+    <c:otherwise>
+        <p/>
+        ${directionEmptySubjects}
+    </c:otherwise>
+</c:choose>
+<c:if test="${sessionScope.isAuthorizedAdmin && direction.entranceSubjects.size() lt 3}">
+    <form method="post" action="Controller?command=add-entrance-subject">
+        <input type="hidden" name="directionId" value="${direction.id}"/>
+        <select name="subjectId">
+            <option disabled>Choose a subject</option>
+            <c:forEach items="${applicationScope.subjects}" var="entry">
+                <c:if test="${not direction.entranceSubjects.keySet().contains(entry.key)}">
+                    <option value="${entry.value.id}">${entry.value.name}</option>
+                </c:if>
+            </c:forEach>
+        </select>
+        <input type="text" name="coefficient" minlength="3" maxlength="4">
+        <input type="submit" value="${add}"/>
+    </form>
+</c:if>
+<p/>
+    ${directionApplications}
+    <c:choose>
+        <c:when test="${not empty requestScope.applications}">
+            <table>
+                <tr>
+                    <th>${applicationUser}</th>
+                    <th>${applicationCreated}</th>
+                    <th>${applicationStatus}</th>
+                    <th>${applicationMark}</th>
+                </tr>
+                <c:forEach var="application" items="${requestScope.applications}">
+                    <tr>
+                        <td><a href="Controller?command=get-user&id=${application.userId}">
+                        ${requestScope.userNames[application.userId]}</a></td>
+                        <td>${functions:formatDateTime(application.creationTime)}</td>
+                        <td>${application.status}</td>
+                        <td>${application.mark}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <c:if test="${requestScope.offset gt 0}">
+                <a href="Controller?command=get-direction&id=${direction.id}&offset=${requestScope.offset
+                - requestScope.count}&count=${requestScope.count}">
+                    ${previous}
+                </a>
+            </c:if>
+            <c:if test="${requestScope.offset + requestScope.count lt requestScope.totalCount}">
+                <a href="Controller?command=get-faculty&id=${direction.id}&offset=${requestScope.offset
+                + requestScope.count}&count=${requestScope.count}">
+                    ${next}
+                </a>
+            </c:if>
+        </c:when>
+        <c:otherwise>
+        <p/>
+        ${directionEmptyApplications}
+        </c:otherwise>
+    </c:choose>
+</body>
+</html>

@@ -28,7 +28,7 @@ public class ApplicationHelperTest {
 
     @Test
     public void handleApplicationsTest() throws Exception {
-        ApplicationHandler handler = new ApplicationHandler();
+        ApplicationHandler handler = ApplicationHandler.getInstance();
         handler.handleApplications();
 
         ApplicationDao dao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
@@ -36,7 +36,7 @@ public class ApplicationHelperTest {
 
         List<Direction> directions = directionDao.getAll();
         for(Direction d: directions) {
-            List<Application> apps = dao.getByDirection(d.getId());
+            List<Application> apps = dao.getByDirection(d.getId(), 0, 100);
             long count = apps.stream().filter(app -> app.getStatus() == Status.APPROVED).count();
             Assert.assertEquals(count, d.getCountOfStudents());
         }

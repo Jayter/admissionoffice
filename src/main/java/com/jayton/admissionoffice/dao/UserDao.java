@@ -4,6 +4,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserDao extends Dao<User> {
@@ -13,4 +14,7 @@ public interface UserDao extends Dao<User> {
     Map<Long, Short> getResultsOfUser(long userId) throws DAOException;
     AuthorizationResult authorize(String login, String password) throws DAOException;
     int checkEmail(String email) throws DAOException;
+    List<User> getAll(long offset, long count) throws DAOException;
+    long getTotalCount() throws DAOException;
+    Map<Long, String> getDirectionNames(long userId) throws DAOException;
 }

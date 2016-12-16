@@ -5,10 +5,7 @@ import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DaoHelper {
 
@@ -36,6 +33,36 @@ public class DaoHelper {
             if(affectedRows == 0) {
                 throw new DAOException(errorMessage);
             }
+        } catch (SQLException e) {
+            throw new DAOException(errorMessage, e);
+        }
+        finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    public static Long getCount(String script, String errorMessage, Long... params) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(script);
+
+            if(params == null) {
+                throw new DAOException(errorMessage);
+            }
+            for(int i = 0; i < params.length; i++) {
+                statement.setLong(i + 1, params[i]);
+            }
+
+            long result = 0;
+            try (ResultSet rs = statement.executeQuery()) {
+                if(rs.next()) {
+                    result = rs.getLong(1);
+                }
+            }
+            return result;
         } catch (SQLException e) {
             throw new DAOException(errorMessage, e);
         }

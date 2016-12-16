@@ -89,7 +89,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 }
 
                 String name = rs.getString("name");
-                BigDecimal averageCoef = rs.getBigDecimal("average_coef");
+                BigDecimal averageCoef = rs.getBigDecimal("average_coef").setScale(2, BigDecimal.ROUND_HALF_UP);
                 int countOfStudents = rs.getInt("count_of_students");
                 long facultyId = rs.getLong("faculty_id");
 
@@ -99,11 +99,12 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 BigDecimal coefficient = rs.getBigDecimal("coefficient");
 
                 if(subjectId != 0 && coefficient != null) {
-                    subjects.put(subjectId, coefficient);
+                    subjects.put(subjectId, coefficient.setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
 
                 while (rs.next()) {
-                    subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                    subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient")
+                            .setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
 
                 return new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects);
@@ -143,7 +144,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             try(ResultSet rs = getSubjectsSt.executeQuery()) {
                 while (rs.next()) {
-                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient")
+                            .setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
             connection.commit();
@@ -183,7 +185,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public List<Direction> getByFaculty(long facultyId) throws DAOException {
+    public List<Direction> getByFaculty(long facultyId, long offset, long count) throws DAOException {
         PreparedStatement statement = null;
         Connection connection = null;
 
@@ -192,6 +194,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY, ResultSet.CONCUR_READ_ONLY);
             statement.setLong(1, facultyId);
+            statement.setLong(2, count);
+            statement.setLong(3, offset);
 
             return getByStatement(statement);
 
@@ -247,13 +251,46 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             try(ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                    entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient")
+                            .setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
             return entranceSubjects;
 
         } catch (SQLException e) {
             throw new DAOException("Failed to get entrance subjects.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public long getCount(long facultyId) throws DAOException {
+        return DaoHelper.getCount(directionQueries.getString("direction.count"),
+                "Failed to get count of directions.", facultyId);
+    }
+
+    @Override
+    public Map<Long, String> getUserNames(long directionId) throws DAOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getConnection();
+            statement = connection.prepareStatement(directionQueries.getString("direction.get.users"));
+            statement.setLong(1, directionId);
+
+            Map<Long, String> names = new HashMap<>();
+
+            try(ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    names.put(rs.getLong("id"), rs.getString("name"));
+                }
+            }
+            return names;
+
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get user names.", e);
         } finally {
             DaoHelper.closeResources(connection, statement);
         }
@@ -267,7 +304,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 long id = rs.getLong("id");
                 long facultyId = rs.getLong("faculty_id");
                 String name = rs.getString("name");
-                BigDecimal averageCoef = rs.getBigDecimal("average_coef");
+                BigDecimal averageCoef = rs.getBigDecimal("average_coef").setScale(2, BigDecimal.ROUND_HALF_UP);
                 int countOfStudents = rs.getInt("count_of_students");
 
                 Map<Long, BigDecimal> subjects = new HashMap<>();
@@ -276,13 +313,14 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 BigDecimal coefficient = rs.getBigDecimal("coefficient");
 
                 if(subjectId != 0 && coefficient != null) {
-                    subjects.put(subjectId, coefficient);
+                    subjects.put(subjectId, coefficient.setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
 
                 while (rs.next()) {
                     long nextId = rs.getLong("id");
                     if (id == nextId) {
-                        subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient"));
+                        subjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient")
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
                     } else {
                         rs.previous();
                         break;

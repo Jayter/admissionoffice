@@ -31,7 +31,7 @@ public class JdbcUserDaoImplTest {
 
     @Before
     public void setUpDb() throws SQLException {
-        InitHelper.executeDbPopulate("populateTestDb.sql");
+        InitHelper.executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
@@ -49,7 +49,7 @@ public class JdbcUserDaoImplTest {
 
     @Test
     public void getAllTest() throws Exception {
-        List<User> actual = userDao.getAll();
+        List<User> actual = userDao.getAll(0, 100);
 
         Assert.assertTrue(matcher.equals(actual, Arrays.asList(USER1, USER2, USER3)));
     }
@@ -57,7 +57,7 @@ public class JdbcUserDaoImplTest {
     @Test
     public void addTest() throws Exception {
         Assert.assertEquals(NEW_ID, userDao.add(NEW_USER).getId());
-        Assert.assertTrue(matcher.equals(userDao.getAll(),
+        Assert.assertTrue(matcher.equals(userDao.getAll(0, 100),
                 Arrays.asList(USER1, USER2, USER3, NEW_USER_WITHOUT_CREDENTIALS) ));
 
         expected.expect(DAOException.class);
@@ -77,7 +77,7 @@ public class JdbcUserDaoImplTest {
     @Test
     public void deleteTest() throws Exception {
         userDao.delete(USER1.getId());
-        Assert.assertTrue(matcher.equals(Arrays.asList(USER2, USER3), userDao.getAll()));
+        Assert.assertTrue(matcher.equals(Arrays.asList(USER2, USER3), userDao.getAll(0, 100)));
 
         expected.expect(DAOException.class);
         userDao.delete(INCORRECT_ID);
