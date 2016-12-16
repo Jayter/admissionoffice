@@ -40,9 +40,7 @@
         </a>
     </c:if>
     <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <form method="post" action="Controller?command=edit-university">
-            <input type="submit" value="${add}"/>
-        </form>
+        <button onclick="location.href='Controller?command=edit-university'">${add}</button>
     </c:if>
 </body>
 </html>

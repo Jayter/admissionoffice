@@ -45,10 +45,7 @@
         <button type="submit">${edit}</button>
     </form>
     <c:if test="${not empty requestScope.id}">
-        <form method="post" action="Controller?command=delete-university">
-            <input type="hidden" name="id" value="${requestScope.id}"/>
-            <input type="submit" value="${delete}"/>
-        </form>
+        <button onclick="location.href='Controller?command=delete-university&id=${requestScope.id}'">${delete}</button>
     </c:if>
 </body>
 </html>

@@ -65,10 +65,7 @@
         </tr>
     </table>
     <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <form method="post" action="Controller?command=edit-user">
-            <input type="hidden" name="id" value="${user.id}"/>
-            <input type="submit" value="${edit}"/>
-        </form>
+        <button onclick="location.href='Controller?command=edit-user&id=${user.id}'">${edit}</button>
     </c:if>
     <p/>
     ${results}:
@@ -83,11 +80,8 @@
                 <td>${applicationScope.subjects[pair.key].name}</td>
                 <td>${pair.value}</td>
                 <td>
-                    <form method="post" action="Controller?command=delete-user-result">
-                        <input type="hidden" name="id" value="${user.id}"/>
-                        <input type="hidden" name="subjectId" value="${pair.key}"/>
-                        <input type="submit" value="${delete}"/>
-                    </form>
+                    <button onclick="location.href='Controller?command=delete-user-result&id=${user.id}&subjectId=${pair.key}'">
+                    ${delete}</button>
                 </td>
             </tr>
         </c:forEach>
@@ -120,17 +114,15 @@
         <c:forEach var="application" items="${requestScope.applications}">
             <tr>
                 <td><a href="Controller?command=get-direction&id=${application.directionId}">
-                ${requestScope.directionNames[application.directionId]}</a></td>
+                    ${requestScope.directionNames[application.directionId]}</a></td>
                 <td>${functions:formatDateTime(application.creationTime)}</td>
                 <td>${application.status}</td>
                 <td>${application.mark}</td>
                 <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
                              applicationScope.sessionTerms.sessionEnd)}">
                     <td>
-                        <form method="post" action="Controller?command=user-cancel-application">
-                            <input type="hidden" name="id" value="${application.id}"/>
-                            <input type="submit" value="${cancel}"/>
-                        </form>
+                        <button onclick="location.href='Controller?command=user-cancel-application&id=${application.id}'">
+                        ${cancel}</button>>
                     </td>
                 </c:if>
             </tr>

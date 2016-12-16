@@ -49,10 +49,7 @@
     </tr>
 </table>
 <c:if test="${sessionScope.isAuthorizedAdmin}">
-    <form method="post" action="Controller?command=edit-direction">
-        <input type="hidden" name="id" value="${direction.id}"/>
-        <input type="submit" value="${edit}"/>
-    </form>
+    <button onclick="location.href='Controller?command=edit-direction&id=${direction.id}'">${edit}</button>
 </c:if>
 <p/>
 ${directionSubjects}:
@@ -70,11 +67,8 @@ ${directionSubjects}:
                     <td>${entry.value}</td>
                     <td>
                         <c:if test="${sessionScope.isAuthorizedAdmin}">
-                            <form method="post" action="Controller?command=delete-entrance-subject">
-                                <input type="hidden" name="directionId" value="${direction.id}"/>
-                                <input type="hidden" name="subjectId" value="${entry.key}"/>
-                                <input type="submit" value="${delete}"/>
-                            </form>
+                            <button onclick="location.href='Controller?command=delete-entrance-subject&directionId=${direction.id}&subjectId=${entry.key}'">
+                                ${delete}</button>
                         </c:if>
                     </td>
                 </tr>

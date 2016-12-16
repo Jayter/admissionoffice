@@ -36,9 +36,6 @@
         </dl>
         <button type="submit">${edit}</button>
     </form>
-    <form method="post" action="Controller?command=delete-direction">
-        <input type="hidden" name="id" value="${direction.id}"/>
-        <input type="submit" value="${delete}"/>
-    </form>
+    <button onclick="location.href='Controller?command=delete-direction&id=${direction.id}'">${delete}</button>
 </body>
 </html>

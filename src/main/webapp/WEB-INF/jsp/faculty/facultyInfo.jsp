@@ -47,10 +47,7 @@
         </tr>
     </table>
     <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <form method="post" action="Controller?command=edit-faculty">
-            <input type="hidden" name="id" value="${faculty.id}"/>
-            <input type="submit" value="${edit}"/>
-        </form>
+        <button onclick="location.href='Controller?command=edit-faculty&id=${faculty.id}'">${edit}</button>
     </c:if>
     <p/>
     ${facultyDirections}:
@@ -99,10 +96,7 @@
         </c:otherwise>
     </c:choose>
     <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <form method="post" action="Controller?command=edit-direction">
-            <input type="hidden" name="facultyId" value="${faculty.id}"/>
-            <input type="submit" value="${add}"/>
-        </form>
+        <button onclick="location.href='Controller?command=edit-direction&facultyId=${faculty.id}'">${add}</button>
     </c:if>
 </body>
 </html>

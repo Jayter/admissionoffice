@@ -12,7 +12,6 @@ import java.io.IOException;
 public class Controller extends HttpServlet {
 
     private static final String COMMAND = "command";
-    private static final String ERROR_PAGE = "/WEB_INF/jsp/404.jsp";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -24,7 +23,8 @@ public class Controller extends HttpServlet {
         String commandName = request.getParameter(COMMAND);
         Command command = CommandHelper.getInstance().getCommand(commandName);
         if(command == null) {
-            request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
+            request.setAttribute("exception", new IllegalArgumentException("Not found."));
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         } else {
             String page = command.execute(new HttpServletRequestProxy(request));
             request.getRequestDispatcher(page).forward(request, response);
