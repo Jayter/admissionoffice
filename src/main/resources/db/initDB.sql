@@ -19,8 +19,8 @@ CREATE TABLE session_info (
 );
 
 CREATE TABLE credentials (
-  login TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
+  login VARCHAR UNIQUE NOT NULL,
+  password VARCHAR NOT NULL,
   is_admin BOOL NOT NULL DEFAULT FALSE
 );
 
