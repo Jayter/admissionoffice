@@ -14,12 +14,7 @@ public class Controller extends HttpServlet {
     private static final String COMMAND = "command";
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND);
         Command command = CommandHelper.getInstance().getCommand(commandName);
         if(command == null) {
