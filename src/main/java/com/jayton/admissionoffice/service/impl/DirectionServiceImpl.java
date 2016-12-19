@@ -11,11 +11,14 @@ import com.jayton.admissionoffice.service.exception.ServiceVerificationException
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DirectionServiceImpl implements DirectionService {
 
     @Override
     public Direction add(Direction direction) throws ServiceException {
+        verifyEntranceSubjects(direction.getEntranceSubjects(), direction.getAverageCoefficient());
+
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
         try {
             return directionDao.add(direction);
@@ -77,22 +80,16 @@ public class DirectionServiceImpl implements DirectionService {
     @Override
     public synchronized void addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException {
         DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
-
-        Map<Long, BigDecimal> entranceSubjects;
         try {
-            entranceSubjects = directionDao.getEntranceSubjects(directionId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
+            Direction direction = directionDao.get(directionId);
 
-        if(entranceSubjects.size() >= 5) {
-            throw new ServiceVerificationException("Cannot add more than 5 exam results.");
-        }
-        if(entranceSubjects.containsKey(subjectId)) {
-            throw new ServiceVerificationException("Entrance subject already exists.");
-        }
+            Map<Long, BigDecimal> entranceSubjects = direction.getEntranceSubjects();
+            if(entranceSubjects.containsKey(subjectId)) {
+                throw new ServiceVerificationException("Can not add duplicated subject.");
+            }
+            entranceSubjects.put(subjectId, coef);
+            verifyEntranceSubjects(entranceSubjects, direction.getAverageCoefficient());
 
-        try {
             directionDao.addSubject(directionId, subjectId, coef);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -116,6 +113,18 @@ public class DirectionServiceImpl implements DirectionService {
             return directionDao.getUserNames(directionId);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        }
+    }
+
+    public void verifyEntranceSubjects(Map<Long, BigDecimal> subjects, BigDecimal coefficient) throws ServiceVerificationException {
+        if(subjects.size() > 3) {
+            throw new ServiceVerificationException("Cannot add more than 3 entrance subjects.");
+        }
+
+        BigDecimal resultingCoef = subjects.values().stream().reduce(coefficient, BigDecimal::add)
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+        if(resultingCoef.compareTo(BigDecimal.ONE) != 0) {
+            throw new ServiceVerificationException("Total coefficient must be strictly equal to 1.");
         }
     }
 }

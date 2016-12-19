@@ -22,13 +22,15 @@ public class UpdateUniversityCommand implements Command {
 
     @Override
     public String execute(HttpServletRequestProxy request) {
+        Long id = null;
         try {
-            Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            Verifier.verifyId(id);
+
             String name = request.getParameter(PARAM_NAMES.getString("name"));
             String city = request.getParameter(PARAM_NAMES.getString("city"));
             String address = request.getParameter(PARAM_NAMES.getString("address"));
 
-            Verifier.verifyId(id);
             Verifier.verifyStrings(name, city, address);
 
             UniversityService universityService = ServiceFactory.getInstance().getUniversityService();
@@ -51,7 +53,7 @@ public class UpdateUniversityCommand implements Command {
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_university");
+            return PAGE_NAMES.getString("controller.edit_university")+"&id="+id;
         } catch (ServiceException | NumberFormatException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);

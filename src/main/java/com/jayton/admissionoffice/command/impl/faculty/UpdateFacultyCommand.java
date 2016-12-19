@@ -18,24 +18,27 @@ public class UpdateFacultyCommand implements Command {
 
     @Override
     public String execute(HttpServletRequestProxy request) {
+        Long id = null;
         try {
-            Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            Verifier.verifyId(id);
+
             String name = request.getParameter(PARAM_NAMES.getString("name"));
             String phone = request.getParameter(PARAM_NAMES.getString("phone"));
             String email = request.getParameter(PARAM_NAMES.getString("email"));
             String address = request.getParameter(PARAM_NAMES.getString("address"));
             Long universityId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("universityId")));
 
-            verifyInput(id, name, phone, email, address, universityId);
+            verifyInput(name, phone, email, address, universityId);
 
             FacultyService facultyService = ServiceFactory.getInstance().getFacultyService();
             facultyService.update(new Faculty(id, name, phone, email, address, universityId));
 
-            return PAGE_NAMES.getString("controller.get_faculty");
+            return PAGE_NAMES.getString("controller.get_faculty")+"&id="+id;
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_faculty");
+            return PAGE_NAMES.getString("controller.edit_faculty")+"&id="+id;
         } catch (ServiceException | NumberFormatException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
@@ -43,9 +46,9 @@ public class UpdateFacultyCommand implements Command {
         }
     }
 
-    private void verifyInput(Long id, String name, String phone, String email, String address, Long universityId)
+    private void verifyInput(String name, String phone, String email, String address, Long universityId)
             throws VerificationException {
-        Verifier.verifyIds(id, universityId);
+        Verifier.verifyId(universityId);
         Verifier.verifyStrings(name, phone, address);
         Verifier.verifyEmail(email);
     }

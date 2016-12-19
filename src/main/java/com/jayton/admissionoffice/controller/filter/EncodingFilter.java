@@ -3,9 +3,6 @@ package com.jayton.admissionoffice.controller.filter;
 import javax.servlet.*;
 import java.io.IOException;
 
-/**
- * Created by Jayton on 04.12.2016.
- */
 public class EncodingFilter implements Filter {
 
     private String encoding;
@@ -25,6 +22,6 @@ public class EncodingFilter implements Filter {
 
     @Override
     public void destroy() {
-
+        //nothing to destroy
     }
 }

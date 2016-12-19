@@ -17,11 +17,20 @@ public class AddUserResultCommand implements Command {
 
     @Override
     public String execute(HttpServletRequestProxy request) {
+        Long userId = null;
         try {
-            Long userId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            userId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
             Long subjectId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("subjectId")));
-            Short mark = Short.parseShort(request.getParameter(PARAM_NAMES.getString("mark")));
             Verifier.verifyIds(userId, subjectId);
+
+            Short mark;
+            try {
+                mark = Short.parseShort(request.getParameter(PARAM_NAMES.getString("mark")));
+            } catch (NumberFormatException e ) {
+                logger.error("Incorrect number.", e);
+                request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect result."));
+                return PAGE_NAMES.getString("controller.edit_user")+"&id="+userId;
+            }
             Verifier.verifyResult(mark);
 
             UserService userService = ServiceFactory.getInstance().getUserService();
@@ -31,13 +40,9 @@ public class AddUserResultCommand implements Command {
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_user");
-        } catch (NumberFormatException e ) {
-            logger.error("Incorrect number.", e);
-            request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect result."));
-            return PAGE_NAMES.getString("controller.edit_user");
+            return PAGE_NAMES.getString("controller.edit_user")+"&id="+userId;
         }
-        catch (ServiceException e) {
+        catch (ServiceException | NumberFormatException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
             return PAGE_NAMES.getString("page.exception");

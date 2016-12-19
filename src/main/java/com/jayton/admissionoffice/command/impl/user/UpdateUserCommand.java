@@ -24,16 +24,26 @@ public class UpdateUserCommand implements Command {
 
     @Override
     public String execute(HttpServletRequestProxy request) {
+        Long id = null;
         try {
-            Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            Verifier.verifyId(id);
+
             String name = request.getParameter(PARAM_NAMES.getString("name"));
             String lastName = request.getParameter(PARAM_NAMES.getString("lastName"));
             String address = request.getParameter(PARAM_NAMES.getString("address"));
             String phoneNumber = request.getParameter(PARAM_NAMES.getString("phone"));
             LocalDate date = LocalDate.parse(request.getParameter(PARAM_NAMES.getString("birthDate")));
-            Byte mark = Byte.parseByte(request.getParameter(PARAM_NAMES.getString("mark")));
+            Byte mark;
+            try {
+                mark = Byte.parseByte(request.getParameter(PARAM_NAMES.getString("mark")));
+            } catch (NumberFormatException e) {
+                logger.error("Incorrect number.", e);
+                request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect result."));
+                return PAGE_NAMES.getString("controller.edit_user")+"&id="+id;
+            }
 
-            verifyInput(id, name, lastName, address, phoneNumber, date, mark);
+            verifyInput(name, lastName, address, phoneNumber, date, mark);
 
             UserService userService = ServiceFactory.getInstance().getUserService();
             User user = userService.update(new User(id, name, lastName, address, phoneNumber, date, mark));
@@ -50,7 +60,7 @@ public class UpdateUserCommand implements Command {
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_user");
+            return PAGE_NAMES.getString("controller.edit_user")+"&id="+id;
         }
         catch (ServiceException | NumberFormatException e) {
             logger.error("Exception is caught.", e);
@@ -59,9 +69,8 @@ public class UpdateUserCommand implements Command {
         }
     }
 
-    private void verifyInput(Long id, String name, String lastName, String address, String phoneNumber,
+    private void verifyInput(String name, String lastName, String address, String phoneNumber,
                              LocalDate date, Byte averageMark) throws VerificationException {
-        Verifier.verifyId(id);
         Verifier.verifyStrings(name, lastName, address, phoneNumber);
         Verifier.verifyMark(averageMark);
         Verifier.verifyObject(date);

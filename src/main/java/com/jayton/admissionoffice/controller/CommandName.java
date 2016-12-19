@@ -1,8 +1,5 @@
 package com.jayton.admissionoffice.controller;
 
-/**
- * Created by Jayton on 03.12.2016.
- */
 public enum CommandName {
     AUTHORIZE,
     LOGOUT,

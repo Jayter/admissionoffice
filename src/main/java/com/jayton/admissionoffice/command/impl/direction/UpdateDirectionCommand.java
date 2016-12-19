@@ -24,15 +24,27 @@ public class UpdateDirectionCommand implements Command {
 
     @Override
     public String execute(HttpServletRequestProxy request)  {
+        Long facultyId = null;
         try {
             Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            facultyId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("facultyId")));
+            Verifier.verifyIds(id, facultyId);
+
             String name = request.getParameter(PARAM_NAMES.getString("name"));
             int countOfStuds = Integer.parseInt(request.getParameter(PARAM_NAMES.getString("countOfStudents")));
-            Long facultyId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("facultyId")));
-            BigDecimal averageCoef = new BigDecimal(request.getParameter(PARAM_NAMES.getString("coefficient")))
-                    .setScale(2, BigDecimal.ROUND_HALF_DOWN);
+            Verifier.verifyId(facultyId);
 
-            verifyInput(id, name, averageCoef, countOfStuds, facultyId);
+            BigDecimal averageCoef = null;
+            try {
+                averageCoef = new BigDecimal(request.getParameter(PARAM_NAMES.getString("coefficient")))
+                        .setScale(2, BigDecimal.ROUND_HALF_DOWN);
+            } catch (NumberFormatException e) {
+                logger.error("Incorrect number.", e);
+                request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect number."));
+                return PAGE_NAMES.getString("controller.edit_direction");
+            }
+
+            verifyInput(name, averageCoef, countOfStuds);
 
             DirectionService directionService = ServiceFactory.getInstance().getDirectionService();
             ApplicationService applicationService = ServiceFactory.getInstance().getApplicationService();
@@ -56,21 +68,16 @@ public class UpdateDirectionCommand implements Command {
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_direction");
-        } catch (NumberFormatException e) {
-            logger.error("Incorrect number.", e);
-            request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect number."));
-            return PAGE_NAMES.getString("controller.edit_direction");
-        } catch (ServiceException e) {
+            return PAGE_NAMES.getString("controller.edit_direction")+"&facultyId="+facultyId;
+        } catch (ServiceException | NumberFormatException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
             return PAGE_NAMES.getString("page.exception");
         }
     }
 
-    private void verifyInput(Long id, String name, BigDecimal coef, int count, Long facultyId)
+    private void verifyInput(String name, BigDecimal coef, int count)
             throws VerificationException {
-        Verifier.verifyIds(id, facultyId);
         Verifier.verifyString(name);
         Verifier.verifyCoef(coef);
         if(count < 0) {
