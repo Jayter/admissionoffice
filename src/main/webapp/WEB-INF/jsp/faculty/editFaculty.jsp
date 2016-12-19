@@ -13,6 +13,7 @@
 <fmt:message bundle="${loc}" key="faculty.email" var="facultyEmail"/>
 <fmt:message bundle="${loc}" key="faculty.address" var="facultyAddress"/>
 <fmt:message bundle="${loc}" key="button.edit" var="edit"/>
+<fmt:message bundle="${loc}" key="button.add" var="add"/>
 <fmt:message bundle="${loc}" key="button.delete" var="delete"/>
 
 <body>
@@ -47,7 +48,7 @@
                 <dt>${facultyAddress}</dt>
                 <dd><input type="text" name="address" value="${requestScope.address}"></dd>
             </dl>
-            <button type="submit">${edit}</button>
+            <button type="submit">${not empty requestScope.id ? edit : add}</button>
         </form>
         <c:if test="${not empty requestScope.id}">
             <button onclick="location.href='Controller?command=delete-faculty&id=${requestScope.id}'" class="button">

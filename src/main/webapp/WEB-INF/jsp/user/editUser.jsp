@@ -17,6 +17,7 @@
 <fmt:message bundle="${loc}" key="user.birth" var="birthDate"/>
 <fmt:message bundle="${loc}" key="user.average" var="average"/>
 <fmt:message bundle="${loc}" key="button.edit" var="edit"/>
+<fmt:message bundle="${loc}" key="button.add" var="add"/>
 <fmt:message bundle="${loc}" key="button.create" var="create"/>
 <fmt:message bundle="${loc}" key="button.delete" var="delete"/>
 
@@ -74,7 +75,7 @@
                 <dt>${average}</dt>
                 <dd><input type="text" name="mark" value="${requestScope.mark}" minlength="1" maxlength="2"></dd>
             </dl>
-            <button type="submit" value="">${edit}</button>
+            <button type="submit" value="">${not empty requestScope.id ? edit : add}</button>
         </form>
         <c:if test="${not empty requestScope.id}">
             <button onclick="location.href='Controller?command=delete-user&id=${requestScope.id}'" class="button">${delete}</button>

@@ -15,7 +15,7 @@
 
 <body>
     <jsp:include page="../fragments/header.jsp"/>
-    <div class="outer">
+    <div class="edit_outer">
         <jsp:useBean id="direction" type="com.jayton.admissionoffice.model.university.Direction" scope="request"/>
         <h2>${editDirection}</h2>
         <form method="post" action="Controller?command=update-direction">

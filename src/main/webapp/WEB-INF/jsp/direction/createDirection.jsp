@@ -16,7 +16,7 @@
 
 <body>
 <jsp:include page="../fragments/header.jsp"/>
-    <div class="outer">
+    <div class="edit_outer">
         <h2>${createDirection}</h2>
         <form method="post" action="Controller?command=create-direction">
             <input type="hidden" name="facultyId" value="${requestScope.facultyId}">
