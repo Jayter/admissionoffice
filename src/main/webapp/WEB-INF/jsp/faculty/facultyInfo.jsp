@@ -3,6 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<jsp:include page="../fragments/headTag.jsp"/>
+
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
 <fmt:message bundle="${loc}" key="faculty.title" var="title"/>
@@ -21,82 +23,71 @@
 <fmt:message bundle="${loc}" key="button.apply" var="apply"/>
 <fmt:message bundle="${loc}" key="button.edit" var="edit"/>
 
-<html>
-<head>
-    <title>${title}</title>
-</head>
 <body>
     <jsp:include page="../fragments/header.jsp"/>
-    <jsp:useBean id="faculty" type="com.jayton.admissionoffice.model.university.Faculty" scope="request"/>
-    <table>
-        <tr>
-            <th>${facultyName}</th>
-            <td>${faculty.name}</td>
-        </tr>
-        <tr>
-            <th>${facultyPhone}</th>
-            <td>${faculty.officePhone}</td>
-        </tr>
-        <tr>
-            <th>${facultyEmail}</th>
-            <td>${faculty.officeEmail}</td>
-        </tr>
-        <tr>
-            <th>${facultyAddress}</th>
-            <td>${faculty.officeAddress}</td>
-        </tr>
-    </table>
-    <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <button onclick="location.href='Controller?command=edit-faculty&id=${faculty.id}'">${edit}</button>
-    </c:if>
-    <p/>
-    ${facultyDirections}:
-    <c:choose>
-        <c:when test="${not empty requestScope.directions}">
-            <table>
+    <div class="outer">
+        <jsp:useBean id="faculty" type="com.jayton.admissionoffice.model.university.Faculty" scope="request"/>
+        <div class="inner_info">
+            <table class="info">
+                <caption>${title}</caption>
                 <tr>
-                    <th>${directionName}</th>
-                    <th>${directionCoefficient}</th>
-                    <th>${directionCount}</th>
-                    <th></th>
+                    <th>${facultyName}</th>
+                    <td>${faculty.name}</td>
                 </tr>
-                <c:forEach items="${requestScope.directions}" var="direction">
-                    <tr>
-                        <td><a href="Controller?command=get-direction&id=${direction.id}">${direction.name}</a></td>
-                        <td>${direction.averageCoefficient}</td>
-                        <td>${direction.countOfStudents}</td>
-                        <td>
-                            <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
-                             applicationScope.sessionTerms.sessionEnd)}">
-                                <form method="post" action="Controller?command=user-apply">
-                                    <input type="hidden" name="directionId" value="${direction.id}"/>
-                                    <input type="submit" value="${apply}"/>
-                                </form>
-                            </c:if>
-                        </td>
-                    </tr>
-                </c:forEach>
+                <tr>
+                    <th>${facultyPhone}</th>
+                    <td>${faculty.officePhone}</td>
+                </tr>
+                <tr>
+                    <th>${facultyEmail}</th>
+                    <td>${faculty.officeEmail}</td>
+                </tr>
+                <tr>
+                    <th>${facultyAddress}</th>
+                    <td>${faculty.officeAddress}</td>
+                </tr>
             </table>
-            <c:if test="${requestScope.offset gt 0}">
-                <a href="Controller?command=get-faculty&id=${faculty.id}&offset=${requestScope.offset
-             - requestScope.count}&count=${requestScope.count}">
-                    ${previous}
-                </a>
+            <c:if test="${sessionScope.isAuthorizedAdmin}">
+                <button onclick="location.href='Controller?command=edit-faculty&id=${faculty.id}'" class="button">
+                    ${edit}</button>
             </c:if>
-            <c:if test="${requestScope.offset + requestScope.count lt requestScope.totalCount}">
-                <a href="Controller?command=get-faculty&id=${faculty.id}&offset=${requestScope.offset
-             + requestScope.count}&count=${requestScope.count}">
-                    ${next}
-                </a>
-            </c:if>
-        </c:when>
-        <c:otherwise>
-            <p/>
-            ${facultyEmptyDirections}
-        </c:otherwise>
-    </c:choose>
-    <c:if test="${sessionScope.isAuthorizedAdmin}">
-        <button onclick="location.href='Controller?command=edit-direction&facultyId=${faculty.id}'">${add}</button>
-    </c:if>
+        </div>
+        <table class="entries">
+            <caption>${facultyDirections}</caption>
+            <tr>
+                <th>${directionName}</th>
+                <th>${directionCoefficient}</th>
+                <th>${directionCount}</th>
+                <th></th>
+            </tr>
+            <c:forEach items="${requestScope.directions}" var="direction">
+                <tr>
+                    <td><a href="Controller?command=get-direction&id=${direction.id}">${direction.name}</a></td>
+                    <td>${direction.averageCoefficient}</td>
+                    <td>${direction.countOfStudents}</td>
+                    <td>
+                        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
+                            applicationScope.sessionTerms.sessionEnd)}">
+                            <form method="post" action="Controller?command=user-apply">
+                                <input type="hidden" name="directionId" value="${direction.id}"/>
+                                <input type="submit" value="${apply}"/>
+                            </form>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+        <c:if test="${requestScope.offset gt 0}">
+            <a href="Controller?command=get-faculty&id=${faculty.id}&offset=${requestScope.offset
+                - requestScope.count}&count=${requestScope.count}">${previous}</a>
+        </c:if>
+        <c:if test="${requestScope.offset + requestScope.count lt requestScope.totalCount}">
+            <a href="Controller?command=get-faculty&id=${faculty.id}&offset=${requestScope.offset
+                + requestScope.count}&count=${requestScope.count}">${next}</a>
+        </c:if>
+        <c:if test="${sessionScope.isAuthorizedAdmin}">
+            <button onclick="location.href='Controller?command=edit-direction&facultyId=${faculty.id}'" class="button">
+                ${add}</button>
+        </c:if>
+    </div>
 </body>
-</html>

@@ -11,8 +11,8 @@
 <fmt:message bundle="${loc}" key="header.log_in" var="log_in"/>
 <fmt:message bundle="${loc}" key="header.log_out" var="log_out"/>
 
-<div id="outer" align="center">
-    <div id="inner">
+<div class="header_outer" align="center">
+    <div class="header_inner">
         <c:choose>
             <c:when test="${not sessionScope.isAuthorizedAdmin and not sessionScope.isAuthorizedUser}">
                 <form action="Controller?command=authorize" method="post">
@@ -24,49 +24,28 @@
                 </form>
             </c:when>
             <c:otherwise>
-                <button id="button" onclick="location.href='Controller?command=load-main'">${main}</button>
+                <button class="header_button" onclick="location.href='Controller?command=load-main'">${main}</button>
                 <c:choose>
                     <c:when test="${sessionScope.isAuthorizedUser}">
-                        <button id="button"
+                        <button class="header_button"
                             onclick="location.href='Controller?command=get-user&id=${sessionScope.user.id}'">${home}</button>
                     </c:when>
                     <c:otherwise>
-                        <button id="button" onclick="location.href='Controller?command=admin-page'">${home}</button>
+                        <button class="header_button" onclick="location.href='Controller?command=admin-page'">${home}</button>
                     </c:otherwise>
                 </c:choose>
-                <button id="button" onclick="location.href='Controller?command=logout'">${log_out}</button>
+                <button class="header_button" onclick="location.href='Controller?command=logout'">${log_out}</button>
             </c:otherwise>
         </c:choose>
     </div>
 </div>
-    <c:if test="${not empty requestScope.shownException}">
-        <c:set var="error" value="${requestScope.shownException.message}"/>
-        <script type="text/javascript">
-            function showAuthErr(arg){
-                window.alert(arg);
-            }
-            var error = '${error}';
-            showAuthErr(error);
-        </script>
-    </c:if>
-<style type="text/css">
-    #outer {
-        width: 100%;
-        height: 23px;
-        background: #cfcfd8;
-        padding: 5px;
-        padding-right: 20px;
-        border: solid 1px rgba(0, 0, 0, 0.3);
-    }
-    #inner {
-        float: inherit;
-        width: 60%;
-        height: 100%;
-    }
-    #button {
-        width: 30%;
-        float: left;
-        height: 100%;
-        border: solid 1px rgba(0, 0, 0, 0.3);
-    }
-</style>
+<c:if test="${not empty requestScope.shownException}">
+    <c:set var="error" value="${requestScope.shownException.message}"/>
+    <script type="text/javascript">
+        function showAuthErr(arg){
+            window.alert(arg);
+        }
+        var error = '${error}';
+        showAuthErr(error);
+    </script>
+</c:if>
