@@ -34,6 +34,26 @@ public class UtilServiceImpl implements UtilService {
     }
 
     @Override
+    public void updateSessionTerms(SessionTerms terms) throws ServiceException {
+        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
+        try {
+            utilDao.updateSessionTerms(terms);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void createSessionTerms(SessionTerms terms) throws ServiceException {
+        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
+        try {
+            utilDao.createSessionTerms(terms);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public void handleApplications() throws ServiceException {
         ApplicationHandler handler = ApplicationHandler.getInstance();
         handler.handleApplications();

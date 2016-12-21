@@ -81,7 +81,7 @@
             </tr>
             <c:forEach var="pair" items="${user.results}">
                 <tr>
-                    <td>${applicationScope.subjects[pair.key].name}</td>
+                    <td>${sessionScope.subjects[pair.key].name}</td>
                     <td>${pair.value}</td>
                     <c:if test="${sessionScope.isAuthorizedAdmin}">
                         <td>
@@ -97,7 +97,7 @@
                 <input type="hidden" name="id" value="${user.id}"/>
                 <select name="subjectId">
                     <option disabled>Choose a subject</option>
-                    <c:forEach items="${applicationScope.subjects}" var="entry">
+                    <c:forEach items="${sessionScope.subjects}" var="entry">
                         <c:if test="${not user.results.keySet().contains(entry.key)}">
                             <option value="${entry.value.id}">${entry.value.name}</option>
                         </c:if>
@@ -124,8 +124,8 @@
                 <td>${functions:formatDateTime(application.creationTime)}</td>
                 <td>${application.status}</td>
                 <td>${application.mark}</td>
-                <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
-                             applicationScope.sessionTerms.sessionEnd)}">
+                <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
+                             sessionScope.sessionTerms.sessionEnd)}">
                     <td>
                         <button onclick="location.href='Controller?command=user-cancel-application&id=${application.id}'">
                                 ${cancel}</button>

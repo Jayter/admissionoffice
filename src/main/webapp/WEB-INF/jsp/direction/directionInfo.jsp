@@ -64,7 +64,7 @@
             </tr>
             <c:forEach items="${direction.entranceSubjects}" var="entry">
                 <tr>
-                    <td>${applicationScope.subjects[entry.key].name}</td>
+                    <td>${sessionScope.subjects[entry.key].name}</td>
                     <td>${entry.value}</td>
                     <td>
                         <c:if test="${sessionScope.isAuthorizedAdmin}">
@@ -75,8 +75,8 @@
                 </tr>
             </c:forEach>
         </table>
-        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
-            applicationScope.sessionTerms.sessionEnd)}">
+        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
+            sessionScope.sessionTerms.sessionEnd)}">
             <form method="post" action="Controller?command=user-apply">
                 <input type="hidden" name="directionId" value="${direction.id}"/>
                 <input type="submit" value="${apply}"/>
@@ -87,7 +87,7 @@
                 <input type="hidden" name="directionId" value="${direction.id}"/>
                 <select name="subjectId">
                     <option disabled>Choose a subject</option>
-                    <c:forEach items="${applicationScope.subjects}" var="entry">
+                    <c:forEach items="${sessionScope.subjects}" var="entry">
                         <c:if test="${not direction.entranceSubjects.keySet().contains(entry.key)}">
                             <option value="${entry.value.id}">${entry.value.name}</option>
                         </c:if>

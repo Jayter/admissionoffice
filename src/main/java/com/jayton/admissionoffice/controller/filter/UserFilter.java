@@ -49,6 +49,9 @@ public class UserFilter implements Filter {
         adminCommands.add(DELETE_ENTRANCE_SUBJECT);
         adminCommands.add(ADMIN_PAGE);
         adminCommands.add(HANDLE_APPLICATIONS);
+        adminCommands.add(EDIT_SESSION_TERMS);
+        adminCommands.add(CREATE_SESSION_TERMS);
+        adminCommands.add(UPDATE_DIRECTION);
 
         userCommands.add(USER_APPLY);
         userCommands.add(USER_CANCEL_APPLICATION);

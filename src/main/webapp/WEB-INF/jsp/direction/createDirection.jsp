@@ -35,7 +35,7 @@
             ${directionSubjects}
             <dl>
                 <select name="subject1Id" id="subject1Id">
-                    <c:forEach items="${applicationScope.subjects}" var="entry">
+                    <c:forEach items="${sessionScope.subjects}" var="entry">
                         <option value="${entry.key}">${entry.value.name}</option>
                     </c:forEach>
                 </select>
@@ -43,7 +43,7 @@
             </dl>
             <dl>
                 <select name="subject2Id" id="subject2Id">
-                    <c:forEach items="${applicationScope.subjects}" var="entry">
+                    <c:forEach items="${sessionScope.subjects}" var="entry">
                         <option value="${entry.key}">${entry.value.name}</option>
                     </c:forEach>
                 </select>
@@ -51,7 +51,7 @@
             </dl>
             <dl>
                 <select name="subject3Id" id="subject3Id">
-                    <c:forEach items="${applicationScope.subjects}" var="entry">
+                    <c:forEach items="${sessionScope.subjects}" var="entry">
                         <option value="${entry.key}">${entry.value.name}</option>
                     </c:forEach>
                 </select>

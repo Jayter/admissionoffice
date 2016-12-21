@@ -32,24 +32,7 @@ public class AdmissionOfficeContextCreate implements ServletContextListener {
         }
 
         ServletContext context = servletContextEvent.getServletContext();
-        UtilService utilService = ServiceFactory.getInstance().getUtilService();
 
-        List<Subject> subjects;
-        SessionTerms sessionTerms;
-
-        try {
-            subjects = utilService.getAllSubjects();
-            sessionTerms = utilService.getSessionTerms((short) LocalDate.now().getYear());
-        } catch (ServiceException e) {
-            logger.error("Failed to load application data.", e);
-            throw new RuntimeException("Failed to load application data.", e);
-        }
-
-        Map<Long, Subject> subjectsMap = new HashMap<>();
-        subjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
-
-        context.setAttribute("subjects", subjectsMap);
-        context.setAttribute("sessionTerms", sessionTerms);
         logger.info("Data source is initialized.");
     }
 

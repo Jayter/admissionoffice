@@ -35,7 +35,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
                     return new SessionTerms(currentYear, start, end);
                 } else {
-                    throw new DAOException("Failed to load session terms.");
+                    return null;
                 }
             }
         } catch (SQLException e) {
@@ -68,6 +68,54 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
         } catch (SQLException e) {
             throw new DAOException("Failed to load subjects.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public void updateSessionTerms(SessionTerms terms) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"));
+
+            statement.setTimestamp(1, Timestamp.valueOf(terms.getSessionStart()));
+            statement.setTimestamp(2, Timestamp.valueOf(terms.getSessionEnd()));
+            statement.setShort(3, terms.getYear());
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
+                throw new DAOException("Failed to update session terms.");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Failed to update session terms.", e);
+        } finally {
+            DaoHelper.closeResources(connection, statement);
+        }
+    }
+
+    @Override
+    public void createSessionTerms(SessionTerms terms) throws DAOException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+
+        try {
+            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"));
+
+            statement.setShort(1, terms.getYear());
+            statement.setTimestamp(2, Timestamp.valueOf(terms.getSessionStart()));
+            statement.setTimestamp(3, Timestamp.valueOf(terms.getSessionEnd()));
+
+            int affectedRows = statement.executeUpdate();
+            if(affectedRows == 0) {
+                throw new DAOException("Failed to create session terms.");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Failed to create session terms.", e);
         } finally {
             DaoHelper.closeResources(connection, statement);
         }

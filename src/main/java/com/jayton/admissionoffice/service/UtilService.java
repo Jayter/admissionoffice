@@ -9,5 +9,7 @@ import java.util.List;
 public interface UtilService {
     List<Subject> getAllSubjects() throws ServiceException;
     SessionTerms getSessionTerms(short year) throws ServiceException;
+    void updateSessionTerms(SessionTerms terms) throws ServiceException;
     void handleApplications() throws ServiceException;
+    void createSessionTerms(SessionTerms terms) throws ServiceException;
 }

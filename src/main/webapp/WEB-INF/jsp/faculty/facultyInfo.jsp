@@ -66,8 +66,8 @@
                     <td>${direction.averageCoefficient}</td>
                     <td>${direction.countOfStudents}</td>
                     <td>
-                        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(applicationScope.sessionTerms.sessionStart,
-                            applicationScope.sessionTerms.sessionEnd)}">
+                        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
+                            sessionScope.sessionTerms.sessionEnd)}">
                             <form method="post" action="Controller?command=user-apply">
                                 <input type="hidden" name="directionId" value="${direction.id}"/>
                                 <input type="submit" value="${apply}"/>

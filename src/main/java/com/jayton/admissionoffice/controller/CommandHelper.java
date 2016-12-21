@@ -2,8 +2,7 @@ package com.jayton.admissionoffice.controller;
 
 import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.impl.*;
-import com.jayton.admissionoffice.command.impl.admin.AdminPageCommand;
-import com.jayton.admissionoffice.command.impl.admin.HandleApplicationsCommand;
+import com.jayton.admissionoffice.command.impl.admin.*;
 import com.jayton.admissionoffice.command.impl.direction.*;
 import com.jayton.admissionoffice.command.impl.faculty.*;
 import com.jayton.admissionoffice.command.impl.university.*;
@@ -24,6 +23,9 @@ public class CommandHelper {
         commands.put(CommandName.LOAD_MAIN, new LoadMainPageCommand());
         commands.put(CommandName.HANDLE_APPLICATIONS, new HandleApplicationsCommand());
         commands.put(CommandName.ADMIN_PAGE, new AdminPageCommand());
+        commands.put(CommandName.EDIT_SESSION_TERMS, new EditSessionTermsCommand());
+        commands.put(CommandName.UPDATE_SESSION_TERMS, new UpdateSessionTermsCommand());
+        commands.put(CommandName.CREATE_SESSION_TERMS, new CreateSessionTermsCommand());
 
         commands.put(CommandName.GET_UNIVERSITY, new GetUniversityCommand());
         commands.put(CommandName.EDIT_UNIVERSITY, new EditUniversityCommand());
