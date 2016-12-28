@@ -31,8 +31,6 @@ public class AdmissionOfficeContextCreate implements ServletContextListener {
             throw new RuntimeException("Failed to initialize data source.");
         }
 
-        ServletContext context = servletContextEvent.getServletContext();
-
         logger.info("Data source is initialized.");
     }
 
