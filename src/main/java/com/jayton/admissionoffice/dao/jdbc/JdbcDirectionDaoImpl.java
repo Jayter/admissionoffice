@@ -194,8 +194,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY, ResultSet.CONCUR_READ_ONLY);
             statement.setLong(1, facultyId);
-            statement.setLong(2, count*3);
-            statement.setLong(3, offset*3);
+            statement.setLong(2, count);
+            statement.setLong(3, offset);
 
             return getByStatement(statement);
 
