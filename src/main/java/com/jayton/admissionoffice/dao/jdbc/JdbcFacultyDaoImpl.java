@@ -15,7 +15,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     private final ResourceBundle facultyQueries = ResourceBundle.getBundle("db.queries.facultyQueries");
 
-    JdbcFacultyDaoImpl() {
+    public JdbcFacultyDaoImpl() {
     }
 
     @Override

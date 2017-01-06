@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.service.impl;
 
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.FacultyDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.university.Faculty;
@@ -11,9 +10,17 @@ import java.util.List;
 
 public class FacultyServiceImpl implements FacultyService {
 
+    private FacultyDao facultyDao;
+
+    public FacultyServiceImpl() {
+    }
+
+    public void setFacultyDao(FacultyDao facultyDao) {
+        this.facultyDao = facultyDao;
+    }
+
     @Override
     public Faculty add(Faculty faculty) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.add(faculty);
         } catch (DAOException e) {
@@ -23,7 +30,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty get(long id) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.get(id);
         } catch (DAOException e) {
@@ -33,7 +39,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty update(Faculty faculty) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.update(faculty);
         } catch (DAOException e) {
@@ -43,7 +48,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void delete(long id) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             facultyDao.delete(id);
         } catch (DAOException e) {
@@ -53,7 +57,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public List<Faculty> getByUniversity(long universityId, long offset, long count) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.getByUniversity(universityId, offset, count);
         } catch (DAOException e) {
@@ -63,7 +66,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public long getCount(long universityId) throws ServiceException {
-        FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
         try {
             return facultyDao.getCount(universityId);
         } catch (DAOException e) {

@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.util;
+package util;
 
 import com.jayton.admissionoffice.dao.exception.FailedInitializationException;
 import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;

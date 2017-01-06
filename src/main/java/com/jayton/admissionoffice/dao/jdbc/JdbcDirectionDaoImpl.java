@@ -14,7 +14,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     private final ResourceBundle directionQueries = ResourceBundle.getBundle("db.queries.directionQueries");
 
-    JdbcDirectionDaoImpl() {
+    public JdbcDirectionDaoImpl() {
     }
 
     public Direction add(Direction direction) throws DAOException {

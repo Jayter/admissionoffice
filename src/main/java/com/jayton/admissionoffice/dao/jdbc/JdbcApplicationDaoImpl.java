@@ -18,7 +18,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     private final ResourceBundle applicationQueries = ResourceBundle.getBundle("db.queries.applicationQueries");
 
-    JdbcApplicationDaoImpl() {
+    public JdbcApplicationDaoImpl() {
     }
 
     @Override

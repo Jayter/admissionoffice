@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="applicationDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcApplicationDaoImpl"/>
+    <bean id="directionDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcDirectionDaoImpl"/>
+    <bean id="facultyDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcFacultyDaoImpl"/>
+    <bean id="universityDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUniversityDaoImpl"/>
+    <bean id="userDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUserDaoImpl"/>
+    <bean id="utilDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUtilDaoImpl"/>
+
+    <bean id="applicationService" class="com.jayton.admissionoffice.service.impl.ApplicationServiceImpl">
+        <field name="applicationDao" ref="applicationDao"/>
+        <field name="directionDao" ref="directionDao"/>
+        <field name="utilDao" ref="utilDao"/>
+    </bean>
+    <bean id="directionService" class="com.jayton.admissionoffice.service.impl.DirectionServiceImpl">
+        <field name="directionDao" ref="directionDao"/>
+    </bean>
+    <bean id="facultyService" class="com.jayton.admissionoffice.service.impl.FacultyServiceImpl">
+        <field name="facultyDao" ref="facultyDao"/>
+    </bean>
+    <bean id="universityService" class="com.jayton.admissionoffice.service.impl.UniversityServiceImpl">
+        <field name="universityDao" ref="universityDao"/>
+    </bean>
+    <bean id="userService" class="com.jayton.admissionoffice.service.impl.UserServiceImpl">
+        <field name="userDao" ref="userDao"/>
+    </bean>
+    <bean id="utilService" class="com.jayton.admissionoffice.service.impl.UtilServiceImpl">
+        <field name="utilDao" ref="utilDao"/>
+    </bean>
+
+    <bean id="serviceFactory" class="com.jayton.admissionoffice.service.ServiceFactory" type="singletone">
+        <field name="applicationService" ref="applicationService"/>
+        <field name="directionService" ref="directionService"/>
+        <field name="facultyService" ref="facultyService"/>
+        <field name="universityService" ref="universityService"/>
+        <field name="userService" ref="userService"/>
+        <field name="utilService" ref="utilService"/>
+    </bean>
+</beans>

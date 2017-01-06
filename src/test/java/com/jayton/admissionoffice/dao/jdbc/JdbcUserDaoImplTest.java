@@ -6,7 +6,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.data.UserMatcher;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
-import com.jayton.admissionoffice.util.InitHelper;
+import util.InitHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

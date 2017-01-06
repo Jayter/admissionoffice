@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.university.University;
-import com.jayton.admissionoffice.util.InitHelper;
+import util.InitHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

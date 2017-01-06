@@ -16,7 +16,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     private final ResourceBundle userQueries = ResourceBundle.getBundle("db.queries.userQueries");
 
-    JdbcUserDaoImpl() {
+    public JdbcUserDaoImpl() {
     }
 
     @Override

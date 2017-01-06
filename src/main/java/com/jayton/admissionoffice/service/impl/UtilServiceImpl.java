@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.service.impl;
 
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.UtilDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.Subject;
@@ -13,9 +12,17 @@ import java.util.List;
 
 public class UtilServiceImpl implements UtilService {
 
+    private UtilDao utilDao;
+
+    public UtilServiceImpl() {
+    }
+
+    public void setUtilDao(UtilDao utilDao) {
+        this.utilDao = utilDao;
+    }
+
     @Override
     public List<Subject> getAllSubjects() throws ServiceException {
-        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
         try {
             return utilDao.getAllSubjects();
         } catch (DAOException e) {
@@ -25,7 +32,6 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public SessionTerms getSessionTerms(short year) throws ServiceException {
-        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
         try {
             return utilDao.getSessionTerms(year);
         } catch (DAOException e) {
@@ -35,7 +41,6 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public void updateSessionTerms(SessionTerms terms) throws ServiceException {
-        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
         try {
             utilDao.updateSessionTerms(terms);
         } catch (DAOException e) {
@@ -45,7 +50,6 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public void createSessionTerms(SessionTerms terms) throws ServiceException {
-        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
         try {
             utilDao.createSessionTerms(terms);
         } catch (DAOException e) {

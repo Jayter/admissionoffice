@@ -1,6 +1,5 @@
 package com.jayton.admissionoffice.service.impl;
 
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
@@ -14,9 +13,17 @@ import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
+    private UserDao userDao;
+
+    public UserServiceImpl() {
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     public synchronized User add(User user) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.add(user);
         } catch (DAOException e) {
@@ -26,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(long id) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.get(id);
         } catch (DAOException e) {
@@ -36,7 +42,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByEmail(String email) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.getByEmail(email);
         } catch (DAOException e) {
@@ -46,7 +51,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.update(user);
         } catch (DAOException e) {
@@ -56,7 +60,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long id) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             userDao.delete(id);
         } catch (DAOException e) {
@@ -66,7 +69,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll(long offset, long count) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.getAll(offset, count);
         } catch (DAOException e) {
@@ -77,7 +79,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public synchronized void addResult(long userId, long subjectId, short mark) throws ServiceException {
         Map<Long, Short> results;
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
              results = userDao.getResultsOfUser(userId);
         } catch (DAOException e) {
@@ -101,7 +102,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteResult(long userId, long subjectId) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             userDao.deleteResult(userId, subjectId);
         } catch (DAOException e) {
@@ -111,7 +111,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthorizationResult authorize(String login, String password) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.authorize(login, password);
         } catch (DAOException e) {
@@ -121,7 +120,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long getTotalCount() throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.getTotalCount();
         } catch (DAOException e) {
@@ -131,7 +129,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<Long, String> getDirectionNames(long userId) throws ServiceException {
-        UserDao userDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUserDao();
         try {
             return userDao.getDirectionNames(userId);
         } catch (DAOException e) {

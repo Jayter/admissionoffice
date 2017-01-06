@@ -5,7 +5,7 @@ import com.jayton.admissionoffice.dao.UtilDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
-import com.jayton.admissionoffice.util.InitHelper;
+import util.InitHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

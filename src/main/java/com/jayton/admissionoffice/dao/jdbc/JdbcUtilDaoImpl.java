@@ -17,6 +17,9 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
 
+    public JdbcUtilDaoImpl() {
+    }
+
     @Override
     public SessionTerms getSessionTerms(short currentYear) throws DAOException {
         PreparedStatement statement = null;

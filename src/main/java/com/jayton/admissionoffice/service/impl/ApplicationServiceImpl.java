@@ -18,12 +18,28 @@ import java.util.Map;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
+    private ApplicationDao applicationDao;
+    private DirectionDao directionDao;
+    private UtilDao utilDao;
+
+    public ApplicationServiceImpl() {
+    }
+
+    public void setApplicationDao(ApplicationDao applicationDao) {
+        this.applicationDao = applicationDao;
+    }
+
+    public void setDirectionDao(DirectionDao directionDao) {
+        this.directionDao = directionDao;
+    }
+
+    public void setUtilDao(UtilDao utilDao) {
+        this.utilDao = utilDao;
+    }
+
     @Override
     public synchronized Application add(User user, long directionId, LocalDateTime applied) throws ServiceException {
         verifyApplicationDate(applied);
-
-        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
 
         try {
             List<Application> retrieved = applicationDao.getByUser(user.getId());
@@ -49,7 +65,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application get(long id) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.get(id);
         } catch (DAOException e) {
@@ -59,7 +74,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> getByUser(long userId) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByUser(userId);
         } catch (DAOException e) {
@@ -69,7 +83,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> getByDirection(long directionId, long offset, long count) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getByDirection(directionId, offset, count);
         } catch (DAOException e) {
@@ -79,7 +92,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void update(long id, Status status) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.update(id, status);
         } catch (DAOException e) {
@@ -89,7 +101,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public void delete(long id) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             applicationDao.delete(id);
         } catch (DAOException e) {
@@ -99,7 +110,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public long getCount(long directionId) throws ServiceException {
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
         try {
             return applicationDao.getCount(directionId);
         } catch (DAOException e) {
@@ -108,8 +118,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private void verifyApplicationDate(LocalDateTime applied) throws ServiceException {
-        UtilDao utilDao = FactoryProducer.getInstance().getPostgresDaoFactory().getUtilDao();
-
         SessionTerms terms;
         try {
             terms = utilDao.getSessionTerms((short)applied.getYear());

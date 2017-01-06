@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.util;
+package util;
 
 /*
  * Copyright (c) 2014 David Kaya

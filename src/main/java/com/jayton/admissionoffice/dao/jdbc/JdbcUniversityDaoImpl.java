@@ -15,7 +15,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     private final ResourceBundle universityQueries = ResourceBundle.getBundle("db.queries.universityQueries");
 
-    JdbcUniversityDaoImpl() {
+    public JdbcUniversityDaoImpl() {
     }
 
     @Override

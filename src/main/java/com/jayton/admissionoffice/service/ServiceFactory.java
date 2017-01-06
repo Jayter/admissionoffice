@@ -6,12 +6,12 @@ public class ServiceFactory {
 
     private static ServiceFactory instance = new ServiceFactory();
 
-    private final DirectionService directionService = new DirectionServiceImpl();
-    private final FacultyService facultyService = new FacultyServiceImpl();
-    private final UniversityService universityService = new UniversityServiceImpl();
-    private final UserService userService = new UserServiceImpl();
-    private final ApplicationService applicationService = new ApplicationServiceImpl();
-    private final UtilService utilService = new UtilServiceImpl();
+    private DirectionService directionService = new DirectionServiceImpl();
+    private FacultyService facultyService = new FacultyServiceImpl();
+    private UniversityService universityService = new UniversityServiceImpl();
+    private UserService userService = new UserServiceImpl();
+    private ApplicationService applicationService = new ApplicationServiceImpl();
+    private UtilService utilService = new UtilServiceImpl();
 
     private ServiceFactory() {
     }
@@ -42,5 +42,33 @@ public class ServiceFactory {
 
     public UtilService getUtilService() {
         return utilService;
+    }
+
+    public static void setInstance(ServiceFactory instance) {
+        ServiceFactory.instance = instance;
+    }
+
+    public void setDirectionService(DirectionService directionService) {
+        this.directionService = directionService;
+    }
+
+    public void setFacultyService(FacultyService facultyService) {
+        this.facultyService = facultyService;
+    }
+
+    public void setUniversityService(UniversityService universityService) {
+        this.universityService = universityService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setApplicationService(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
+
+    public void setUtilService(UtilService utilService) {
+        this.utilService = utilService;
     }
 }
