@@ -81,7 +81,7 @@
             </tr>
             <c:forEach var="pair" items="${user.results}">
                 <tr>
-                    <td>${sessionScope.subjects[pair.key].name}</td>
+                    <td>${requestScope.subjects[pair.key].name}</td>
                     <td>${pair.value}</td>
                     <c:if test="${sessionScope.isAuthorizedAdmin}">
                         <td>
@@ -97,7 +97,7 @@
                 <input type="hidden" name="id" value="${user.id}"/>
                 <select name="subjectId">
                     <option disabled>Choose a subject</option>
-                    <c:forEach items="${sessionScope.subjects}" var="entry">
+                    <c:forEach items="${requestScope.subjects}" var="entry">
                         <c:if test="${not user.results.keySet().contains(entry.key)}">
                             <option value="${entry.value.id}">${entry.value.name}</option>
                         </c:if>

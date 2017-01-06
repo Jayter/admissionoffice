@@ -3,11 +3,13 @@ package com.jayton.admissionoffice.command.impl.direction;
 import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
+import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.DirectionService;
 import com.jayton.admissionoffice.service.ServiceFactory;
+import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
 import org.slf4j.Logger;
@@ -49,6 +51,13 @@ public class GetDirectionCommand implements Command {
             request.setAttribute(PARAM_NAMES.getString("offset"), offset);
             request.setAttribute(PARAM_NAMES.getString("count"), count);
             request.setAttribute(PARAM_NAMES.getString("totalCount"), totalCount);
+
+            UtilService utilService = ServiceFactory.getInstance().getUtilService();
+            List<Subject> allSubjects = utilService.getAllSubjects();
+            Map<Long, Subject> subjectsMap = new HashMap<>();
+            allSubjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
+
+            request.setAttribute(PARAM_NAMES.getString("subjects"), subjectsMap);
 
             return PAGE_NAMES.getString("page.direction");
         } catch (ServiceException | VerificationException | NumberFormatException e) {

@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.command.impl.user;
 import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
+import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.*;
@@ -11,6 +12,7 @@ import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +36,13 @@ public class GetUserCommand implements Command {
             request.setAttribute(PARAM_NAMES.getString("user"), user);
             request.setAttribute(PARAM_NAMES.getString("applications"), applications);
             request.setAttribute(PARAM_NAMES.getString("directionNames"), directionNames);
+
+            UtilService utilService = ServiceFactory.getInstance().getUtilService();
+            List<Subject> allSubjects = utilService.getAllSubjects();
+            Map<Long, Subject> subjectsMap = new HashMap<>();
+            allSubjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
+
+            request.setAttribute(PARAM_NAMES.getString("subjects"), subjectsMap);
 
             return PAGE_NAMES.getString("page.user");
         } catch (ServiceException | VerificationException | NumberFormatException e) {

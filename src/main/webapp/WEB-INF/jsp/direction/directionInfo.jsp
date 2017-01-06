@@ -64,7 +64,7 @@
             </tr>
             <c:forEach items="${direction.entranceSubjects}" var="entry">
                 <tr>
-                    <td>${sessionScope.subjects[entry.key].name}</td>
+                    <td>${requestScope.subjects[entry.key].name}</td>
                     <td>${entry.value}</td>
                     <td>
                         <c:if test="${sessionScope.isAuthorizedAdmin}">
@@ -87,7 +87,7 @@
                 <input type="hidden" name="directionId" value="${direction.id}"/>
                 <select name="subjectId">
                     <option disabled>Choose a subject</option>
-                    <c:forEach items="${sessionScope.subjects}" var="entry">
+                    <c:forEach items="${requestScope.subjects}" var="entry">
                         <c:if test="${not direction.entranceSubjects.keySet().contains(entry.key)}">
                             <option value="${entry.value.id}">${entry.value.name}</option>
                         </c:if>
