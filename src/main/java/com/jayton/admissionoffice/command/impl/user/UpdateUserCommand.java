@@ -4,17 +4,20 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.ShownException;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
+import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.ServiceFactory;
 import com.jayton.admissionoffice.service.UserService;
+import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +58,13 @@ public class UpdateUserCommand implements Command {
             request.setAttribute(PARAM_NAMES.getString("user"), user);
             request.setAttribute(PARAM_NAMES.getString("applications"), applications);
             request.setAttribute(PARAM_NAMES.getString("directionNames"), directionNames);
+
+            UtilService utilService = ServiceFactory.getInstance().getUtilService();
+            List<Subject> allSubjects = utilService.getAllSubjects();
+            Map<Long, Subject> subjectsMap = new HashMap<>();
+            allSubjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
+
+            request.setAttribute(PARAM_NAMES.getString("subjects"), subjectsMap);
 
             return PAGE_NAMES.getString("page.user");
         } catch (VerificationException e) {
