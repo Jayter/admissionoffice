@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-public class AdmissionOfficeContextCreate implements ServletContextListener {
+public class AdmissionOfficeContextInitializer implements ServletContextListener {
 
     private final Logger logger = LoggerFactory.getLogger(ServletContextListener.class);
 

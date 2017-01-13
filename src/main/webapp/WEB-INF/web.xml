@@ -42,6 +42,6 @@
 
 
     <listener>
-        <listener-class>com.jayton.admissionoffice.controller.listener.AdmissionOfficeContextCreate</listener-class>
+        <listener-class>com.jayton.admissionoffice.controller.listener.AdmissionOfficeContextInitializer</listener-class>
     </listener>
 </web-app>
