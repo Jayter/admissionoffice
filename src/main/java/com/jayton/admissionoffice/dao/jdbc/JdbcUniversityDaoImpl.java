@@ -24,7 +24,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.add"),
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -58,7 +58,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get"));
             statement.setLong(1, id);
 
@@ -86,7 +86,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.update"));
 
             statement.setString(1, university.getName());
@@ -120,7 +120,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             statement.setString(1, city);
             statement.setLong(2, count);
@@ -141,7 +141,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all"));
             statement.setLong(1, count);
             statement.setLong(2, offset);

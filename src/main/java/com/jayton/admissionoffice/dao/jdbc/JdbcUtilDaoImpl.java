@@ -26,7 +26,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"));
 
             statement.setShort(1, currentYear);
@@ -54,7 +54,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("subject.get.all"));
 
             List<Subject> subjects = new ArrayList<>();
@@ -82,7 +82,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"));
 
             statement.setTimestamp(1, Timestamp.valueOf(terms.getSessionStart()));
@@ -106,7 +106,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"));
 
             statement.setShort(1, terms.getYear());

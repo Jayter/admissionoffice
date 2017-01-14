@@ -27,7 +27,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.add"),
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -63,7 +63,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get"));
             statement.setLong(1, id);
 
@@ -93,7 +93,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.update"));
 
             statement.setInt(1, status.ordinal());
@@ -121,7 +121,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.update"));
 
             for(Application application: applications) {
@@ -148,7 +148,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
             statement.setLong(1, directionId);
             statement.setLong(2, count);
@@ -169,7 +169,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_user"));
             statement.setLong(1, userId);
 
@@ -188,7 +188,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all"));
 
             return getByStatement(statement);

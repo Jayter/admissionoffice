@@ -24,7 +24,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(facultyQueries.getString("faculty.add"),
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -60,7 +60,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(facultyQueries.getString("faculty.get"));
             statement.setLong(1, id);
 
@@ -90,7 +90,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(facultyQueries.getString("faculty.update"));
 
             statement.setString(1, faculty.getName());
@@ -124,7 +124,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all"));
 
             return getByStatement(statement);
@@ -142,7 +142,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
             statement.setLong(1, universityId);
             statement.setLong(2, count);

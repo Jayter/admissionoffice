@@ -52,17 +52,17 @@ public class PoolHelper {
         dataSource = new DataSource(properties);
 
         try {
-            Connection connection = dataSource.getConnection();
+            dataSource.getConnection();
         } catch (SQLException e) {
             throw new FailedInitializationException("Failed to init data source.", e);
         }
     }
 
-    public void destroyDataSource() {
-        dataSource.close();
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
+    public void destroyDataSource() {
+        dataSource.close();
     }
 }

@@ -26,7 +26,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             addUserSt = connection.prepareStatement(userQueries.getString("user.add"), Statement.RETURN_GENERATED_KEYS);
             addCredentialsSt = connection.prepareStatement(userQueries.getString("credentials.add"));
             connection.setAutoCommit(false);
@@ -72,7 +72,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get"));
             statement.setLong(1, id);
 
@@ -92,7 +92,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             updateUserSt = connection.prepareStatement(userQueries.getString("user.update"));
             getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
             connection.setAutoCommit(false);
@@ -143,7 +143,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.all"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             statement.setLong(1, count);
@@ -164,7 +164,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
             statement.setString(1, email);
 
@@ -183,7 +183,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("result.add"));
 
             statement.setLong(1, userId);
@@ -207,7 +207,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("result.get.all"));
             statement.setLong(1, userId);
 
@@ -238,7 +238,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));
 
             statement.setString(1, email);
@@ -264,7 +264,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.authorize"));
 
             statement.setString(1, login);
@@ -332,7 +332,7 @@ public class JdbcUserDaoImpl implements UserDao {
         PreparedStatement statement = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.directions"));
             statement.setLong(1, userId);
 

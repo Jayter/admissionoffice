@@ -19,7 +19,7 @@ public class DaoHelper {
         PreparedStatement statement = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(script);
 
             if(params == null) {
@@ -46,7 +46,7 @@ public class DaoHelper {
         PreparedStatement statement = null;
 
         try {
-            connection = PoolHelper.getInstance().getDataSource().getPool().getConnection();
+            connection = PoolHelper.getInstance().getConnection();
             statement = connection.prepareStatement(script);
 
             if(params == null) {

@@ -47,7 +47,7 @@ public class InitHelper {
     }
 
     private static void executeScript(String path) throws SQLException {
-        Connection connection = PoolHelper.getInstance().getDataSource().getConnection();
+        Connection connection = PoolHelper.getInstance().getConnection();
         try {
             SqlScriptRunner runner = new SqlScriptRunner(connection, true);
 
