@@ -15,10 +15,6 @@ public class UniversityServiceImpl implements UniversityService {
     public UniversityServiceImpl() {
     }
 
-    public void setUniversityDao(UniversityDao universityDao) {
-        this.universityDao = universityDao;
-    }
-
     @Override
     public University add(University university) throws ServiceException {
         try {

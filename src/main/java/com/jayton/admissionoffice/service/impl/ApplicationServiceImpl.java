@@ -25,18 +25,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationServiceImpl() {
     }
 
-    public void setApplicationDao(ApplicationDao applicationDao) {
-        this.applicationDao = applicationDao;
-    }
-
-    public void setDirectionDao(DirectionDao directionDao) {
-        this.directionDao = directionDao;
-    }
-
-    public void setUtilDao(UtilDao utilDao) {
-        this.utilDao = utilDao;
-    }
-
     @Override
     public synchronized Application add(User user, long directionId, LocalDateTime applied) throws ServiceException {
         verifyApplicationDate(applied);

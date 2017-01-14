@@ -15,10 +15,6 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyServiceImpl() {
     }
 
-    public void setFacultyDao(FacultyDao facultyDao) {
-        this.facultyDao = facultyDao;
-    }
-
     @Override
     public Faculty add(Faculty faculty) throws ServiceException {
         try {

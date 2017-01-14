@@ -18,10 +18,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl() {
     }
 
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     @Override
     public synchronized User add(User user) throws ServiceException {
         try {

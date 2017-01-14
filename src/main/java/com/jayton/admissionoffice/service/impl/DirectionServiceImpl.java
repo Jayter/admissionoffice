@@ -18,10 +18,6 @@ public class DirectionServiceImpl implements DirectionService {
     public DirectionServiceImpl() {
     }
 
-    public void setDirectionDao(DirectionDao directionDao) {
-        this.directionDao = directionDao;
-    }
-
     @Override
     public Direction add(Direction direction) throws ServiceException {
         verifyEntranceSubjects(direction.getEntranceSubjects(), direction.getAverageCoefficient());

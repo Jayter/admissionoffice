@@ -16,6 +16,16 @@ import java.util.*;
 
 /**
  * Initializes classes described in "di/dependencies.xml" descriptor.
+ * <p>
+ * This class is responsible for initialization of components,
+ * described in "di/dependencies.xml". The component can be an
+ * instance of any class. It must neither have a public default
+ * constructor or be a singletone and use a <code>getInstance()</code>
+ * method for instantiation.
+ * <p>
+ * The bean can have fields that needs to be initialized by other beans.
+ * In this case a tag that describes a certain field must contain name
+ * of the field and reference to the bean that needs to be injected.
  */
 public class InjectionResolver {
 
@@ -236,22 +246,12 @@ public class InjectionResolver {
         Class<?> cls = bean.getClass();
         try {
             Field field = cls.getDeclaredField(name);
-            Method setter = cls.getDeclaredMethod(getSetterName(ref), field.getType());
-            Object fieldValue = beansMap.get(name);
-            setter.invoke(bean, fieldValue);
-        } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Object fieldValue = beansMap.get(ref);
+            field.setAccessible(true);
+            field.set(bean, fieldValue);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new InjectionException("Could not instantiate field. Please check descriptor and bean`s signature.", e);
         }
-    }
-
-    /**
-     * Counts and returns name of the setter of specified field.
-     * <p>
-     * @param field - name of the field
-     * @return name of the field`s setter
-     */
-    private String getSetterName(String field) {
-        return "set" + field.substring(0, 1).toUpperCase() + field.substring(1, field.length());
     }
 
     /**
@@ -268,16 +268,16 @@ public class InjectionResolver {
          */
         Node node;
 
-        public FieldInfo(String declaringBeanName, Node node) {
+        FieldInfo(String declaringBeanName, Node node) {
             this.declaringBeanName = declaringBeanName;
             this.node = node;
         }
 
-        public String getDeclaringBeanName() {
+        String getDeclaringBeanName() {
             return declaringBeanName;
         }
 
-        public Node getNode() {
+        Node getNode() {
             return node;
         }
     }

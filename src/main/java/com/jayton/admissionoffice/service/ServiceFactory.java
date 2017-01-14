@@ -43,32 +43,4 @@ public class ServiceFactory {
     public UtilService getUtilService() {
         return utilService;
     }
-
-    public static void setInstance(ServiceFactory instance) {
-        ServiceFactory.instance = instance;
-    }
-
-    public void setDirectionService(DirectionService directionService) {
-        this.directionService = directionService;
-    }
-
-    public void setFacultyService(FacultyService facultyService) {
-        this.facultyService = facultyService;
-    }
-
-    public void setUniversityService(UniversityService universityService) {
-        this.universityService = universityService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    public void setApplicationService(ApplicationService applicationService) {
-        this.applicationService = applicationService;
-    }
-
-    public void setUtilService(UtilService utilService) {
-        this.utilService = utilService;
-    }
 }

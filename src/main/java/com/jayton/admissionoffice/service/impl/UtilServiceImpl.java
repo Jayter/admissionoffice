@@ -17,10 +17,6 @@ public class UtilServiceImpl implements UtilService {
     public UtilServiceImpl() {
     }
 
-    public void setUtilDao(UtilDao utilDao) {
-        this.utilDao = utilDao;
-    }
-
     @Override
     public List<Subject> getAllSubjects() throws ServiceException {
         try {
