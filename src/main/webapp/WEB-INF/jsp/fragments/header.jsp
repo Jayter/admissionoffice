@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
 <fmt:message bundle="${loc}" key="header.login" var="login"/>
@@ -16,10 +17,8 @@
         <c:choose>
             <c:when test="${not sessionScope.isAuthorizedAdmin and not sessionScope.isAuthorizedUser}">
                 <form action="Controller?command=authorize" method="post">
-                    ${login}:
-                    <input type="text" name="login" size="20">
-                    ${password}:
-                    <input type="password" name="password" size="20">
+                    <input type="text" name="login" size="20" placeholder="${login}">
+                    <input type="password" name="password" size="20" placeholder="${password}">
                     <input type="submit" value="${log_in}">
                 </form>
             </c:when>
@@ -38,14 +37,34 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <button class="button" onclick="location.href='Controller?command=change-locale&locale=us-US'">US</button>
+    <button class="button" onclick="location.href='Controller?command=change-locale&locale=uk-UA'">UA</button>
 </div>
+<script type="text/javascript">
+    function showAuthErr(arg){
+        window.alert(arg);
+    }
+    function showAndRedirect(message, path) {
+        window.alert(message);
+        window.location.href = path;
+    }
+</script>
 <c:if test="${not empty requestScope.shownException}">
     <c:set var="error" value="${requestScope.shownException.message}"/>
-    <script type="text/javascript">
-        function showAuthErr(arg){
-            window.alert(arg);
-        }
-        var error = '${error}';
-        showAuthErr(error);
-    </script>
+    <c:set var="redirectPath" value="${requestScope.redirectPath}"/>
+    <c:choose>
+        <c:when test="${redirectPath != null}">
+            <script type="text/javascript">
+                var error = '${error}';
+                var redirectPath = '${redirectPath}';
+                showAndRedirect(error, redirectPath);
+            </script>
+        </c:when>
+        <c:otherwise>
+            <script type="text/javascript">
+                var error = '${error}';
+                showAuthErr(error);
+            </script>
+        </c:otherwise>
+    </c:choose>
 </c:if>

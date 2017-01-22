@@ -4,9 +4,11 @@
 
 <jsp:include page="fragments/headTag.jsp"/>
 
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
 <fmt:message bundle="${loc}" key="main.title" var="title"/>
+<fmt:message bundle="${loc}" key="main.universities" var="universities"/>
 <fmt:message bundle="${loc}" key="university.name" var="universityName"/>
 <fmt:message bundle="${loc}" key="university.city" var="city"/>
 <fmt:message bundle="${loc}" key="button.next" var="next"/>
@@ -17,7 +19,7 @@
     <jsp:include page="fragments/header.jsp"/>
     <div class="outer">
         <table class="entries">
-            <caption>Universities</caption>
+            <caption>${universities}</caption>
             <tr>
                 <th>${universityName}</th>
                 <th>${city}</th>

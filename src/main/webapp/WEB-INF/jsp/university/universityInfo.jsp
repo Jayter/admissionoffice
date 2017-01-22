@@ -4,6 +4,7 @@
 
 <jsp:include page="../fragments/headTag.jsp"/>
 
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
 <fmt:message bundle="${loc}" key="university.title" var="title"/>

@@ -4,6 +4,7 @@
 
 <jsp:include page="../fragments/headTag.jsp"/>
 
+<fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
 <fmt:message bundle="${loc}" key="direction.create" var="createDirection"/>
@@ -22,15 +23,15 @@
             <input type="hidden" name="facultyId" value="${requestScope.facultyId}">
             <dl>
                 <dt>${directionName}</dt>
-                <dd><input type="text" name="name" size="60"></dd>
+                <dd><input type="text" name="name" size="60" value="${requestScope.name}"></dd>
             </dl>
             <dl>
                 <dt>${directionCoefficient}</dt>
-                <dd><input type="text" name="coefficient" minlength="3" maxlength="4"></dd>
+                <dd><input type="text" name="coefficient" minlength="3" maxlength="4" value="${requestScope.coefficient}"></dd>
             </dl>
             <dl>
                 <dt>${directionCount}</dt>
-                <dd><input type="text" name="countOfStudents"></dd>
+                <dd><input type="text" name="countOfStudents" value="${requestScope.countOfStudents}"></dd>
             </dl>
             ${directionSubjects}
             <dl>
