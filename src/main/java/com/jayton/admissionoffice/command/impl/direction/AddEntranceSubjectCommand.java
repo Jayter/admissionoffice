@@ -5,52 +5,52 @@ import com.jayton.admissionoffice.command.exception.ShownException;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
 import com.jayton.admissionoffice.service.DirectionService;
-import com.jayton.admissionoffice.service.ServiceFactory;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
+import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 
 public class AddEntranceSubjectCommand implements Command {
 
+    @Injected
+    private DirectionService directionService;
+
     private final Logger logger = LoggerFactory.getLogger(AddEntranceSubjectCommand.class);
 
     @Override
-    public String execute(HttpServletRequestProxy request) {
-        Long directionId = null;
-        Long subjectId = null;
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Long id = null;
         try {
-            directionId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("directionId")));
-            subjectId = Long.parseLong(request.getParameter(PARAM_NAMES.getString("subjectId")));
-            Verifier.verifyIds(directionId, subjectId);
+            id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("directionId")));
+            Long subjectId = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("subjectId")));
+            BigDecimal coef = Verifier.convertToBigDecimal(request.getParameter(PARAM_NAMES.getString("coefficient"))).
+                    setScale(2, BigDecimal.ROUND_HALF_UP);
+            verifyInput(id, subjectId, coef);
 
-            BigDecimal coef = null;
-            try {
-                coef = new BigDecimal(request.getParameter(PARAM_NAMES.getString("coefficient")))
-                        .setScale(2, BigDecimal.ROUND_HALF_UP);
-            } catch (NumberFormatException e) {
-                logger.error("Incorrect number.", e);
-                request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect coefficient."));
-                return PAGE_NAMES.getString("controller.edit_direction")+"&id="+directionId;
-            }
-            Verifier.verifyCoef(coef);
+            directionService.addEntranceSubject(id, subjectId, coef);
 
-            DirectionService directionService = ServiceFactory.getInstance().getDirectionService();
-            directionService.addEntranceSubject(directionId, subjectId, coef);
-
-            return PAGE_NAMES.getString("controller.get_direction")+"&id="+directionId;
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_direction")+"&id="+id);
         } catch (VerificationException | ServiceVerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_direction")+"&id="+directionId;
+            request.getRequestDispatcher(PAGE_NAMES.getString("controller.edit_direction")+"&id="+id).forward(request, response);
         }
-        catch (ServiceException | NumberFormatException e) {
+        catch (ServiceException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
-            return PAGE_NAMES.getString("page.exception");
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
         }
+    }
+
+    private void verifyInput(long id, long subjectId, BigDecimal coef) throws VerificationException {
+        Verifier.verifyIds(id, subjectId);
+        Verifier.verifyCoef(coef);
     }
 }

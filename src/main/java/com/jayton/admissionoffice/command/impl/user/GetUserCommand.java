@@ -8,26 +8,34 @@ import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.*;
 import com.jayton.admissionoffice.service.exception.ServiceException;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
+import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GetUserCommand implements Command {
 
+    @Injected
+    private UserService userService;
+    @Injected
+    private ApplicationService applicationService;
+    @Injected
+    private UtilService utilService;
+
     private final Logger logger = LoggerFactory.getLogger(GetUserCommand.class);
 
     @Override
-    public String execute(HttpServletRequestProxy request) {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
-            Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
             Verifier.verifyId(id);
-
-            UserService userService = ServiceFactory.getInstance().getUserService();
-            ApplicationService applicationService = ServiceFactory.getInstance().getApplicationService();
 
             User user = userService.get(id);
             List<Application> applications = applicationService.getByUser(id);
@@ -37,18 +45,20 @@ public class GetUserCommand implements Command {
             request.setAttribute(PARAM_NAMES.getString("applications"), applications);
             request.setAttribute(PARAM_NAMES.getString("directionNames"), directionNames);
 
-            UtilService utilService = ServiceFactory.getInstance().getUtilService();
             List<Subject> allSubjects = utilService.getAllSubjects();
             Map<Long, Subject> subjectsMap = new HashMap<>();
             allSubjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
 
             request.setAttribute(PARAM_NAMES.getString("subjects"), subjectsMap);
 
-            return PAGE_NAMES.getString("page.user");
-        } catch (ServiceException | VerificationException | NumberFormatException e) {
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.user")).forward(request, response);
+        } catch (ServiceException  e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
-            return PAGE_NAMES.getString("page.exception");
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+        } catch (VerificationException e) {
+            logger.error("Requested resource does not exist.", e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }

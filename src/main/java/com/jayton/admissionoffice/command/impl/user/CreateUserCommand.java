@@ -4,27 +4,28 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.ShownException;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
-import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.user.User;
-import com.jayton.admissionoffice.service.ServiceFactory;
 import com.jayton.admissionoffice.service.UserService;
-import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
+import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CreateUserCommand implements Command {
+
+    @Injected
+    private UserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(CreateUserCommand.class);
 
     @Override
-    public String execute(HttpServletRequestProxy request) {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             String name = request.getParameter(PARAM_NAMES.getString("name"));
             String lastName = request.getParameter(PARAM_NAMES.getString("lastName"));
@@ -36,33 +37,30 @@ public class CreateUserCommand implements Command {
             Byte averageMark = Byte.parseByte(request.getParameter(PARAM_NAMES.getString("mark")));
             verifyInput(name, lastName, address, login, password, phoneNumber, date, averageMark);
 
-            UserService userService = ServiceFactory.getInstance().getUserService();
             User user = userService.add(new User(name, lastName, address, login, password, phoneNumber, date, averageMark));
 
-            request.setAttribute(PARAM_NAMES.getString("user"), user);
-
-            UtilService utilService = ServiceFactory.getInstance().getUtilService();
-            List<Subject> allSubjects = utilService.getAllSubjects();
-            Map<Long, Subject> subjectsMap = new HashMap<>();
-            allSubjects.forEach(subject -> subjectsMap.put(subject.getId(), subject));
-
-            request.setAttribute(PARAM_NAMES.getString("subjects"), subjectsMap);
-
-            return PAGE_NAMES.getString("page.user");
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_user")+"&id="+user.getId());
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
-            request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            return PAGE_NAMES.getString("controller.edit_user");
-        } catch (NumberFormatException e) {
-            logger.error("Incorrect number.", e);
-            request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException("Incorrect mark."));
-            return PAGE_NAMES.getString("controller.edit_user");
-        }
-        catch (ServiceException e) {
+            addAttributes(request, e.getMessage());
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.user.edit")).forward(request, response);
+        } catch (ServiceException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
-            return PAGE_NAMES.getString("page.exception");
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
         }
+    }
+
+    private void addAttributes(HttpServletRequest request, String exceptionMessage) {
+        request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(exceptionMessage));
+        request.setAttribute(PARAM_NAMES.getString("name"), request.getParameter(PARAM_NAMES.getString("name")));
+        request.setAttribute(PARAM_NAMES.getString("lastName"), request.getParameter(PARAM_NAMES.getString("lastName")));
+        request.setAttribute(PARAM_NAMES.getString("address"), request.getParameter(PARAM_NAMES.getString("address")));
+        request.setAttribute(PARAM_NAMES.getString("login"), request.getParameter(PARAM_NAMES.getString("login")));
+        request.setAttribute(PARAM_NAMES.getString("password"), request.getParameter(PARAM_NAMES.getString("password")));
+        request.setAttribute(PARAM_NAMES.getString("phone"), request.getParameter(PARAM_NAMES.getString("phone")));
+        request.setAttribute(PARAM_NAMES.getString("birthDate"), request.getParameter(PARAM_NAMES.getString("birthDate")));
+        request.setAttribute(PARAM_NAMES.getString("mark"), request.getParameter(PARAM_NAMES.getString("mark")));
     }
 
     private void verifyInput(String name, String lastName, String address, String login, String password,

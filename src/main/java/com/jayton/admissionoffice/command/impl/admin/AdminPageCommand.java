@@ -1,12 +1,16 @@
 package com.jayton.admissionoffice.command.impl.admin;
 
 import com.jayton.admissionoffice.command.Command;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class AdminPageCommand implements Command {
 
     @Override
-    public String execute(HttpServletRequestProxy request) {
-        return PAGE_NAMES.getString("page.admin");
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.getRequestDispatcher(PAGE_NAMES.getString("page.admin")).forward(request, response);
     }
 }

@@ -7,49 +7,57 @@ import com.jayton.admissionoffice.command.util.Verifier;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.ApplicationService;
-import com.jayton.admissionoffice.service.ServiceFactory;
 import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
-import com.jayton.admissionoffice.util.proxy.HttpSessionProxy;
+import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class UserCancelApplicationCommand implements Command {
 
+    @Injected
+    private UtilService utilService;
+    @Injected
+    private ApplicationService applicationService;
+
     private final Logger logger = LoggerFactory.getLogger(UserCancelApplicationCommand.class);
 
     @Override
-    public String execute(HttpServletRequestProxy request) {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
-            HttpSessionProxy session = request.getSession();
+            HttpSession session = request.getSession();
             User logged = (User) session.getAttribute(PARAM_NAMES.getString("user"));
 
             LocalDateTime current = LocalDateTime.now();
-            UtilService utilService = ServiceFactory.getInstance().getUtilService();
 
             SessionTerms sessionTerms = utilService.getSessionTerms((short)current.getYear());
             if(current.isAfter(sessionTerms.getSessionEnd()) || current.isBefore(sessionTerms.getSessionStart())) {
                 logger.error("Failed to cancel application.");
                 request.setAttribute(PARAM_NAMES.getString("shownException"),
                         new ShownException("Can not cancel application after session term expiration."));
-                return PAGE_NAMES.getString("controller.get_user")+"&id="+logged.getId();
+                response.sendRedirect(PAGE_NAMES.getString("controller.get_user")+"&id="+logged.getId());
             }
 
-            Long id = Long.parseLong(request.getParameter(PARAM_NAMES.getString("id")));
+            Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
             Verifier.verifyId(id);
 
-            ApplicationService service = ServiceFactory.getInstance().getApplicationService();
+            applicationService.delete(id);
 
-            service.delete(id);
-
-            return PAGE_NAMES.getString("controller.get_user")+"&id="+logged.getId();
-        } catch (ServiceException | VerificationException | NumberFormatException e) {
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_user")+"&id="+logged.getId());
+        } catch (ServiceException e) {
             logger.error("Exception is caught.", e);
             request.setAttribute(PARAM_NAMES.getString("exception"), e);
-            return PAGE_NAMES.getString("page.exception");
+            request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+        } catch (VerificationException e) {
+            logger.error("Requested resource does not exist.", e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }
