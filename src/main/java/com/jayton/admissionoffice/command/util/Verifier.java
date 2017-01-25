@@ -3,17 +3,22 @@ package com.jayton.admissionoffice.command.util;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 public class Verifier {
 
     public static final String INCORRECT_COEF = "Coefficient must be less than 1 and greater than 0, but was: %f.";
-    public static final String INCORRECT_NUMBER = "Number must not be negative, but was: %d.";
+    public static final String NEGATIVE_NUMBER = "Number must not be negative, but was: %d.";
     public static final String INCORRECT_MARK = "Mark must be less than 12 and greater than 0, but was: %d.";
     public static final String INCORRECT_RESULT = "Exam result must be less than 200 and greater than 100, but was: %d.";
     public static final String INCORRECT_ID = "Id must be positive, but was: %d.";
     public static final String INCORRECT_PASSWORD = "Password must be longer than 5 symbols..";
+    public static final String INCORRECT_NUMBER = "Incorrect number.";
     public static final String INCORRECT_EMAIL = "Incorrect email.";
+    public static final String INCORRECT_DATE = "Incorrect date.";
     public static final String NULLABLE = "%s must not be null.";
     public static final String EMPTY = "%s must not be empty.";
 
@@ -21,7 +26,7 @@ public class Verifier {
 
     public static void verifyNonNegative(Long number) throws VerificationException {
         if(number < 0) {
-            throw new VerificationException(String.format(INCORRECT_NUMBER, number));
+            throw new VerificationException(String.format(NEGATIVE_NUMBER, number));
         }
     }
 
@@ -109,6 +114,66 @@ public class Verifier {
     public static void verifyStrings(String... strings) throws VerificationException {
         for(String input: strings) {
             verifyString(input);
+        }
+    }
+
+    public static void verifyLocale(String locale) throws VerificationException {
+        verifyString(locale);
+    }
+
+    public static Long convertToLong(String input) throws VerificationException {
+        try {
+            return Long.parseLong(input);
+        } catch (NumberFormatException e) {
+            throw new VerificationException(INCORRECT_NUMBER);
+        }
+    }
+
+    public static Integer convertToInt(String input) throws VerificationException {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new VerificationException(INCORRECT_NUMBER);
+        }
+    }
+
+    public static Byte convertToByte(String input) throws VerificationException {
+        try {
+            return Byte.parseByte(input);
+        } catch (NumberFormatException e) {
+            throw new VerificationException(INCORRECT_NUMBER);
+        }
+    }
+
+    public static Short convertToShort(String input) throws VerificationException {
+        try {
+            return Short.parseShort(input);
+        } catch (NumberFormatException e) {
+            throw new VerificationException(INCORRECT_NUMBER);
+        }
+    }
+
+    public static BigDecimal convertToBigDecimal(String input) throws VerificationException {
+        try {
+            return new BigDecimal(input);
+        } catch (NumberFormatException e) {
+            throw new VerificationException(INCORRECT_NUMBER);
+        }
+    }
+
+    public static LocalDate convertToLocalDate(String input) throws VerificationException {
+        try {
+            return LocalDate.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new VerificationException(INCORRECT_DATE);
+        }
+    }
+
+    public static LocalDateTime convertToLocalDateTime(String input) throws VerificationException {
+        try {
+            return LocalDateTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new VerificationException(INCORRECT_DATE);
         }
     }
 }
