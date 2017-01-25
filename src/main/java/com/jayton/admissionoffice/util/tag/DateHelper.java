@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.util;
+package com.jayton.admissionoffice.util.tag;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
