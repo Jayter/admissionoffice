@@ -14,7 +14,7 @@
         <field name="poolProperties" reference="poolProperties"/>
     </bean>
 
-    <bean id="initHelper" class="util.InitHelper" instantiationType="singletone">
+    <bean id="initHelper" class="util.DbInitializationHelper" instantiationType="singletone">
         <field name="dataSource" reference="dataSource"/>
     </bean>
 
