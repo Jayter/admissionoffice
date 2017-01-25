@@ -17,6 +17,11 @@
         <servlet-name>Controller</servlet-name>
         <url-pattern>/Controller</url-pattern>
     </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
     
     <filter>
         <filter-name>EncodingFilter</filter-name>
@@ -29,6 +34,10 @@
     <filter>
         <filter-name>UserFilter</filter-name>
         <filter-class>com.jayton.admissionoffice.controller.filter.UserFilter</filter-class>
+        <init-param>
+            <param-name>commandsPath</param-name>
+            <param-value>web.commands</param-value>
+        </init-param>
     </filter>
 
     <filter-mapping>
@@ -39,7 +48,6 @@
         <filter-name>UserFilter</filter-name>
         <url-pattern>/Controller</url-pattern>
     </filter-mapping>
-
 
     <listener>
         <listener-class>com.jayton.admissionoffice.controller.listener.AdmissionOfficeContextInitializer</listener-class>
