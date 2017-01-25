@@ -1,6 +1,6 @@
 package com.jayton.admissionoffice.controller.listener;
 
-import com.jayton.admissionoffice.util.di.BeanFactory;
+import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.XmlBeanContext;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class AdmissionOfficeContextInitializer implements ServletContextListener
             ServletContext servletContext = servletContextEvent.getServletContext();
             servletContext.setAttribute("beanContext", beanContext);
 
-            BeanFactory beanFactory = BeanFactory.getInstance();
+            BeanContextHolder beanFactory = BeanContextHolder.getInstance();
             beanFactory.init(beanContext);
         } catch (InjectionException e) {
             logger.error("Failed to initialize beans.", e);

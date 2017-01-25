@@ -3,22 +3,22 @@ package com.jayton.admissionoffice.util.di;
 /**
  * Provides access to BeanContext of an application.
  */
-public class BeanFactory {
+public class BeanContextHolder {
 
-    private static BeanFactory instance;
+    private static BeanContextHolder instance;
 
     private BeanContext actualContext;
 
-    private BeanFactory() {
+    private BeanContextHolder() {
     }
 
     public BeanContext getActualContext() {
         return actualContext;
     }
 
-    public static BeanFactory getInstance() {
+    public static BeanContextHolder getInstance() {
         if(instance == null) {
-            instance = new BeanFactory();
+            instance = new BeanContextHolder();
         }
         return instance;
     }
