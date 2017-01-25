@@ -30,7 +30,7 @@ public class BeanContextHolder {
      * @param context - initialized context of the application
      */
     public void init(BeanContext context) {
-        if(actualContext != null) {
+        if(actualContext == null) {
             actualContext = context;
         }
     }
