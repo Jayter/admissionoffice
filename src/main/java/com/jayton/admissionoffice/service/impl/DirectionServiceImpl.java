@@ -6,6 +6,7 @@ import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.DirectionService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class DirectionServiceImpl implements DirectionService {
 
+    @Injected
     private DirectionDao directionDao;
 
     public DirectionServiceImpl() {

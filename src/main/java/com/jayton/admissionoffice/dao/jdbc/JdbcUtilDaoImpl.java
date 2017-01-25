@@ -2,11 +2,12 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.UtilDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
+import com.jayton.admissionoffice.util.di.Injected;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
 
+    @Injected
+    private DataSource dataSource;
+
     public JdbcUtilDaoImpl() {
     }
 
@@ -26,7 +30,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"));
 
             statement.setShort(1, currentYear);
@@ -54,7 +58,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(utilQueries.getString("subject.get.all"));
 
             List<Subject> subjects = new ArrayList<>();
@@ -82,7 +86,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"));
 
             statement.setTimestamp(1, Timestamp.valueOf(terms.getSessionStart()));
@@ -106,7 +110,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"));
 
             statement.setShort(1, terms.getYear());

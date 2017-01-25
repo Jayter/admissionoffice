@@ -2,10 +2,12 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.ApplicationDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
+import com.jayton.admissionoffice.util.di.Injected;
+
+import javax.sql.DataSource;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -18,6 +20,11 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     private final ResourceBundle applicationQueries = ResourceBundle.getBundle("db.queries.applicationQueries");
 
+    @Injected
+    private DataSource dataSource;
+    @Injected
+    private DaoHelper daoHelper;
+
     public JdbcApplicationDaoImpl() {
     }
 
@@ -27,7 +34,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.add"),
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -63,7 +70,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get"));
             statement.setLong(1, id);
 
@@ -93,7 +100,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.update"));
 
             statement.setInt(1, status.ordinal());
@@ -112,7 +119,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public void delete(long id) throws DAOException {
-        DaoHelper.delete(applicationQueries.getString("application.delete"), "Failed to delete application.", id);
+        daoHelper.delete(applicationQueries.getString("application.delete"), "Failed to delete application.", id);
     }
 
     @Override
@@ -121,7 +128,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.update"));
 
             for(Application application: applications) {
@@ -148,7 +155,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
             statement.setLong(1, directionId);
             statement.setLong(2, count);
@@ -169,7 +176,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_user"));
             statement.setLong(1, userId);
 
@@ -188,7 +195,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(applicationQueries.getString("application.get.all"));
 
             return getByStatement(statement);
@@ -202,7 +209,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public long getCount(long directionId) throws DAOException {
-        return DaoHelper.getCount(applicationQueries.getString("application.count"),
+        return daoHelper.getCount(applicationQueries.getString("application.count"),
                 "Failed to get count of applications.", directionId);
     }
 

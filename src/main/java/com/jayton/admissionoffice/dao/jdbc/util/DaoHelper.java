@@ -1,7 +1,8 @@
 package com.jayton.admissionoffice.dao.jdbc.util;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
+import com.jayton.admissionoffice.util.di.Injected;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,15 +12,17 @@ public class DaoHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoHelper.class);
 
-    private DaoHelper() {
+    @Injected
+    private DataSource dataSource;
+
+    public DaoHelper() {
     }
 
-    public static void delete(String script, String errorMessage, Long... params) throws DAOException {
-        Connection connection = null;
+    public void delete(String script, String errorMessage, Long... params) throws DAOException {
         PreparedStatement statement = null;
-
+        Connection connection = null;
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(script);
 
             if(params == null) {
@@ -41,12 +44,11 @@ public class DaoHelper {
         }
     }
 
-    public static Long getCount(String script, String errorMessage, Long... params) throws DAOException {
-        Connection connection = null;
+    public Long getCount(String script, String errorMessage, Long... params) throws DAOException {
         PreparedStatement statement = null;
-
+        Connection connection = null;
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(script);
 
             if(params == null) {

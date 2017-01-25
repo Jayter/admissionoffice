@@ -2,10 +2,11 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.university.University;
+import com.jayton.admissionoffice.util.di.Injected;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.ResourceBundle;
 public class JdbcUniversityDaoImpl implements UniversityDao {
 
     private final ResourceBundle universityQueries = ResourceBundle.getBundle("db.queries.universityQueries");
+
+    @Injected
+    private DataSource dataSource;
+    @Injected
+    private DaoHelper daoHelper;
 
     public JdbcUniversityDaoImpl() {
     }
@@ -24,7 +30,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.add"),
                     Statement.RETURN_GENERATED_KEYS);
 
@@ -58,7 +64,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get"));
             statement.setLong(1, id);
 
@@ -86,7 +92,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.update"));
 
             statement.setString(1, university.getName());
@@ -111,7 +117,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public void delete(long id) throws DAOException {
-        DaoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
+        daoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
     }
 
     @Override
@@ -120,7 +126,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             statement.setString(1, city);
             statement.setLong(2, count);
@@ -141,7 +147,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(universityQueries.getString("university.get.all"));
             statement.setLong(1, count);
             statement.setLong(2, offset);
@@ -157,7 +163,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public long getTotalCount() throws DAOException {
-        return DaoHelper.getCount(universityQueries.getString("university.count"),
+        return daoHelper.getCount(universityQueries.getString("university.count"),
                 "Failed to get count of universities.");
     }
 

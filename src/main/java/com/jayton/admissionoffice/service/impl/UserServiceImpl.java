@@ -7,12 +7,14 @@ import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.UserService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.util.List;
 import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
+    @Injected
     private UserDao userDao;
 
     public UserServiceImpl() {

@@ -2,11 +2,12 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.jdbc.pool.PoolHelper;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.user.User;
+import com.jayton.admissionoffice.util.di.Injected;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -15,6 +16,11 @@ import java.util.*;
 public class JdbcUserDaoImpl implements UserDao {
 
     private final ResourceBundle userQueries = ResourceBundle.getBundle("db.queries.userQueries");
+
+    @Injected
+    private DataSource dataSource;
+    @Injected
+    private DaoHelper daoHelper;
 
     public JdbcUserDaoImpl() {
     }
@@ -26,7 +32,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             addUserSt = connection.prepareStatement(userQueries.getString("user.add"), Statement.RETURN_GENERATED_KEYS);
             addCredentialsSt = connection.prepareStatement(userQueries.getString("credentials.add"));
             connection.setAutoCommit(false);
@@ -72,7 +78,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get"));
             statement.setLong(1, id);
 
@@ -92,7 +98,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             updateUserSt = connection.prepareStatement(userQueries.getString("user.update"));
             getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
             connection.setAutoCommit(false);
@@ -134,7 +140,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public void delete(long id) throws DAOException {
-        DaoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
+        daoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
     }
 
     @Override
@@ -143,7 +149,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.all"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             statement.setLong(1, count);
@@ -164,7 +170,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
             statement.setString(1, email);
 
@@ -183,7 +189,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("result.add"));
 
             statement.setLong(1, userId);
@@ -207,7 +213,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("result.get.all"));
             statement.setLong(1, userId);
 
@@ -229,7 +235,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public void deleteResult(long userId, long subjectId) throws DAOException {
-        DaoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
+        daoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
     }
 
     @Override
@@ -238,7 +244,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));
 
             statement.setString(1, email);
@@ -264,7 +270,7 @@ public class JdbcUserDaoImpl implements UserDao {
         Connection connection = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.authorize"));
 
             statement.setString(1, login);
@@ -290,7 +296,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public long getTotalCount() throws DAOException {
-        return DaoHelper.getCount(userQueries.getString("user.count"),
+        return daoHelper.getCount(userQueries.getString("user.count"),
                 "Failed to get count of users.");
     }
 
@@ -332,7 +338,7 @@ public class JdbcUserDaoImpl implements UserDao {
         PreparedStatement statement = null;
 
         try {
-            connection = PoolHelper.getInstance().getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement(userQueries.getString("user.get.directions"));
             statement.setLong(1, userId);
 

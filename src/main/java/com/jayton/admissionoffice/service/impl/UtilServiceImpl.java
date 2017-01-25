@@ -7,12 +7,16 @@ import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.service.UtilService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.util.ApplicationHandler;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.util.List;
 
 public class UtilServiceImpl implements UtilService {
 
+    @Injected
     private UtilDao utilDao;
+    @Injected
+    private ApplicationHandler applicationHandler;
 
     public UtilServiceImpl() {
     }
@@ -55,7 +59,6 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public void handleApplications() throws ServiceException {
-        ApplicationHandler handler = ApplicationHandler.getInstance();
-        handler.handleApplications();
+        applicationHandler.handleApplications();
     }
 }

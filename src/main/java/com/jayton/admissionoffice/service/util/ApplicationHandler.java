@@ -2,12 +2,12 @@ package com.jayton.admissionoffice.service.util;
 
 import com.jayton.admissionoffice.dao.ApplicationDao;
 import com.jayton.admissionoffice.dao.DirectionDao;
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.exception.ServiceException;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +15,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.stream.Collectors;
 
 public class ApplicationHandler {
+
+    @Injected
+    private DirectionDao directionDao;
+    @Injected
+    private ApplicationDao applicationDao;
 
     private static ApplicationHandler instance = new ApplicationHandler();
 
@@ -25,7 +30,7 @@ public class ApplicationHandler {
 
     private Map<Long, Direction> directions;
 
-    private ApplicationHandler() {
+    public ApplicationHandler() {
     }
 
     public static ApplicationHandler getInstance() {
@@ -33,9 +38,6 @@ public class ApplicationHandler {
     }
 
     public void handleApplications() throws ServiceException {
-        DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
-        ApplicationDao applicationDao = FactoryProducer.getInstance().getPostgresDaoFactory().getApplicationDao();
-
         List<Application> applications;
         try {
             directions = directionDao.getAll().stream().collect(Collectors.toMap(Direction::getId, direction -> direction));

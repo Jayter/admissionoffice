@@ -10,6 +10,7 @@ import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,8 +19,11 @@ import java.util.Map;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
+    @Injected
     private ApplicationDao applicationDao;
+    @Injected
     private DirectionDao directionDao;
+    @Injected
     private UtilDao utilDao;
 
     public ApplicationServiceImpl() {

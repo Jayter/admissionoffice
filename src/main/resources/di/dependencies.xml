@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-    <bean id="applicationDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcApplicationDaoImpl"/>
-    <bean id="directionDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcDirectionDaoImpl"/>
-    <bean id="facultyDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcFacultyDaoImpl"/>
-    <bean id="universityDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUniversityDaoImpl"/>
-    <bean id="userDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUserDaoImpl"/>
-    <bean id="utilDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUtilDaoImpl"/>
 
+    <!-- Pool configuration -->
+    <bean id="poolProperties" class="org.apache.tomcat.jdbc.pool.PoolProperties">
+        <field name="url" value="jdbc:postgresql://localhost:5432/admissionoffice"/>
+        <field name="driverClassName" value="org.postgresql.Driver"/>
+        <field name="username" value="user"/>
+        <field name="password" value="password"/>
+    </bean>
+
+    <!-- Pooled data source -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+        <field name="poolProperties" reference="poolProperties"/>
+    </bean>
+
+    <!-- DAO layer -->
+    <bean id="daoHelper" class="com.jayton.admissionoffice.dao.jdbc.util.DaoHelper">
+        <field name="dataSource" reference="dataSource"/>
+    </bean>
+    <bean id="applicationDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcApplicationDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
+    </bean>
+    <bean id="directionDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcDirectionDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
+    </bean>
+    <bean id="facultyDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcFacultyDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
+    </bean>
+    <bean id="universityDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUniversityDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
+    </bean>
+    <bean id="userDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUserDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
+    </bean>
+    <bean id="utilDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUtilDaoImpl">
+        <field name="dataSource" reference="dataSource"/>
+    </bean>
+
+    <!-- Service layer -->
     <bean id="applicationService" class="com.jayton.admissionoffice.service.impl.ApplicationServiceImpl">
         <field name="applicationDao" reference="applicationDao"/>
         <field name="directionDao" reference="directionDao"/>
@@ -26,14 +62,130 @@
     </bean>
     <bean id="utilService" class="com.jayton.admissionoffice.service.impl.UtilServiceImpl">
         <field name="utilDao" reference="utilDao"/>
+        <field name="applicationHandler" reference="applicationHandler"/>
+    </bean>
+    <bean id="applicationHandler" class="com.jayton.admissionoffice.service.util.ApplicationHandler">
+        <field name="applicationDao" reference="applicationDao"/>
     </bean>
 
-    <bean id="serviceFactory" class="com.jayton.admissionoffice.service.ServiceFactory" instantiationType="singletone">
-        <field name="applicationService" reference="applicationService"/>
+    <!-- Controller layer -->
+    <!-- admin -->
+    <bean id="admin-page" class="com.jayton.admissionoffice.command.impl.admin.AdminPageCommand"/>
+    <bean id="createSessionTerms" class="com.jayton.admissionoffice.command.impl.admin.CreateSessionTermsCommand">
+        <field name="utilService" reference="utilService"/>
+    </bean>
+    <bean id="edit-session-terms" class="com.jayton.admissionoffice.command.impl.admin.EditSessionTermsCommand">
+        <field name="utilService" reference="utilService"/>
+    </bean>
+    <bean id="update-session-terms" class="com.jayton.admissionoffice.command.impl.admin.UpdateSessionTermsCommand">
+        <field name="utilService" reference="utilService"/>
+    </bean>
+    <bean id="handle-applications" class="com.jayton.admissionoffice.command.impl.admin.HandleApplicationsCommand">
+        <field name="utilService" reference="utilService"/>
+    </bean>
+
+    <!-- direction -->
+    <bean id="create-direction" class="com.jayton.admissionoffice.command.impl.direction.CreateDirectionCommand">
         <field name="directionService" reference="directionService"/>
+    </bean>
+    <bean id="edit-direction" class="com.jayton.admissionoffice.command.impl.direction.EditDirectionCommand">
+        <field name="directionService" reference="directionService"/>
+    </bean>
+    <bean id="update-direction" class="com.jayton.admissionoffice.command.impl.direction.UpdateDirectionCommand">
+        <field name="directionService" reference="directionService"/>
+    </bean>
+    <bean id="delete-direction" class="com.jayton.admissionoffice.command.impl.direction.DeleteDirectionCommand">
+        <field name="directionService" reference="directionService"/>
+    </bean>
+    <bean id="get-direction" class="com.jayton.admissionoffice.command.impl.direction.GetDirectionCommand">
+        <field name="directionService" reference="directionService"/>
+        <field name="applicationService" reference="applicationService"/>
+        <field name="utilService" reference="utilService"/>
+    </bean>
+    <bean id="add-entrance-subject" class="com.jayton.admissionoffice.command.impl.direction.AddEntranceSubjectCommand">
+        <field name="directionService" reference="directionService"/>
+    </bean>
+    <bean id="delete-entrance-subject" class="com.jayton.admissionoffice.command.impl.direction.DeleteEntranceSubjectCommand">
+        <field name="directionService" reference="directionService"/>
+    </bean>
+
+    <!-- faculty -->
+    <bean id="create-faculty" class="com.jayton.admissionoffice.command.impl.faculty.CreateFacultyCommand">
         <field name="facultyService" reference="facultyService"/>
+    </bean>
+    <bean id="edit-faculty" class="com.jayton.admissionoffice.command.impl.faculty.EditFacultyCommand">
+        <field name="facultyService" reference="facultyService"/>
+    </bean>
+    <bean id="update-faculty" class="com.jayton.admissionoffice.command.impl.faculty.UpdateFacultyCommand">
+        <field name="facultyService" reference="facultyService"/>
+    </bean>
+    <bean id="delete-faculty" class="com.jayton.admissionoffice.command.impl.faculty.DeleteFacultyCommand">
+        <field name="facultyService" reference="facultyService"/>
+    </bean>
+    <bean id="get-faculty" class="com.jayton.admissionoffice.command.impl.faculty.GetFacultyCommand">
+        <field name="facultyService" reference="facultyService"/>
+        <field name="directionService" reference="directionService"/>
+    </bean>
+
+    <!-- university -->
+    <bean id="create-university" class="com.jayton.admissionoffice.command.impl.university.CreateUniversityCommand">
         <field name="universityService" reference="universityService"/>
+    </bean>
+    <bean id="edit-university" class="com.jayton.admissionoffice.command.impl.university.EditUniversityCommand">
+        <field name="universityService" reference="universityService"/>
+    </bean>
+    <bean id="update-university" class="com.jayton.admissionoffice.command.impl.university.UpdateUniversityCommand">
+        <field name="universityService" reference="universityService"/>
+    </bean>
+    <bean id="delete-university" class="com.jayton.admissionoffice.command.impl.university.DeleteUniversityCommand">
+        <field name="universityService" reference="universityService"/>
+    </bean>
+    <bean id="get-university" class="com.jayton.admissionoffice.command.impl.university.GetUniversityCommand">
+        <field name="universityService" reference="universityService"/>
+        <field name="facultyService" reference="facultyService"/>
+    </bean>
+
+    <!-- user -->
+    <bean id="create-user" class="com.jayton.admissionoffice.command.impl.user.CreateUserCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="edit-user" class="com.jayton.admissionoffice.command.impl.user.EditUserCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="update-user" class="com.jayton.admissionoffice.command.impl.user.UpdateUserCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="delete-user" class="com.jayton.admissionoffice.command.impl.user.DeleteUserCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="get-user" class="com.jayton.admissionoffice.command.impl.user.GetUserCommand">
+        <field name="userService" reference="userService"/>
+        <field name="applicationService" reference="applicationService"/>
+        <field name="utilService" reference="utilService"/>
+    </bean>
+    <bean id="add-user-result" class="com.jayton.admissionoffice.command.impl.user.AddUserResultCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="delete-user-result" class="com.jayton.admissionoffice.command.impl.user.DeleteUserResultCommand">
+        <field name="userService" reference="userService"/>
+    </bean>
+    <bean id="user-apply-command" class="com.jayton.admissionoffice.command.impl.user.UserApplyCommand">
+        <field name="utilService" reference="utilService"/>
+        <field name="applicationService" reference="applicationService"/>
+    </bean>
+    <bean id="user-cancel-application" class="com.jayton.admissionoffice.command.impl.user.UserCancelApplicationCommand">
+        <field name="utilService" reference="utilService"/>
+        <field name="applicationService" reference="applicationService"/>
+    </bean>
+
+    <!-- util -->
+    <bean id="authorize" class="com.jayton.admissionoffice.command.impl.util.AuthorizeCommand">
         <field name="userService" reference="userService"/>
         <field name="utilService" reference="utilService"/>
     </bean>
+    <bean id="load-main" class="com.jayton.admissionoffice.command.impl.util.LoadMainPageCommand">
+        <field name="universityService" reference="universityService"/>
+    </bean>
+    <bean id="change-locale" class="com.jayton.admissionoffice.command.impl.util.ChangeLocaleCommand"/>
+    <bean id="logout" class="com.jayton.admissionoffice.command.impl.util.LogoutCommand"/>
 </beans>

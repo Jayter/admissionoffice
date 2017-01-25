@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,10 +16,10 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * Initializes classes described in "di/dependencies.xml" descriptor.
+ * Initializes classes from an xml descriptor.
  * <p>
  * This class is responsible for initialization of components,
- * described in "di/dependencies.xml". The component can be an
+ * described in {@link #initPath}. The component can be an
  * instance of any class. It must neither have a public default
  * constructor or be a singletone and use a <code>getInstance()</code>
  * method for instantiation.
@@ -27,9 +28,7 @@ import java.util.*;
  * In this case a tag that describes a certain field must contain name
  * of the field and reference to the bean that needs to be injected.
  */
-public class InjectionResolver {
-
-    private static final String DESCRIPTOR_PATH = "di/dependencies.xml";
+public class XmlBeanContext implements BeanContext {
 
     private static final String BEANS = "beans";
     private static final String BEAN = "bean";
@@ -42,6 +41,12 @@ public class InjectionResolver {
     private static final String FIELD = "field";
     private static final String NAME = "name";
     private static final String REFERENCE = "reference";
+    private static final String VALUE = "value";
+
+    /**
+     * Path to the context descriptor.
+     */
+    private String initPath;
 
     /**
      * Represents an xml file that stores description of components of this application.
@@ -55,31 +60,31 @@ public class InjectionResolver {
     private Map<String, Object> beansMap = new HashMap<>();
 
     /**
-     * Creates an object.
-     * <p>
-     * The object must be initialized by {@link #init()} method.
+     * Initializes an {@link #initPath} - path to the context descriptor.
+     *
+     * @param path - context descriptor location
      */
-    public InjectionResolver() {
+    public XmlBeanContext(String path) {
+        this.initPath = path;
     }
 
     /**
      * Initializes a {@link #doc} - document that is used for information extraction.
      * <p>
-     * Descriptor file must have name "dependencies.xml" and has to be
-     * situated in package <code>di</code>. In any other case an instance
-     * of {@link InjectionException} is thrown.
+     * The document is searched at the {@link #initPath}.
      *
-     * @throws InjectionException if "di/dependencies.xml" was not found or any
+     * @throws InjectionException if descriptor file was not found or any
      *                            other exception was thrown during the file parsing
      */
     public void init() throws InjectionException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            URL path = getClass().getClassLoader().getResource(DESCRIPTOR_PATH);
+            URL path = getClass().getClassLoader().getResource(initPath);
             if(path == null) {
                 throw new InjectionException("Dependencies configuration is not found.");
             }
             doc = builder.parse(path.getPath());
+            parse();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new InjectionException("Initialization exception.", e);
         }
@@ -115,7 +120,7 @@ public class InjectionResolver {
      *     </li>
      * </ul>
      * <p>
-     * The bean can contain fields that are instantiated by other beans.
+     * The bean can contain fields that are instantiated by other beans or values.
      * It is implemented via nested tag called <code>field</code>. Its attributes:
      * <ul>
      *     <li>
@@ -127,12 +132,17 @@ public class InjectionResolver {
      *         <code>reference</code> - name of the bean that must be injected.
      *     It is specified by <code>id</code> attribute
      *     </li>
+     *     <li>
+     *         <code>value</code> - a string representation of the field. In this case
+     *         the class of the field must have a constructor that takes a string as
+     *         an argument. It is used for instantiation of the field.
+     *     </li>
      * </ul>
      *
      * @throws InjectionException if the root tag <code>beans</code> was not found
      *                            or any exception was thrown during parsing
      */
-    public void parse() throws InjectionException {
+    private void parse() throws InjectionException {
         NodeList rootElems = doc.getElementsByTagName(BEANS);
         Node root = rootElems.item(0);
 
@@ -148,7 +158,7 @@ public class InjectionResolver {
             if(BEAN.equals(bean.getNodeName())) {
                 String name = instantiateBean(bean);
 
-                //add fields into queue
+                //adds fields into queue
                 NodeList fields = bean.getChildNodes();
                 for(int j = 0; j < fields.getLength(); j++) {
                     Node current = fields.item(j);
@@ -168,7 +178,7 @@ public class InjectionResolver {
      * Instantiates a bean from {@link org.w3c.dom.Node}.
      *
      * @param bean stores info about bean
-     * @return name of the bean that will be used to instantiate fields of other beans
+     * @return name of the bean within context
      * @throws InjectionException if any exception was thrown during parsing
      */
     private String instantiateBean(Node bean) throws InjectionException {
@@ -225,8 +235,9 @@ public class InjectionResolver {
      * Instantiates a field of the bean.
      * <p>
      * @param info - stores all necessary information about the bean,
-     *             the field that should be instantiated and name of
-     *             the bean that will instantiate a field
+     *             the field that should be instantiated and either
+     *             name of the bean that will instantiate a field
+     *             or value of the specified field
      * @throws InjectionException if any exception was thrown during the field instantiation
      */
     private void instantiateField(FieldInfo info) throws InjectionException {
@@ -236,18 +247,34 @@ public class InjectionResolver {
         NamedNodeMap attributes = node.getAttributes();
         Node nameAttribute = attributes.getNamedItem(NAME);
         Node referenceAttribute = attributes.getNamedItem(REFERENCE);
+        Node valueAttribute = attributes.getNamedItem(VALUE);
 
-        if(nameAttribute == null || referenceAttribute == null) {
-            throw new InjectionException(String.format("Instantiation error. Fields %s, %s must not be empty.", NAME, REFERENCE));
+        if(nameAttribute == null || referenceAttribute == null && valueAttribute == null) {
+            throw new InjectionException(String.format("Instantiation error. Fields %s, %s or %s must not be empty.",
+                    NAME, REFERENCE, VALUE));
         }
-        String name = nameAttribute.getNodeValue();
-        String ref = referenceAttribute.getNodeValue();
 
+        String name = nameAttribute.getNodeValue();
         Class<?> cls = bean.getClass();
         try {
-            Field field = cls.getDeclaredField(name);
-            Object fieldValue = beansMap.get(ref);
+            Field field;
+            //if fields was not found in the current class, search it in a superclass
+            try {
+                field = cls.getDeclaredField(name);
+            } catch (NoSuchFieldException e) {
+                Class<?> superClass = cls.getSuperclass();
+                field = superClass.getDeclaredField(name);
+            }
             field.setAccessible(true);
+
+            Object fieldValue;
+            if(referenceAttribute != null) {
+                String ref = referenceAttribute.getNodeValue();
+                fieldValue = beansMap.get(ref);
+            } else {
+                String val = valueAttribute.getNodeValue();
+                fieldValue = getFieldValue(field, val);
+            }
             field.set(bean, fieldValue);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new InjectionException("Could not instantiate field. Please check descriptor and bean`s signature.", e);
@@ -255,7 +282,35 @@ public class InjectionResolver {
     }
 
     /**
-     * Used to store information about fields of the bean that needs to be instantiated.
+     * Creates an instance of the class specified in field.
+     * <p/>
+     * The class of the field`s type must have a constructor that takes a string
+     * as an argument and creates corresponding object.
+     *
+     * @param field contains meta info about the field
+     * @param val - a string representation of the field`s value
+     * @return instance of the class described in <code>field</code>
+     * @throws InjectionException - if any exception was thrown during lookup and
+     *                            and instantiation
+     */
+    private Object getFieldValue(Field field, String val) throws InjectionException {
+        Class<?> type = field.getType();
+        Class<String> stringType = String.class;
+
+        if(type == stringType) {
+            return val;
+        } else {
+            try {
+                Constructor<?> constructor = type.getConstructor(stringType);
+                return constructor.newInstance(val);
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                throw new InjectionException("Could not instantiate field. Please check descriptor and bean`s signature.", e);
+            }
+        }
+    }
+
+    /**
+     * Stores information about fields of the bean that needs to be instantiated.
      */
     private static class FieldInfo {
         /**
@@ -280,5 +335,10 @@ public class InjectionResolver {
         Node getNode() {
             return node;
         }
+    }
+
+    @Override
+    public Object getBean(String name) {
+        return beansMap.get(name);
     }
 }

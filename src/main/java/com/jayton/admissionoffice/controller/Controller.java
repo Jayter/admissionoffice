@@ -1,7 +1,7 @@
 package com.jayton.admissionoffice.controller;
 
 import com.jayton.admissionoffice.command.Command;
-import com.jayton.admissionoffice.util.proxy.HttpServletRequestProxy;
+import com.jayton.admissionoffice.util.di.BeanContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,13 +16,17 @@ public class Controller extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND);
-        Command command = CommandHelper.getInstance().getCommand(commandName);
+        BeanContext context = (BeanContext) getServletContext().getAttribute("beanContext");
+        Command command = (Command) context.getBean(commandName);
         if(command == null) {
             request.setAttribute("exception", new IllegalArgumentException("Not found."));
             request.getRequestDispatcher("error.jsp").forward(request, response);
         } else {
-            String page = command.execute(new HttpServletRequestProxy(request));
-            request.getRequestDispatcher(page).forward(request, response);
+            try {
+                command.execute(request, response);
+            } catch (IOException e) {
+                request.getRequestDispatcher("error.jsp").forward(request, response);
+            }
         }
     }
 }

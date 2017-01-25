@@ -5,11 +5,13 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
+import com.jayton.admissionoffice.util.di.Injected;
 
 import java.util.List;
 
 public class UniversityServiceImpl implements UniversityService {
 
+    @Injected
     private UniversityDao universityDao;
 
     public UniversityServiceImpl() {
