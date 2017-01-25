@@ -1,14 +1,13 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.FacultyDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.university.Faculty;
-import util.InitHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.jayton.admissionoffice.util.di.BeanContextHolder;
+import com.jayton.admissionoffice.util.di.exception.InjectionException;
+import org.junit.*;
+import util.ContextInitializationHelper;
+import util.DbInitializationHelper;
 import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
@@ -19,14 +18,21 @@ import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcFacultyDaoImplTest {
 
-    private FacultyDao facultyDao = FactoryProducer.getInstance().getPostgresDaoFactory().getFacultyDao();
+    private FacultyDao facultyDao = (FacultyDao)
+            BeanContextHolder.getInstance().getActualContext().getBean("facultyDao");
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
+    @BeforeClass
+    public static void initContext() throws InjectionException {
+        ContextInitializationHelper helper = ContextInitializationHelper.getInstance();
+        helper.initContext("di/dependencies.xml");
+    }
+
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateForDaoTest.sql");
+        DbInitializationHelper.getInstance().executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test

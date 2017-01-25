@@ -1,15 +1,14 @@
 package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.DirectionDao;
-import com.jayton.admissionoffice.dao.FactoryProducer;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.data.DirectionMatcher;
 import com.jayton.admissionoffice.model.university.Direction;
-import util.InitHelper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.jayton.admissionoffice.util.di.BeanContextHolder;
+import com.jayton.admissionoffice.util.di.exception.InjectionException;
+import org.junit.*;
+import util.ContextInitializationHelper;
+import util.DbInitializationHelper;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
@@ -22,16 +21,23 @@ import static com.jayton.admissionoffice.dao.data.TestData.*;
 
 public class JdbcDirectionDaoImplTest {
 
-    private DirectionDao directionDao = FactoryProducer.getInstance().getPostgresDaoFactory().getDirectionDao();
+    private DirectionDao directionDao = (DirectionDao)
+            BeanContextHolder.getInstance().getActualContext().getBean("directionDao");
 
     private DirectionMatcher matcher = new DirectionMatcher();
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
+    @BeforeClass
+    public static void initContext() throws InjectionException {
+        ContextInitializationHelper helper = ContextInitializationHelper.getInstance();
+        helper.initContext("di/dependencies.xml");
+    }
+
     @Before
     public void setUpDb() throws Exception {
-        InitHelper.executeDbPopulate("populateForDaoTest.sql");
+        DbInitializationHelper.getInstance().executeDbPopulate("populateForDaoTest.sql");
     }
 
     @Test
