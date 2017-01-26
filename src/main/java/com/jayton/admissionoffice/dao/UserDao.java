@@ -15,6 +15,5 @@ public interface UserDao extends Dao<User> {
     AuthorizationResult authorize(String login, String password) throws DAOException;
     int checkEmail(String email) throws DAOException;
     List<User> getAll(long offset, long count) throws DAOException;
-    long getTotalCount() throws DAOException;
     Map<Long, String> getDirectionNames(long userId) throws DAOException;
 }

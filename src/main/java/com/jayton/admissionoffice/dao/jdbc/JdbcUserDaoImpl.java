@@ -294,12 +294,6 @@ public class JdbcUserDaoImpl implements UserDao {
         }
     }
 
-    @Override
-    public long getTotalCount() throws DAOException {
-        return daoHelper.getCount(userQueries.getString("user.count"),
-                "Failed to get count of users.");
-    }
-
     private User getSingleByStatement(PreparedStatement statement) throws SQLException {
         try (ResultSet rs = statement.executeQuery()) {
             if (!rs.next()) {

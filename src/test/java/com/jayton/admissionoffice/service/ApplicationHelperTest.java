@@ -43,7 +43,7 @@ public class ApplicationHelperTest {
 
         List<Direction> directions = directionDao.getAll();
         for(Direction d: directions) {
-            List<Application> apps = applicationDao.getByDirection(d.getId(), 0, 100);
+            List<Application> apps = applicationDao.getByDirection(d.getId(), 0, 100).getApplications();
             long count = apps.stream().filter(app -> app.getStatus() == Status.APPROVED).count();
             Assert.assertEquals(count, d.getCountOfStudents());
         }

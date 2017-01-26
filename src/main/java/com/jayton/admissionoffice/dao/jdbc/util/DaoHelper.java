@@ -44,33 +44,18 @@ public class DaoHelper {
         }
     }
 
-    public Long getCount(String script, String errorMessage, Long... params) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(script);
-
-            if(params == null) {
-                throw new DAOException(errorMessage);
-            }
-            for(int i = 0; i < params.length; i++) {
-                statement.setLong(i + 1, params[i]);
-            }
-
-            long result = 0;
-            try (ResultSet rs = statement.executeQuery()) {
-                if(rs.next()) {
-                    result = rs.getLong(1);
-                }
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DAOException(errorMessage, e);
+    public Long getCount(PreparedStatement statement, Long... params) throws SQLException {
+        for(int i = 0; i < params.length; i++) {
+            statement.setLong(i + 1, params[i]);
         }
-        finally {
-            DaoHelper.closeResources(connection, statement);
+
+        long result = 0;
+        try (ResultSet rs = statement.executeQuery()) {
+            if(rs.next()) {
+                result = rs.getLong(1);
+            }
         }
+        return result;
     }
 
     public static void rollback(Connection connection) {
@@ -83,19 +68,16 @@ public class DaoHelper {
         }
     }
 
-    public static void closeResources(Connection connection, Statement... statements) {
+    public static void closeResources(AutoCloseable... resources) {
         try {
-            if(statements != null) {
-                for(Statement st: statements) {
-                    if(st != null) {
-                        st.close();
+            if(resources != null) {
+                for(AutoCloseable resource: resources) {
+                    if(resource != null) {
+                        resource.close();
                     }
                 }
             }
-            if(connection != null) {
-                connection.close();
-            }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error("Failed to close db resources.", e);
         }
     }

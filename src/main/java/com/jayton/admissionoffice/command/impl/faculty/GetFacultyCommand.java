@@ -4,6 +4,7 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.service.DirectionService;
@@ -45,13 +46,12 @@ public class GetFacultyCommand implements Command {
             Verifier.verifyNonNegative(countPerPage);
 
             Faculty faculty = facultyService.get(id);
-            List<Direction> directions = directionService.getByFaculty(id, offset, countPerPage);
-            long totalDirectionsCount = directionService.getCount(id);
+            PaginationDTO<Direction> dto = directionService.getWithCountByFaculty(id, offset, countPerPage);
 
-            Long totalPagesCount = CommandUtils.getTotalCountOfPages(totalDirectionsCount, countPerPage);
+            Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);
 
             request.setAttribute(PARAM_NAMES.getString("faculty"), faculty);
-            request.setAttribute(PARAM_NAMES.getString("directions"), directions);
+            request.setAttribute(PARAM_NAMES.getString("directions"), dto.getEntries());
             request.setAttribute(PARAM_NAMES.getString("page"), page);
             request.setAttribute(PARAM_NAMES.getString("count"), countPerPage);
             request.setAttribute(PARAM_NAMES.getString("pagesCount"), totalPagesCount);

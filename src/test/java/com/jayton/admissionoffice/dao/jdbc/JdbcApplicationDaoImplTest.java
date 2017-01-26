@@ -84,7 +84,7 @@ public class JdbcApplicationDaoImplTest {
     @Test
     public void getByDirectionTest() throws Exception {
         Assert.assertTrue(matcher.equals(Collections.singletonList(APPLICATION2),
-                applicationDao.getByDirection(DIRECTION1.getId(), 0, 5)));
+                applicationDao.getByDirection(DIRECTION1.getId(), 0, 5).getApplications()));
 
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }

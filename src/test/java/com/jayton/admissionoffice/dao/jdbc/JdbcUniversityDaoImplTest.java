@@ -54,7 +54,7 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void getAllTest() throws Exception {
-        List<University> all = universityDao.getAll(0, 100);
+        List<University> all = universityDao.getWithCount(0, 100).getEntries();
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
     }
@@ -64,7 +64,7 @@ public class JdbcUniversityDaoImplTest {
         Assert.assertEquals(NEW_ID, universityDao.add(NEW_UNIVERSITY).getId());
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY),
-                universityDao.getAll(0, 100));
+                universityDao.getWithCount(0, 100).getEntries());
 
         expected.expect(DAOException.class);
         universityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
@@ -85,7 +85,7 @@ public class JdbcUniversityDaoImplTest {
     public void deleteTest() throws Exception {
         universityDao.delete(UNIVERSITY3.getId());
 
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getAll(0, 100));
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getWithCount(0, 100).getEntries());
 
         expected.expect(DAOException.class);
         universityDao.delete(INCORRECT_ID);

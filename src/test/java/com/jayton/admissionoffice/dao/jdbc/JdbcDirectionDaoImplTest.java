@@ -53,11 +53,11 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void getByFacultyTest() throws Exception {
-        List<Direction> retrieved = directionDao.getByFaculty(FACULTY1.getId(), 0, 100);
+        List<Direction> retrieved = directionDao.getWithCountByFaculty(FACULTY1.getId(), 0, 100).getEntries();
 
         Assert.assertTrue(matcher.equals(retrieved, Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
 
-        Assert.assertEquals(Collections.emptyList(), directionDao.getByFaculty(INCORRECT_ID, 0, 100));
+        Assert.assertEquals(Collections.emptyList(), directionDao.getWithCountByFaculty(INCORRECT_ID, 0, 100).getEntries());
     }
 
     @Test

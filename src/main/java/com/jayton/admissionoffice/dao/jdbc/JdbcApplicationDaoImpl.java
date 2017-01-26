@@ -4,6 +4,7 @@ import com.jayton.admissionoffice.dao.ApplicationDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.Application;
+import com.jayton.admissionoffice.model.to.ApplicationDTO;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.util.di.Injected;
 
@@ -12,9 +13,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class JdbcApplicationDaoImpl implements ApplicationDao {
 
@@ -150,23 +149,43 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> getByDirection(long directionId, long offset, long count) throws DAOException {
-        PreparedStatement statement = null;
+    public ApplicationDTO getByDirection(long directionId, long offset, long count) throws DAOException {
         Connection connection = null;
+        PreparedStatement getApplicationsSt = null;
+        PreparedStatement getTotalCountSt = null;
 
         try {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
-            statement.setLong(1, directionId);
-            statement.setLong(2, count);
-            statement.setLong(3, offset);
+            getApplicationsSt = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
+            getTotalCountSt = connection.prepareStatement(applicationQueries.getString("application.count"));
+            getApplicationsSt.setLong(1, directionId);
+            getApplicationsSt.setLong(2, count);
+            getApplicationsSt.setLong(3, offset);
 
-            return getByStatement(statement);
+            List<Application> applications = new ArrayList<>();
+            Map<Long, String> userNames = new HashMap<>();
 
+            try (ResultSet rs = getApplicationsSt.executeQuery()) {
+                while (rs.next()) {
+                    long id = rs.getLong("id");
+                    long userId = rs.getLong("user_id");
+                    LocalDateTime created = rs.getTimestamp("created_time").toLocalDateTime();
+                    byte status = rs.getByte("status");
+                    BigDecimal mark = rs.getBigDecimal("mark").setScale(2, BigDecimal.ROUND_HALF_UP);
+                    String name = rs.getString("name");
+                    String lastName = rs.getString("last_name");
+
+                    applications.add(new Application(id, userId, directionId, created, Status.getByOrdinal(status), mark));
+                    userNames.put(userId, lastName + " " + name);
+                }
+            }
+            long totalCount = daoHelper.getCount(getTotalCountSt, directionId);
+
+            return new ApplicationDTO(applications, userNames, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to get applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            DaoHelper.closeResources(connection, getApplicationsSt, getTotalCountSt);
         }
     }
 
@@ -205,12 +224,6 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } finally {
             DaoHelper.closeResources(connection, statement);
         }
-    }
-
-    @Override
-    public long getCount(long directionId) throws DAOException {
-        return daoHelper.getCount(applicationQueries.getString("application.count"),
-                "Failed to get count of applications.", directionId);
     }
 
     private List<Application> getByStatement(PreparedStatement statement) throws SQLException {

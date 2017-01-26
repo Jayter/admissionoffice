@@ -44,11 +44,11 @@ public class JdbcFacultyDaoImplTest {
 
     @Test
     public void getByUniversityTest() throws Exception {
-        List<Faculty> faculties = facultyDao.getByUniversity(UNIVERSITY2.getId(), 0, 100);
+        List<Faculty> faculties = facultyDao.getWithCountByUniversity(UNIVERSITY2.getId(), 0, 100).getEntries();
 
         Assert.assertEquals(Arrays.asList(FACULTY3, FACULTY4), faculties);
 
-        Assert.assertEquals(facultyDao.getByUniversity(INCORRECT_ID, 0, 100), Collections.emptyList());
+        Assert.assertEquals(facultyDao.getWithCountByUniversity(INCORRECT_ID, 0, 100).getEntries(), Collections.emptyList());
     }
 
     @Test

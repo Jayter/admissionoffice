@@ -15,6 +15,5 @@ public interface UserService extends Service<User> {
     AuthorizationResult authorize(String login, String password) throws ServiceException;
     List<User> getAll(long offset, long count) throws ServiceException;
     User getByEmail(String email) throws ServiceException;
-    long getTotalCount() throws ServiceException;
     Map<Long, String> getDirectionNames(long userId) throws ServiceException;
 }

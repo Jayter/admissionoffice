@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.dao;
 
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
+import com.jayton.admissionoffice.model.to.ApplicationDTO;
 import com.jayton.admissionoffice.model.to.Status;
 
 import java.util.List;
@@ -13,7 +14,6 @@ public interface ApplicationDao {
     void delete(long id) throws DAOException;
     void updateAll(List<Application> applications, Status status) throws DAOException;
     List<Application> getByUser(long userId) throws DAOException;
-    List<Application> getByDirection(long directionId, long offset, long count) throws DAOException;
+    ApplicationDTO getByDirection(long directionId, long offset, long count) throws DAOException;
     List<Application> getAll() throws DAOException;
-    long getCount(long directionId) throws DAOException;
 }

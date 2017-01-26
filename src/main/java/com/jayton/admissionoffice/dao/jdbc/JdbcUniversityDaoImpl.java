@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.di.Injected;
 
@@ -142,29 +143,27 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public List<University> getAll(long offset, long count) throws DAOException {
-        PreparedStatement statement = null;
+    public PaginationDTO<University> getWithCount(long offset, long count) throws DAOException {
         Connection connection = null;
+        PreparedStatement getUniversitiesSt = null;
+        PreparedStatement getTotalCountSt = null;
 
         try {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement(universityQueries.getString("university.get.all"));
-            statement.setLong(1, count);
-            statement.setLong(2, offset);
+            getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all"));
+            getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count"));
+            getUniversitiesSt.setLong(1, count);
+            getUniversitiesSt.setLong(2, offset);
 
-            return getByStatement(statement);
+            List<University> universities = getByStatement(getUniversitiesSt);
+            long totalCount = daoHelper.getCount(getTotalCountSt);
 
+            return new PaginationDTO<University>(universities, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            DaoHelper.closeResources(connection, getUniversitiesSt, getTotalCountSt);
         }
-    }
-
-    @Override
-    public long getTotalCount() throws DAOException {
-        return daoHelper.getCount(universityQueries.getString("university.count"),
-                "Failed to get count of universities.");
     }
 
     private List<University> getByStatement(PreparedStatement statement) throws SQLException {

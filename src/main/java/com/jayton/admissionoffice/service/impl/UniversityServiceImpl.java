@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.service.impl;
 
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -54,9 +55,9 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public List<University> getAll(long offset, long count) throws ServiceException {
+    public PaginationDTO<University> getWithCount(long offset, long count) throws ServiceException {
         try {
-            return universityDao.getAll(offset, count);
+            return universityDao.getWithCount(offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -66,15 +67,6 @@ public class UniversityServiceImpl implements UniversityService {
     public List<University> getByCity(String city, long offset, long count) throws ServiceException {
         try {
             return universityDao.getByCity(city, offset, count);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public long getTotalCount() throws ServiceException {
-        try {
-            return universityDao.getTotalCount();
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

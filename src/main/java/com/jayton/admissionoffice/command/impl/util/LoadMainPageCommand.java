@@ -4,6 +4,7 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -37,12 +38,11 @@ public class LoadMainPageCommand implements Command {
             Verifier.verifyNonNegative(page);
             Verifier.verifyNonNegative(countPerPage);
 
-            List<University> universities = universityService.getAll(offset, countPerPage);
-            Long totalUniversitiesCount = universityService.getTotalCount();
+            PaginationDTO<University> dto = universityService.getWithCount(offset, countPerPage);
 
-            Long totalPagesCount = CommandUtils.getTotalCountOfPages(totalUniversitiesCount, countPerPage);
+            Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);
 
-            request.setAttribute(PARAM_NAMES.getString("universities"), universities);
+            request.setAttribute(PARAM_NAMES.getString("universities"), dto.getEntries());
             request.setAttribute(PARAM_NAMES.getString("page"), page);
             request.setAttribute(PARAM_NAMES.getString("count"), countPerPage);
             request.setAttribute(PARAM_NAMES.getString("pagesCount"), totalPagesCount);

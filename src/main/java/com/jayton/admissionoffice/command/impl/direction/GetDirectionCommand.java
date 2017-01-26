@@ -5,7 +5,7 @@ import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
 import com.jayton.admissionoffice.model.Subject;
-import com.jayton.admissionoffice.model.to.Application;
+import com.jayton.admissionoffice.model.to.ApplicationDTO;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.DirectionService;
@@ -51,15 +51,13 @@ public class GetDirectionCommand implements Command {
             Verifier.verifyNonNegative(countPerPage);
 
             Direction direction = directionService.get(id);
-            Map<Long, String> userNames = directionService.getUserNames(id);
-            List<Application> applications = applicationService.getByDirection(id, offset, countPerPage);
-            Long totalApplicationsCount = applicationService.getCount(id);
+            ApplicationDTO dto = applicationService.getByDirection(id, offset, countPerPage);
 
-            Long totalPagesCount = CommandUtils.getTotalCountOfPages(totalApplicationsCount, countPerPage);
+            Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);
 
             request.setAttribute(PARAM_NAMES.getString("direction"), direction);
-            request.setAttribute(PARAM_NAMES.getString("userNames"), userNames);
-            request.setAttribute(PARAM_NAMES.getString("applications"), applications);
+            request.setAttribute(PARAM_NAMES.getString("userNames"), dto.getUserNames());
+            request.setAttribute(PARAM_NAMES.getString("applications"), dto.getApplications());
             request.setAttribute(PARAM_NAMES.getString("page"), page);
             request.setAttribute(PARAM_NAMES.getString("count"), countPerPage);
             request.setAttribute(PARAM_NAMES.getString("pagesCount"), totalPagesCount);

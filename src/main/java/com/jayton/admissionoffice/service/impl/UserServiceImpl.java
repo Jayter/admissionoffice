@@ -117,15 +117,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long getTotalCount() throws ServiceException {
-        try {
-            return userDao.getTotalCount();
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public Map<Long, String> getDirectionNames(long userId) throws ServiceException {
         try {
             return userDao.getDirectionNames(userId);

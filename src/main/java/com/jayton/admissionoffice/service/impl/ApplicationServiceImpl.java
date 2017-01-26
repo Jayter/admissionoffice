@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.service.impl;
 import com.jayton.admissionoffice.dao.*;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
+import com.jayton.admissionoffice.model.to.ApplicationDTO;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
@@ -74,7 +75,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getByDirection(long directionId, long offset, long count) throws ServiceException {
+    public ApplicationDTO getByDirection(long directionId, long offset, long count) throws ServiceException {
         try {
             return applicationDao.getByDirection(directionId, offset, count);
         } catch (DAOException e) {
@@ -95,15 +96,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void delete(long id) throws ServiceException {
         try {
             applicationDao.delete(id);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public long getCount(long directionId) throws ServiceException {
-        try {
-            return applicationDao.getCount(directionId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

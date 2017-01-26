@@ -39,7 +39,7 @@ public class InjectionResolverTest {
         XmlBeanContext resolver = new XmlBeanContext("di/dependencies.xml");
         resolver.init();
 
-        List<University> all = universityService.getAll(0, 100);
+        List<University> all = universityService.getWithCount(0, 100).getEntries();
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
     }
 }

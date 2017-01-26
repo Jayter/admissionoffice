@@ -3,6 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.util.di.Injected;
 
@@ -191,24 +192,28 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public List<Direction> getByFaculty(long facultyId, long offset, long count) throws DAOException {
-        PreparedStatement statement = null;
+    public PaginationDTO<Direction> getWithCountByFaculty(long facultyId, long offset, long count) throws DAOException {
         Connection connection = null;
+        PreparedStatement getDirectionsSt = null;
+        PreparedStatement getTotalCountSt = null;
 
         try {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"),
+            getDirectionsSt = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"),
                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY, ResultSet.CONCUR_READ_ONLY);
-            statement.setLong(1, facultyId);
-            statement.setLong(2, count);
-            statement.setLong(3, offset);
+            getTotalCountSt = connection.prepareStatement(directionQueries.getString("direction.count"));
+            getDirectionsSt.setLong(1, facultyId);
+            getDirectionsSt.setLong(2, count);
+            getDirectionsSt.setLong(3, offset);
 
-            return getByStatement(statement);
+            List<Direction> directions = getByStatement(getDirectionsSt);
+            long totalCount = daoHelper.getCount(getTotalCountSt, facultyId);
 
+            return new PaginationDTO<Direction>(directions, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to load directions.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            DaoHelper.closeResources(connection, getDirectionsSt, getTotalCountSt);
         }
     }
 
@@ -246,16 +251,16 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     @Override
     public Map<Long, BigDecimal> getEntranceSubjects(long directionId) throws DAOException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement getDirectionsSt = null;
 
         try {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement(directionQueries.getString("subject.get.all"));
-            statement.setLong(1, directionId);
+            getDirectionsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"));
+            getDirectionsSt.setLong(1, directionId);
 
             Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
 
-            try(ResultSet rs = statement.executeQuery()) {
+            try(ResultSet rs = getDirectionsSt.executeQuery()) {
                 while (rs.next()) {
                     entranceSubjects.put(rs.getLong("subject_id"), rs.getBigDecimal("coefficient")
                             .setScale(2, BigDecimal.ROUND_HALF_UP));
@@ -266,14 +271,8 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get entrance subjects.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            DaoHelper.closeResources(connection, getDirectionsSt);
         }
-    }
-
-    @Override
-    public long getCount(long facultyId) throws DAOException {
-        return daoHelper.getCount(directionQueries.getString("direction.count"),
-                "Failed to get count of directions.", facultyId);
     }
 
     @Override
