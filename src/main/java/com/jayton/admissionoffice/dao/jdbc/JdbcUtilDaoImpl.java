@@ -20,6 +20,8 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     @Injected
     private DataSource dataSource;
+    @Injected
+    private DaoHelper daoHelper;
 
     public JdbcUtilDaoImpl() {
     }
@@ -48,7 +50,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load session terms.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -76,7 +78,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load subjects.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -100,7 +102,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to update session terms.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -124,7 +126,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to create session terms.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 }

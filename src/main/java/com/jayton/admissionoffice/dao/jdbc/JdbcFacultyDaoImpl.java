@@ -57,7 +57,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save faculty.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -87,7 +87,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculty.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -116,7 +116,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to update faculty.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -139,7 +139,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculties.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -164,7 +164,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculties.", e);
         } finally {
-            DaoHelper.closeResources(connection, getFacultiesSt, getTotalCountSt);
+            daoHelper.closeResources(connection, getFacultiesSt, getTotalCountSt);
         }
     }
 

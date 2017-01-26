@@ -55,7 +55,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save university.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -83,7 +83,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load university.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -112,7 +112,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to update university.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -138,7 +138,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -162,7 +162,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
         } finally {
-            DaoHelper.closeResources(connection, getUniversitiesSt, getTotalCountSt);
+            daoHelper.closeResources(connection, getUniversitiesSt, getTotalCountSt);
         }
     }
 

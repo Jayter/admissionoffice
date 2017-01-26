@@ -75,7 +75,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save direction.", e);
         } finally {
-            DaoHelper.closeResources(connection, addDirectionSt, addSubjectSt);
+            daoHelper.closeResources(connection, addDirectionSt, addSubjectSt);
         }
     }
 
@@ -119,7 +119,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load direction.", e);
         } finally {
-            DaoHelper.closeResources(connection, getDirectionSt);
+            daoHelper.closeResources(connection, getDirectionSt);
         }
     }
 
@@ -160,10 +160,10 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
             return new Direction(direction.getId(), direction.getName(), direction.getAverageCoefficient(),
                     direction.getCountOfStudents(), direction.getFacultyId(), entranceSubjects);
         } catch (SQLException e) {
-            DaoHelper.rollback(connection);
+            daoHelper.rollback(connection);
             throw new DAOException("Failed to update direction.", e);
         } finally {
-            DaoHelper.closeResources(connection, updateDirectionSt, getSubjectsSt);
+            daoHelper.closeResources(connection, updateDirectionSt, getSubjectsSt);
         }
     }
 
@@ -187,7 +187,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load directions.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -213,7 +213,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load directions.", e);
         } finally {
-            DaoHelper.closeResources(connection, getDirectionsSt, getTotalCountSt);
+            daoHelper.closeResources(connection, getDirectionsSt, getTotalCountSt);
         }
     }
 
@@ -238,7 +238,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save entrance subject.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -271,7 +271,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get entrance subjects.", e);
         } finally {
-            DaoHelper.closeResources(connection, getDirectionsSt);
+            daoHelper.closeResources(connection, getDirectionsSt);
         }
     }
 
@@ -297,7 +297,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get user names.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 

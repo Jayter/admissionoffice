@@ -65,10 +65,10 @@ public class JdbcUserDaoImpl implements UserDao {
                 }
             }
         } catch (SQLException e) {
-            DaoHelper.rollback(connection);
+            daoHelper.rollback(connection);
             throw new DAOException("Failed to save user.", e);
         } finally {
-            DaoHelper.closeResources(connection, addUserSt, addCredentialsSt);
+            daoHelper.closeResources(connection, addUserSt, addCredentialsSt);
         }
     }
 
@@ -87,7 +87,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load user.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -131,10 +131,10 @@ public class JdbcUserDaoImpl implements UserDao {
                     user.getPhoneNumber(), user.getBirthDate(), user.getAverageMark(), examResults);
 
         } catch (SQLException e) {
-            DaoHelper.rollback(connection);
+            daoHelper.rollback(connection);
             throw new DAOException("Failed to update user.", e);
         } finally {
-            DaoHelper.closeResources(connection, updateUserSt, getResultsSt);
+            daoHelper.closeResources(connection, updateUserSt, getResultsSt);
         }
     }
 
@@ -160,7 +160,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load users.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -179,7 +179,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to load user.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -203,7 +203,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save result.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -229,7 +229,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get results.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -260,7 +260,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to check email.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -290,7 +290,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to authorize.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -348,7 +348,7 @@ public class JdbcUserDaoImpl implements UserDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get direction names.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 

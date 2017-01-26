@@ -40,6 +40,7 @@
     </bean>
     <bean id="utilDao" class="com.jayton.admissionoffice.dao.jdbc.JdbcUtilDaoImpl">
         <field name="dataSource" reference="dataSource"/>
+        <field name="daoHelper" reference="daoHelper"/>
     </bean>
 
     <!-- Service layer -->

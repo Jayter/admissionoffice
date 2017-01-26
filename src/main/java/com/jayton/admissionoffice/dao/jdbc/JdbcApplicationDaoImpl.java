@@ -59,7 +59,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to save application.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -89,7 +89,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -112,7 +112,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get application.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -144,7 +144,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to update applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -185,7 +185,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, getApplicationsSt, getTotalCountSt);
+            daoHelper.closeResources(connection, getApplicationsSt, getTotalCountSt);
         }
     }
 
@@ -204,7 +204,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 
@@ -222,7 +222,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
         } catch (SQLException e) {
             throw new DAOException("Failed to get applications.", e);
         } finally {
-            DaoHelper.closeResources(connection, statement);
+            daoHelper.closeResources(connection, statement);
         }
     }
 

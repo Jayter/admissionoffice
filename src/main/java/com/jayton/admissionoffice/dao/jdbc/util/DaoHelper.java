@@ -40,7 +40,7 @@ public class DaoHelper {
             throw new DAOException(errorMessage, e);
         }
         finally {
-            DaoHelper.closeResources(connection, statement);
+            closeResources(connection, statement);
         }
     }
 
@@ -58,7 +58,7 @@ public class DaoHelper {
         return result;
     }
 
-    public static void rollback(Connection connection) {
+    public void rollback(Connection connection) {
         if (connection != null) {
             try {
                 connection.rollback();
@@ -68,7 +68,7 @@ public class DaoHelper {
         }
     }
 
-    public static void closeResources(AutoCloseable... resources) {
+    public void closeResources(AutoCloseable... resources) {
         try {
             if(resources != null) {
                 for(AutoCloseable resource: resources) {
