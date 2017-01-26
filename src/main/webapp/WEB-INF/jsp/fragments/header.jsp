@@ -2,6 +2,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<jsp:include page="../fragments/headTag.jsp"/>
+
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale.locale" var="loc"/>
 
@@ -13,7 +15,14 @@
 <fmt:message bundle="${loc}" key="header.log_out" var="log_out"/>
 
 <div class="header_outer" align="center">
+    <a href="Controller?command=change-locale&locale=uk-UA">
+        <img class="header_icon" src="${pageContext.request.contextPath}/resources/img/ua-icon.png"/>
+    </a>
+    <a href="Controller?command=change-locale&locale=us-US">
+        <img class="header_icon" src="${pageContext.request.contextPath}/resources/img/en-icon.png"/>
+    </a>
     <div class="header_inner">
+        <button class="header_button" onclick="location.href='Controller?command=load-main'">${main}</button>
         <c:choose>
             <c:when test="${not sessionScope.isAuthorizedAdmin and not sessionScope.isAuthorizedUser}">
                 <form action="Controller?command=authorize" method="post">
@@ -23,7 +32,6 @@
                 </form>
             </c:when>
             <c:otherwise>
-                <button class="header_button" onclick="location.href='Controller?command=load-main'">${main}</button>
                 <c:choose>
                     <c:when test="${sessionScope.isAuthorizedUser}">
                         <button class="header_button"
@@ -37,18 +45,8 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <button class="button" onclick="location.href='Controller?command=change-locale&locale=us-US'">US</button>
-    <button class="button" onclick="location.href='Controller?command=change-locale&locale=uk-UA'">UA</button>
 </div>
-<script type="text/javascript">
-    function showAuthErr(arg){
-        window.alert(arg);
-    }
-    function showAndRedirect(message, path) {
-        window.alert(message);
-        window.location.href = path;
-    }
-</script>
+
 <c:if test="${not empty requestScope.shownException}">
     <c:set var="error" value="${requestScope.shownException.message}"/>
     <c:set var="redirectPath" value="${requestScope.redirectPath}"/>
