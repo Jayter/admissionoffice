@@ -93,7 +93,7 @@
                 </tr>
             </c:forEach>
         </table>
-        <c:if test="${user.results.size() lt 4}">
+        <c:if test="${sessionScope.isAuthorizedAdmin && user.results.size() lt 4}">
             <form method="post" action="Controller?command=add-user-result">
                 <input type="hidden" name="id" value="${user.id}"/>
                 <select name="subjectId">
