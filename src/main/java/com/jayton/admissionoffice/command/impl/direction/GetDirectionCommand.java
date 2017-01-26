@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.command.impl.direction;
 
 import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
+import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
@@ -38,26 +39,30 @@ public class GetDirectionCommand implements Command {
         try {
             Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
 
-            String offs = request.getParameter(PARAM_NAMES.getString("offset"));
-            String coun = request.getParameter(PARAM_NAMES.getString("count"));
-            Long offset = offs == null ? 0 : Verifier.convertToLong(offs);
-            Long count = coun == null ? 3 : Verifier.convertToLong(coun);
+            String pageParam = request.getParameter(PARAM_NAMES.getString("page"));
+            String countParam = request.getParameter(PARAM_NAMES.getString("count"));
+            Long page = pageParam == null ? 1 : Verifier.convertToLong(pageParam);
+            Long countPerPage = countParam == null ? 5 : Verifier.convertToLong(countParam);
+
+            Long offset = (page - 1) * countPerPage;
 
             Verifier.verifyId(id);
-            Verifier.verifyNonNegative(offset);
-            Verifier.verifyNonNegative(count);
+            Verifier.verifyNonNegative(page);
+            Verifier.verifyNonNegative(countPerPage);
 
             Direction direction = directionService.get(id);
             Map<Long, String> userNames = directionService.getUserNames(id);
-            List<Application> applications = applicationService.getByDirection(id, offset, count);
-            Long totalCount = applicationService.getCount(id);
+            List<Application> applications = applicationService.getByDirection(id, offset, countPerPage);
+            Long totalApplicationsCount = applicationService.getCount(id);
+
+            Long totalPagesCount = CommandUtils.getTotalCountOfPages(totalApplicationsCount, countPerPage);
 
             request.setAttribute(PARAM_NAMES.getString("direction"), direction);
             request.setAttribute(PARAM_NAMES.getString("userNames"), userNames);
             request.setAttribute(PARAM_NAMES.getString("applications"), applications);
-            request.setAttribute(PARAM_NAMES.getString("offset"), offset);
-            request.setAttribute(PARAM_NAMES.getString("count"), count);
-            request.setAttribute(PARAM_NAMES.getString("totalCount"), totalCount);
+            request.setAttribute(PARAM_NAMES.getString("page"), page);
+            request.setAttribute(PARAM_NAMES.getString("count"), countPerPage);
+            request.setAttribute(PARAM_NAMES.getString("pagesCount"), totalPagesCount);
 
             List<Subject> allSubjects = utilService.getAllSubjects();
             Map<Long, Subject> subjectsMap = new HashMap<>();

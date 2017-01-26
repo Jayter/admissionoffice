@@ -115,3 +115,35 @@ a:focus {
     padding: 10px 8px;
     background: #daebf3;
 }
+
+.centred {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.h {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+}
+
+.paginator ul {
+    width: 30%;
+    float: left;
+}
+
+.paginator li {
+    list-style-type: none;
+    margin-right: 5px;
+    padding: 3px;
+    float: left;
+}
+
+.paginatorCur {
+    background-color: #cfcfd8;
+    border: 2px solid #a0a0a9;
+}
+
+.header_icon {
+    height: 100%;
+    float: right;
+}

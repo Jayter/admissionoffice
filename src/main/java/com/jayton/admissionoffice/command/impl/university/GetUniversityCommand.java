@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.command.impl.university;
 
 import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
+import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.model.university.University;
@@ -32,24 +33,28 @@ public class GetUniversityCommand implements Command {
         try {
             Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
 
-            String offs = request.getParameter(PARAM_NAMES.getString("offset"));
-            String coun = request.getParameter(PARAM_NAMES.getString("count"));
-            Long offset = offs == null ? 0 : Verifier.convertToLong(offs);
-            Long count = coun == null ? 3 : Verifier.convertToLong(coun);
+            String pageParam = request.getParameter(PARAM_NAMES.getString("page"));
+            String countParam = request.getParameter(PARAM_NAMES.getString("count"));
+            Long page = pageParam == null ? 1 : Verifier.convertToLong(pageParam);
+            Long countPerPage = countParam == null ? 5 : Verifier.convertToLong(countParam);
+
+            Long offset = (page - 1) * countPerPage;
 
             Verifier.verifyId(id);
-            Verifier.verifyNonNegative(offset);
-            Verifier.verifyNonNegative(count);
+            Verifier.verifyNonNegative(page);
+            Verifier.verifyNonNegative(countPerPage);
 
             University university = universityService.get(id);
-            List<Faculty> faculties = facultyService.getByUniversity(id, offset, count);
-            long totalCount = facultyService.getCount(id);
+            List<Faculty> faculties = facultyService.getByUniversity(id, offset, countPerPage);
+            long totalFacultiesCount = facultyService.getCount(id);
+
+            Long totalPagesCount = CommandUtils.getTotalCountOfPages(totalFacultiesCount, countPerPage);
 
             request.setAttribute(PARAM_NAMES.getString("university"), university);
             request.setAttribute(PARAM_NAMES.getString("faculties"), faculties);
-            request.setAttribute(PARAM_NAMES.getString("offset"), offset);
-            request.setAttribute(PARAM_NAMES.getString("count"), count);
-            request.setAttribute(PARAM_NAMES.getString("totalCount"), totalCount);
+            request.setAttribute(PARAM_NAMES.getString("page"), page);
+            request.setAttribute(PARAM_NAMES.getString("count"), countPerPage);
+            request.setAttribute(PARAM_NAMES.getString("pagesCount"), totalPagesCount);
 
             request.getRequestDispatcher(PAGE_NAMES.getString("page.university")).forward(request, response);
         } catch (ServiceException e) {

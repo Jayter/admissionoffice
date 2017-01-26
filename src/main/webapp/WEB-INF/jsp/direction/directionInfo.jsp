@@ -2,6 +2,7 @@
 <%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ taglib prefix="functions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="paginator" uri="http://com.jayton.admissionoffice.paginator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="../fragments/headTag.jsp"/>
@@ -117,13 +118,7 @@
             </tr>
         </c:forEach>
     </table>
-    <c:if test="${requestScope.offset gt 0}">
-        <a href="Controller?command=get-direction&id=${direction.id}&offset=${requestScope.offset
-            - requestScope.count}&count=${requestScope.count}">${previous}</a>
-    </c:if>
-    <c:if test="${requestScope.offset + requestScope.count lt requestScope.totalCount}">
-        <a href="Controller?command=get-faculty&id=${direction.id}&offset=${requestScope.offset
-            + requestScope.count}&count=${requestScope.count}">${next}</a>
-    </c:if>
+    <paginator:display url="Controller?command=get-direction&id=${direction.id}" currentPage="${requestScope.page}"
+                       totalPagesCount="${requestScope.pagesCount}" linksCount="${requestScope.count}"/>
 </div>
 </body>
