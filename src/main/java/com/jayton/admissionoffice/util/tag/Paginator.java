@@ -5,10 +5,27 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
+/**
+ * Builds tag {@code <paginator>}.
+ * <p/>
+ * Adds pagination buttons to the response page.
+ */
 public class Paginator extends SimpleTagSupport {
+    /**
+     * Url of the page. Used by buttons.
+     */
     private String url;
+    /**
+     * Number of current page.
+     */
     private long currentPage;
+    /**
+     * Total count of pages.
+     */
     private long totalPagesCount;
+    /**
+     * Maximal count of entries per page.
+     */
     private long linksCount;
 
     @Override
