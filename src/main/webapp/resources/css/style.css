@@ -147,3 +147,9 @@ a:focus {
     height: 100%;
     float: right;
 }
+
+#my_timer {
+    color: #5a75af;
+    font-size: 110%;
+    font-weight: bold
+}

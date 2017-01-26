@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="paginator" uri="http://com.jayton.admissionoffice.paginator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="fragments/headTag.jsp"/>
@@ -31,16 +32,8 @@
                 </tr>
             </c:forEach>
         </table>
-        <c:if test="${requestScope.offset gt 0}">
-            <a href="Controller?command=load-main&offset=${requestScope.offset - requestScope.count}&count=${requestScope.count}">
-                ${previous}
-            </a>
-        </c:if>
-        <c:if test="${requestScope.offset + requestScope.count lt requestScope.totalCount}">
-            <a href="Controller?command=load-main&offset=${requestScope.offset + requestScope.count}&count=${requestScope.count}">
-                ${next}
-            </a>
-        </c:if>
+        <paginator:display url="Controller?command=load-main" currentPage="${requestScope.page}"
+                           totalPagesCount="${requestScope.pagesCount}" linksCount="${requestScope.count}"/>
         <c:if test="${sessionScope.isAuthorizedAdmin}">
             <button onclick="location.href='Controller?command=edit-university'" class="button">${add}</button>
         </c:if>
