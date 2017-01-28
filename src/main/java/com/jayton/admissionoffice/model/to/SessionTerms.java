@@ -1,8 +1,9 @@
 package com.jayton.admissionoffice.model.to;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class SessionTerms {
+public class SessionTerms implements Serializable {
     private short year;
     private LocalDateTime sessionStart;
     private LocalDateTime sessionEnd;
