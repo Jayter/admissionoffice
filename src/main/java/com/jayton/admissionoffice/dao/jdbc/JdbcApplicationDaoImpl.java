@@ -105,7 +105,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             for(int affectedRow: statement.executeBatch()) {
                 if(affectedRow == 0) {
-                    updated = false;
+                    return false;
                 }
             }
         } catch (SQLException e) {

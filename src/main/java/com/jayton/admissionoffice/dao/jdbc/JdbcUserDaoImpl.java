@@ -103,13 +103,13 @@ public class JdbcUserDaoImpl implements UserDao {
     @Override
     public User getByEmail(String email) throws DAOException {
         try(Connection connection = dataSource.getConnection();
-            PreparedStatement getUserSr = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
+            PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all.by_email"))) {
 
-            getUserSr.setString(1, email);
+            getUserSt.setString(1, email);
             getResultsSt.setString(1, email);
 
-            return getUserByStatements(getUserSr, getResultsSt);
+            return getUserByStatements(getUserSt, getResultsSt);
         } catch (SQLException e) {
             throw new DAOException("Failed to load user.", e);
         }

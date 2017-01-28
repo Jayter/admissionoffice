@@ -72,8 +72,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionSt = connection.prepareStatement(directionQueries.getString("direction.get"));
             PreparedStatement getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_direction"))) {
-            connection.setAutoCommit(false);
-            //read committed
+
             getDirectionSt.setLong(1, id);
             getSubjectsSt.setLong(1, id);
 
@@ -96,7 +95,6 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                    direction = new Direction(id, name, averageCoef, countOfStudents, facultyId, subjects);
                }
             }
-            connection.commit();
         } catch (SQLException e) {
             throw new DAOException("Failed to load direction.", e);
         }
@@ -129,7 +127,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("direction.get.all"));
             PreparedStatement getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"))) {
-            
+
             List<Direction> directions = getDirectionsByStatement(getDirectionsSt);
             List<AssociatedPairDto<Long, Long, BigDecimal>> subjects = getSubjectsByStatement(getSubjectsSt);
 

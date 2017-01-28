@@ -59,7 +59,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                     String city = rs.getString("city");
                     String address = rs.getString("address");
 
-                    university =  new University(id, name, city, address);
+                    university = new University(id, name, city, address);
                 }
             }
         } catch (SQLException e) {
