@@ -44,7 +44,10 @@ public class JdbcUniversityDaoImplTest {
         University added = new University(id, NEW_UNIVERSITY.getName(), NEW_UNIVERSITY.getCity(), NEW_UNIVERSITY.getAddress());
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, added),
                 universityDao.getWithCount(0, 100).getEntries());
+    }
 
+    @Test
+    public void addWithNullableFieldsTest() throws Exception {
         expected.expect(DAOException.class);
         universityDao.add(UNIVERSITY_WITH_NULLABLE_FIELDS);
     }
@@ -52,7 +55,10 @@ public class JdbcUniversityDaoImplTest {
     @Test
     public void getTest() throws Exception {
         Assert.assertEquals(UNIVERSITY1, universityDao.get(UNIVERSITY1.getId()));
+    }
 
+    @Test
+    public void getByIncorrectIdTest() throws Exception {
         Assert.assertNull(universityDao.get(INCORRECT_ID));
     }
 
@@ -61,17 +67,28 @@ public class JdbcUniversityDaoImplTest {
         Assert.assertTrue(universityDao.update(UPDATED_UNIVERSITY));
 
         Assert.assertEquals(UPDATED_UNIVERSITY, universityDao.get(UNIVERSITY3.getId()));
+    }
 
-        //incorrect or nullable id
+    @Test
+    public void updateNewTest() throws Exception {
         Assert.assertFalse(universityDao.update(NEW_UNIVERSITY));
+    }
+
+    @Test
+    public void updateIncorrectTest() throws Exception {
+        Assert.assertFalse(universityDao.update(new University(INCORRECT_ID, UNIVERSITY1.getName(),
+                UNIVERSITY1.getCity(), UNIVERSITY1.getAddress())));
     }
 
     @Test
     public void deleteTest() throws Exception {
         Assert.assertTrue(universityDao.delete(UNIVERSITY3.getId()));
 
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getWithCount(0, 100).getEntries());
+        Assert.assertFalse(universityDao.getWithCount(0, 100).getEntries().contains(UNIVERSITY3));
+    }
 
+    @Test
+    public void deleteByIncorrectIdTest() throws Exception {
         Assert.assertFalse(universityDao.delete(INCORRECT_ID));
     }
 
@@ -80,8 +97,10 @@ public class JdbcUniversityDaoImplTest {
         List<University> list = universityDao.getWithCountByCity(KYIV, 0, 100).getEntries();
 
         Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
+    }
 
-        //if call with name that does not exist, receive an empty list, not null
+    @Test
+    public void getByIncorrectCityTest() throws Exception {
         Assert.assertEquals(universityDao.getWithCountByCity(INCORRECT_STRING, 0, 100).getEntries(), Collections.emptyList());
     }
 
@@ -92,7 +111,10 @@ public class JdbcUniversityDaoImplTest {
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
         Assert.assertEquals(allDto.getCount(), 3);
+    }
 
+    @Test
+    public void getSingleWithCountTest() throws Exception {
         PaginationDTO<University> singleDto = universityDao.getWithCount(0, 1);
         List<University> single = singleDto.getEntries();
 

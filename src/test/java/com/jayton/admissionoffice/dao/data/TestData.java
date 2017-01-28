@@ -74,6 +74,8 @@ public class TestData {
             "+38044-463-6985", "gor@ukma.kiev.ua", "вулиця Григорія Сковороди, 2", UNIVERSITY2.getId());
     public static final Faculty NEW_FACULTY = new Faculty("Факультет Географії та Психології",
             "+38044-521-3270", "psy-univ@ukr.net", "проспект Академіка Глушкова, 2", UNIVERSITY1.getId());
+    public static final Faculty FACULTY_WITH_NULLABLE_FIELDS = new Faculty(START_SEQ + 13, null,
+            "+38044-521-3270", null, "проспект Академіка Глушкова, 2", UNIVERSITY1.getId());
     public static final Faculty FACULTY_WITH_INCORRECT_UNIVERSITY = new Faculty("Інститут архітектури",
             "+38032-258-22-39", "kornel@polynet.lviv.ua", "вул. С. Бандери 12, Головний корпус", INCORRECT_ID);
     public static final Faculty UPDATED_FACULTY = new Faculty(START_SEQ + 10, "Факультет інформаційних технологій",
@@ -96,6 +98,8 @@ public class TestData {
         put(SUBJECT2.getId(), scale(new BigDecimal(0.2))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
     public static final Direction DIRECTION_WITH_INCORRECT_OWNER = new Direction("Програмна інженерія",
             scale(new BigDecimal(0.1)), 35, INCORRECT_ID, Collections.emptyMap());
+    public static final Direction DIRECTION_WITH_NULLABLE_FIELDS = new Direction(START_SEQ + 18, null,
+            scale(new BigDecimal(0.1)), 35, INCORRECT_ID, Collections.emptyMap());
     public static final Direction UPDATED_DIRECTION = new Direction(START_SEQ + 15, "Комп`ютерні науки",
             scale(new BigDecimal(0.1)), 35, FACULTY1.getId(), new HashMap<Long, BigDecimal>(){{put(SUBJECT1.getId(),
             scale(new BigDecimal(0.4))); put(SUBJECT2.getId(), scale(new BigDecimal(0.3)));
@@ -109,6 +113,8 @@ public class TestData {
             LocalDateTime.of(2016, 11, 30, 18, 1, 45), Status.CREATED, scale(new BigDecimal(178.2)));
     public static final Application NEW_APPLICATION = new Application(NEW_ID, USER1.getId(), DIRECTION4.getId(),
             LocalDateTime.now(), Status.CREATED, scale(new BigDecimal(123.4)));
+    public static final Application APPLICATION_WITH_NULLABLE_FIELDS = new Application(NEW_ID, USER1.getId(), DIRECTION4.getId(),
+            LocalDateTime.now(), null, null);
     public static final Application DUPLICATED_APPLICATION = new Application(USER1.getId(), DIRECTION2.getId(),
             LocalDateTime.now(), scale(new BigDecimal(192.3)));
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),

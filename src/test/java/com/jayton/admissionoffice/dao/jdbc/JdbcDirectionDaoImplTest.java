@@ -49,11 +49,19 @@ public class JdbcDirectionDaoImplTest {
 
         Direction added = new Direction(id, NEW_DIRECTION.getName(), NEW_DIRECTION.getAverageCoefficient(),
                 NEW_DIRECTION.getCountOfStudents(), NEW_DIRECTION.getFacultyId(), NEW_DIRECTION.getEntranceSubjects());
-
         Assert.assertTrue(matcher.compare(added, directionDao.get(id)));
+    }
 
+    @Test
+    public void addWithIncorrectFacultyTest() throws Exception {
         expected.expect(DAOException.class);
         directionDao.add(DIRECTION_WITH_INCORRECT_OWNER);
+    }
+
+    @Test
+    public void addWithNullableFieldsTest() throws Exception {
+        expected.expect(DAOException.class);
+        directionDao.add(DIRECTION_WITH_NULLABLE_FIELDS);
     }
 
     @Test
@@ -63,7 +71,10 @@ public class JdbcDirectionDaoImplTest {
 
         Assert.assertEquals(Collections.emptyMap(),
                 directionDao.get(DIRECTION4.getId()).getEntranceSubjects());
+    }
 
+    @Test
+    public void getByIncorrectIdTest() throws Exception {
         Assert.assertNull(directionDao.get(INCORRECT_ID));
     }
 
@@ -72,8 +83,17 @@ public class JdbcDirectionDaoImplTest {
         Assert.assertTrue(directionDao.update(UPDATED_DIRECTION));
 
         Assert.assertTrue(matcher.compare(UPDATED_DIRECTION, directionDao.get(DIRECTION2.getId())));
+    }
 
+    @Test
+    public void updateNewTest() throws Exception {
         Assert.assertFalse(directionDao.update(NEW_DIRECTION));
+    }
+
+    @Test
+    public void updateWithNullableFieldsTest() throws Exception {
+        expected.expect(DAOException.class);
+        Assert.assertFalse(directionDao.update(DIRECTION_WITH_NULLABLE_FIELDS));
     }
 
     @Test
@@ -82,8 +102,11 @@ public class JdbcDirectionDaoImplTest {
 
         List<Direction> all = Arrays.asList(DIRECTION1, DIRECTION3, DIRECTION4, DIRECTION5);
         Assert.assertTrue(matcher.compareListsWithoutSubjects(all, directionDao.getAll().getEntries()));
+    }
 
-        Assert.assertFalse(directionDao.delete(NEW_DIRECTION.getId()));
+    @Test
+    public void deleteByIncorrectIdTest() throws Exception {
+        Assert.assertFalse(directionDao.delete(INCORRECT_ID));
     }
 
     @Test
@@ -95,14 +118,20 @@ public class JdbcDirectionDaoImplTest {
         Assert.assertTrue(matcher.compareListsWithoutSubjects(retrievedEntries.getEntries(), Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
         Assert.assertEquals(dto.getCount(), 3);
         Assert.assertEquals(retrievedEntries.getPairs().size(), 7);
+    }
 
+    @Test
+    public void getByFacultyWithSingleResultTest() throws Exception {
         PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> singleDto =
                 directionDao.getWithCountByFaculty(FACULTY1.getId(), 0, 1);
         EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> singleEntry = singleDto.getEntries().get(0);
 
         Assert.assertTrue(matcher.compareListsWithoutSubjects(singleEntry.getEntries(), Collections.singletonList(DIRECTION1)));
         Assert.assertEquals(singleDto.getCount(), 3);
+    }
 
+    @Test
+    public void getByFacultyByIncorrectIdTest() throws Exception {
         PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> emptyDto =
                 directionDao.getWithCountByFaculty(INCORRECT_ID, 0, 100);
         EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> emptyEntries = emptyDto.getEntries().get(0);
@@ -123,7 +152,10 @@ public class JdbcDirectionDaoImplTest {
         Assert.assertTrue(directionDao.addSubject(DIRECTION1.getId(), SUBJECT4.getId(), new BigDecimal(0.3)));
 
         Assert.assertEquals(directionDao.get(DIRECTION1.getId()).getEntranceSubjects().size(), 4);
+    }
 
+    @Test
+    public void addSubjectWithIncorrectIdTest() throws Exception {
         expected.expect(DAOException.class);
         directionDao.addSubject(INCORRECT_ID, SUBJECT1.getId(), new BigDecimal(0.1));
     }
@@ -133,15 +165,21 @@ public class JdbcDirectionDaoImplTest {
         Assert.assertTrue(directionDao.deleteSubject(DIRECTION2.getId(), SUBJECT1.getId()));
 
         Assert.assertEquals(directionDao.get(DIRECTION2.getId()).getEntranceSubjects().size(), 2);
+    }
 
+    @Test
+    public void deleteNonExistedSubjectTest() throws Exception {
         Assert.assertFalse(directionDao.deleteSubject(DIRECTION3.getId(), SUBJECT4.getId()));
     }
 
     @Test
-    public void getEntranceSubjectsTest() throws Exception {
-        Map<Long, BigDecimal> subjects = directionDao.getEntranceSubjects(DIRECTION1.getId());
+    public void getSubjectsTest() throws Exception {
+        Map<Long, BigDecimal> subjects = directionDao.getSubjects(DIRECTION1.getId());
         Assert.assertTrue(matcher.compareSubjects(subjects, DIRECTION1.getEntranceSubjects()));
+    }
 
-        Assert.assertEquals(directionDao.getEntranceSubjects(INCORRECT_ID), Collections.emptyMap());
+    @Test
+    public void getSubjectsByIncorrectIdTest() throws Exception {
+        Assert.assertEquals(directionDao.getSubjects(INCORRECT_ID), Collections.emptyMap());
     }
 }

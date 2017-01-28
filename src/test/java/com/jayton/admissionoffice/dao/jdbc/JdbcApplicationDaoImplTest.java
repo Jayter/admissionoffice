@@ -5,7 +5,6 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.data.ApplicationMatcher;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.ApplicationDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -48,11 +47,19 @@ public class JdbcApplicationDaoImplTest {
 
         Application added = new Application(id, NEW_APPLICATION.getUserId(), NEW_APPLICATION.getDirectionId(),
                 NEW_APPLICATION.getCreationTime(), NEW_APPLICATION.getStatus(), NEW_APPLICATION.getMark());
-
         Assert.assertTrue(matcher.compare(added, applicationDao.get(id)));
+    }
 
+    @Test
+    public void addDuplicatedTest() throws Exception {
         expected.expect(DAOException.class);
         applicationDao.add(DUPLICATED_APPLICATION);
+    }
+
+    @Test
+    public void addWithNullableFieldsTest() throws Exception {
+        expected.expect(DAOException.class);
+        applicationDao.add(APPLICATION_WITH_NULLABLE_FIELDS);
     }
 
     @Test
@@ -60,7 +67,10 @@ public class JdbcApplicationDaoImplTest {
         Application retrieved = applicationDao.get(APPLICATION3.getId());
 
         Assert.assertTrue(matcher.compare(retrieved, APPLICATION3));
+    }
 
+    @Test
+    public void getByIncorrectIdTest() throws Exception {
         Assert.assertNull(applicationDao.get(INCORRECT_ID));
     }
 
@@ -72,19 +82,30 @@ public class JdbcApplicationDaoImplTest {
     }
 
     @Test
+    public void updateByIncorrectIdTest() throws Exception {
+        Assert.assertFalse(applicationDao.update(INCORRECT_ID, Status.APPROVED));
+    }
+
+    @Test
     public void deleteTest() throws Exception {
         Assert.assertTrue(applicationDao.delete(APPLICATION1.getId()));
 
         Assert.assertFalse(applicationDao.getByUser(USER1.getId()).contains(APPLICATION1));
+    }
 
+    @Test
+    public void deleteByIncorrectIdTest() throws Exception {
         Assert.assertFalse(applicationDao.delete(INCORRECT_ID));
     }
 
     @Test
-    public void getResultsOfUser() throws Exception {
+    public void getByUserTest() throws Exception {
         List<Application> list = Arrays.asList(APPLICATION1, APPLICATION3, APPLICATION2);
         Assert.assertTrue(matcher.compareLists(list, applicationDao.getByUser(USER1.getId())));
+    }
 
+    @Test
+    public void getByUserByIncorrectId() throws Exception {
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByUser(INCORRECT_ID));
     }
 
@@ -94,7 +115,10 @@ public class JdbcApplicationDaoImplTest {
 
         Assert.assertTrue(matcher.compareLists(Collections.singletonList(APPLICATION2), dto.getApplications()));
         Assert.assertEquals(dto.getCount(), 1);
+    }
 
+    @Test
+    public void getByDirectionByIncorrectIdTest() throws Exception {
         Assert.assertEquals(Collections.emptyList(), applicationDao.getByDirection(INCORRECT_ID, 0, 5).getApplications());
     }
 
@@ -114,5 +138,11 @@ public class JdbcApplicationDaoImplTest {
         for(Application application: applicationDao.getAll()) {
             Assert.assertEquals(application.getStatus(), Status.APPROVED);
         }
+    }
+
+    @Test
+    public void updateAllWithIncorrectTest() throws Exception {
+        List<Application> list = Collections.singletonList(NEW_APPLICATION);
+        Assert.assertFalse(applicationDao.updateAll(list, Status.APPROVED));
     }
 }

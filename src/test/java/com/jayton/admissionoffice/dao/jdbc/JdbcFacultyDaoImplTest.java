@@ -44,19 +44,29 @@ public class JdbcFacultyDaoImplTest {
 
         Faculty added = new Faculty(id, NEW_FACULTY.getName(), NEW_FACULTY.getOfficePhone(), NEW_FACULTY.getOfficeEmail(),
                 NEW_FACULTY.getOfficeAddress(), NEW_FACULTY.getUniversityId());
+        Assert.assertTrue(facultyDao.getAll().contains(added));
+    }
 
-        Assert.assertEquals(Arrays.asList(FACULTY1, FACULTY2, FACULTY3, FACULTY4, added),
-                facultyDao.getAll());
-
-        //university does not exist
+    @Test
+    public void addWithIncorrectUniversityTest() throws Exception {
         expected.expect(DAOException.class);
         facultyDao.add(FACULTY_WITH_INCORRECT_UNIVERSITY);
     }
 
     @Test
+    public void addWithNullableFieldsTest() throws Exception {
+        expected.expect(DAOException.class);
+        facultyDao.add(FACULTY_WITH_NULLABLE_FIELDS);
+    }
+
+
+    @Test
     public void getTest() throws Exception {
         Assert.assertEquals(FACULTY1, facultyDao.get(FACULTY1.getId()));
+    }
 
+    @Test
+    public void getByIncorrectIdTest() throws Exception {
         Assert.assertNull(facultyDao.get(INCORRECT_ID));
     }
 
@@ -65,16 +75,28 @@ public class JdbcFacultyDaoImplTest {
         Assert.assertTrue(facultyDao.update(UPDATED_FACULTY));
 
         Assert.assertEquals(UPDATED_FACULTY, facultyDao.get(FACULTY1.getId()));
+    }
 
+    @Test
+    public void updateWithIncorrectUniversityTest() throws Exception {
         Assert.assertFalse(facultyDao.update(FACULTY_WITH_INCORRECT_UNIVERSITY));
+    }
+
+    @Test
+    public void updateWithNullableFieldsTest() throws Exception {
+        expected.expect(DAOException.class);
+        Assert.assertFalse(facultyDao.update(FACULTY_WITH_NULLABLE_FIELDS));
     }
 
     @Test
     public void deleteTest() throws Exception {
         Assert.assertTrue(facultyDao.delete(FACULTY3.getId()));
 
-        Assert.assertEquals(facultyDao.getAll(), Arrays.asList(FACULTY1, FACULTY2, FACULTY4));
+        Assert.assertFalse(facultyDao.getAll().contains(FACULTY3));
+    }
 
+    @Test
+    public void deleteByIncorrectIdTest() throws Exception {
         Assert.assertFalse(facultyDao.delete(INCORRECT_ID));
     }
 
@@ -85,8 +107,12 @@ public class JdbcFacultyDaoImplTest {
 
         Assert.assertEquals(faculties, Arrays.asList(FACULTY3, FACULTY4));
         Assert.assertEquals(allDto.getCount(), 2);
+    }
 
+    @Test
+    public void getWithCountByIncorrectIdTest() throws Exception {
         PaginationDTO<Faculty> incorrectDto = facultyDao.getWithCountByUniversity(INCORRECT_ID, 0, 100);
+
         Assert.assertEquals(incorrectDto.getEntries(), Collections.emptyList());
         Assert.assertEquals(incorrectDto.getCount(), 0);
     }
