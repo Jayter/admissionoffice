@@ -187,7 +187,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public Map<Long, BigDecimal> getEntranceSubjects(long directionId) throws DAOException {
+    public Map<Long, BigDecimal> getSubjects(long directionId) throws DAOException {
         Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_direction"))) {

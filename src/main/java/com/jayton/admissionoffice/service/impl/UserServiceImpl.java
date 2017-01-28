@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaginationDTO<User> getAll(long offset, long count) throws ServiceException {
         try {
-            PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAll(offset, count);
+            PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(offset, count);
             long totalCount = dto.getCount();
 
             EntriesWithAssociatedPairsDto<User, Long, Long, Short> entries = dto.getEntries().get(0);

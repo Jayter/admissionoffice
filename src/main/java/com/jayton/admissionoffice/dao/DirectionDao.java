@@ -12,6 +12,6 @@ public interface DirectionDao extends Dao<Direction> {
     PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> getWithCountByFaculty(long facultyId, long offset, long count) throws DAOException;
     boolean deleteSubject(long directionId, long subjectId) throws DAOException;
     boolean addSubject(long directionId, long subjectId, BigDecimal coef) throws DAOException;
-    Map<Long, BigDecimal> getEntranceSubjects(long directionId) throws DAOException;
+    Map<Long, BigDecimal> getSubjects(long directionId) throws DAOException;
     EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> getAll() throws DAOException;
 }

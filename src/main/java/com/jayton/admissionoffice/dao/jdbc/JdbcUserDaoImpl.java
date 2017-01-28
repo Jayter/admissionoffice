@@ -121,7 +121,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAll(long offset, long count) throws DAOException {
+    public PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAllWithCount(long offset, long count) throws DAOException {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
