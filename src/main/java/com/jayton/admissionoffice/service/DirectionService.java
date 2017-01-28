@@ -5,13 +5,13 @@ import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 public interface DirectionService extends Service<Direction> {
-    Direction add(Direction direction) throws ServiceException;
-    Direction update(Direction direction) throws ServiceException;
+    long add(Direction direction) throws ServiceException;
+    boolean update(Direction direction) throws ServiceException;
     PaginationDTO<Direction> getWithCountByFaculty(long facultyId, long offset, long count) throws ServiceException;
-    void addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException;
-    void deleteEntranceSubject(long directionId, long subjectId) throws ServiceException;
-    Map<Long, String> getUserNames(long directionId) throws ServiceException;
+    boolean addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException;
+    boolean deleteEntranceSubject(long directionId, long subjectId) throws ServiceException;
+    List<Direction> getAll() throws ServiceException;
 }

@@ -76,7 +76,6 @@ public class Direction {
         if (averageCoefficient != null ? !averageCoefficient.equals(direction.averageCoefficient) : direction.averageCoefficient != null)
             return false;
         return entranceSubjects != null ? entranceSubjects.equals(direction.entranceSubjects) : direction.entranceSubjects == null;
-
     }
 
     @Override
@@ -88,17 +87,5 @@ public class Direction {
         result = 31 * result + (int) (facultyId ^ (facultyId >>> 32));
         result = 31 * result + (entranceSubjects != null ? entranceSubjects.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Direction{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", averageCoefficient=" + averageCoefficient +
-                ", countOfStudents=" + countOfStudents +
-                ", facultyId=" + facultyId +
-                ", entranceSubjects=" + entranceSubjects +
-                '}';
     }
 }

@@ -26,14 +26,10 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    public Faculty add(Faculty faculty) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(facultyQueries.getString("faculty.add"),
-                    Statement.RETURN_GENERATED_KEYS);
+    public long add(Faculty faculty) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.add"),
+                    Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, faculty.getName());
             statement.setString(2, faculty.getOfficePhone());
@@ -41,118 +37,69 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             statement.setString(4, faculty.getOfficeAddress());
             statement.setLong(5, faculty.getUniversityId());
 
-            int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to save faculty.");
-            }
-
+            statement.executeUpdate();
             try (ResultSet rs = statement.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new Faculty(rs.getLong(1), faculty.getName(), faculty.getOfficePhone(),
-                            faculty.getOfficeEmail(), faculty.getOfficeAddress(), faculty.getUniversityId());
-                } else {
-                    throw new DAOException("Failed to get faculty`s id.");
-                }
+                rs.next();
+                return rs.getLong(1);
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to save faculty.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
     public Faculty get(long id) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
+        Faculty faculty = null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.get"))) {
 
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(facultyQueries.getString("faculty.get"));
             statement.setLong(1, id);
 
             try(ResultSet rs = statement.executeQuery()) {
-                if(!rs.next()) {
-                    return null;
+                if(rs.next()) {
+                    String name = rs.getString("name");
+                    String phone = rs.getString("office_phone");
+                    String email = rs.getString("office_email");
+                    String address = rs.getString("address");
+                    long universityId = rs.getLong("university_id");
+
+                    faculty = new Faculty(id, name, phone, email, address, universityId);
                 }
-
-                String name = rs.getString("name");
-                String phone = rs.getString("office_phone");
-                String email = rs.getString("office_email");
-                String address = rs.getString("address");
-                long universityId = rs.getLong("university_id");
-
-                return new Faculty(id, name, phone, email, address, universityId);
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculty.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
+        return faculty;
     }
 
     @Override
-    public Faculty update(Faculty faculty) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(facultyQueries.getString("faculty.update"));
+    public boolean update(Faculty faculty) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.update"))) {
 
             statement.setString(1, faculty.getName());
             statement.setString(2, faculty.getOfficePhone());
             statement.setString(3, faculty.getOfficeEmail());
             statement.setString(4, faculty.getOfficeAddress());
-
             statement.setLong(5, faculty.getId());
 
-            int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to update faculty.");
-            }
-            return faculty;
-
+            return statement.executeUpdate() != 0;
         } catch (SQLException e) {
             throw new DAOException("Failed to update faculty.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public void delete(long id) throws DAOException {
-        daoHelper.delete(facultyQueries.getString("faculty.delete"), "Failed to delete faculty.", id);
-    }
-
-    @Override
-    public List<Faculty> getAll() throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all"));
-
-            return getByStatement(statement);
-
-        } catch (SQLException e) {
-            throw new DAOException("Failed to load faculties.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
-        }
+    public boolean delete(long id) throws DAOException {
+        return daoHelper.delete(facultyQueries.getString("faculty.delete"), "Failed to delete faculty.", id);
     }
 
     @Override
     public PaginationDTO<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws DAOException {
-        Connection connection = null;
-        PreparedStatement getFacultiesSt = null;
-        PreparedStatement getTotalCountSt = null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement getFacultiesSt = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
+            PreparedStatement getTotalCountSt = connection.prepareStatement(facultyQueries.getString("faculty.count"));) {
 
-        try {
-            connection = dataSource.getConnection();
-            getFacultiesSt = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
-            getTotalCountSt = connection.prepareStatement(facultyQueries.getString("faculty.count"));
             getFacultiesSt.setLong(1, universityId);
             getFacultiesSt.setLong(2, count);
             getFacultiesSt.setLong(3, offset);
@@ -160,11 +107,20 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             List<Faculty> faculties =  getByStatement(getFacultiesSt);
             long totalCount = daoHelper.getCount(getTotalCountSt, universityId);
 
-            return new PaginationDTO<Faculty>(faculties, totalCount);
+            return new PaginationDTO<>(faculties, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to load faculties.", e);
-        } finally {
-            daoHelper.closeResources(connection, getFacultiesSt, getTotalCountSt);
+        }
+    }
+
+    @Override
+    public List<Faculty> getAll() throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all"))) {
+
+            return getByStatement(statement);
+        } catch (SQLException e) {
+            throw new DAOException("Failed to load faculties.", e);
         }
     }
 

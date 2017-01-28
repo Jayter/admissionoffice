@@ -8,8 +8,6 @@ import com.jayton.admissionoffice.service.FacultyService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.di.Injected;
 
-import java.util.List;
-
 public class FacultyServiceImpl implements FacultyService {
 
     @Injected
@@ -19,7 +17,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty add(Faculty faculty) throws ServiceException {
+    public long add(Faculty faculty) throws ServiceException {
         try {
             return facultyDao.add(faculty);
         } catch (DAOException e) {
@@ -37,7 +35,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty update(Faculty faculty) throws ServiceException {
+    public boolean update(Faculty faculty) throws ServiceException {
         try {
             return facultyDao.update(faculty);
         } catch (DAOException e) {
@@ -46,9 +44,9 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public void delete(long id) throws ServiceException {
+    public boolean delete(long id) throws ServiceException {
         try {
-            facultyDao.delete(id);
+            return facultyDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

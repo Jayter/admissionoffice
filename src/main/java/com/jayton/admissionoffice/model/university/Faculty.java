@@ -56,17 +56,18 @@ public class Faculty {
 
         Faculty faculty = (Faculty) o;
 
+        if (id != faculty.id) return false;
         if (universityId != faculty.universityId) return false;
         if (name != null ? !name.equals(faculty.name) : faculty.name != null) return false;
         if (officePhone != null ? !officePhone.equals(faculty.officePhone) : faculty.officePhone != null) return false;
         if (officeEmail != null ? !officeEmail.equals(faculty.officeEmail) : faculty.officeEmail != null) return false;
         return officeAddress != null ? officeAddress.equals(faculty.officeAddress) : faculty.officeAddress == null;
-
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (officePhone != null ? officePhone.hashCode() : 0);
         result = 31 * result + (officeEmail != null ? officeEmail.hashCode() : 0);
         result = 31 * result + (officeAddress != null ? officeAddress.hashCode() : 0);

@@ -32,9 +32,9 @@ public class CreateUniversityCommand implements Command {
 
             Verifier.verifyStrings(name, city, address);
 
-            University university = universityService.add(new University(name, city, address));
+            long id = universityService.add(new University(name, city, address));
 
-            response.sendRedirect(PAGE_NAMES.getString("controller.get_university")+"&id="+university.getId());
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_university")+"&id="+id);
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             convertParamsToAttributes(request, e.getMessage());

@@ -6,6 +6,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
+import com.jayton.admissionoffice.service.DirectionService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.di.Injected;
 
@@ -15,11 +16,9 @@ import java.util.stream.Collectors;
 public class ApplicationHandler {
 
     @Injected
-    private DirectionDao directionDao;
+    private DirectionService directionService;
     @Injected
     private ApplicationDao applicationDao;
-
-    private static ApplicationHandler instance = new ApplicationHandler();
 
     private final Comparator<Application> dateComparator =
             (app1, app2) -> app1.getCreationTime().compareTo(app2.getCreationTime());
@@ -31,14 +30,10 @@ public class ApplicationHandler {
     public ApplicationHandler() {
     }
 
-    public static ApplicationHandler getInstance() {
-        return instance;
-    }
-
     public void handleApplications() throws ServiceException {
         List<Application> applications;
         try {
-            directions = directionDao.getAll().stream().collect(Collectors.toMap(Direction::getId, direction -> direction));
+            directions = directionService.getAll().stream().collect(Collectors.toMap(Direction::getId, direction -> direction));
             applications = applicationDao.getAll();
         } catch (DAOException e) {
             throw new ServiceException("Failed to handle applications.", e);

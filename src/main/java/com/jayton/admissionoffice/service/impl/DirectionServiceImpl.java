@@ -2,6 +2,8 @@ package com.jayton.admissionoffice.service.impl;
 
 import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
+import com.jayton.admissionoffice.model.to.AssociatedPairDto;
+import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
 import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.DirectionService;
@@ -10,8 +12,10 @@ import com.jayton.admissionoffice.service.exception.ServiceVerificationException
 import com.jayton.admissionoffice.util.di.Injected;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DirectionServiceImpl implements DirectionService {
 
@@ -22,7 +26,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public Direction add(Direction direction) throws ServiceException {
+    public long add(Direction direction) throws ServiceException {
         verifyEntranceSubjects(direction.getEntranceSubjects(), direction.getAverageCoefficient());
         try {
             return directionDao.add(direction);
@@ -41,7 +45,7 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public Direction update(Direction direction) throws ServiceException {
+    public boolean update(Direction direction) throws ServiceException {
         try {
             return directionDao.update(direction);
         } catch (DAOException e) {
@@ -50,9 +54,9 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public void delete(long id) throws ServiceException {
+    public boolean delete(long id) throws ServiceException {
         try {
-            directionDao.delete(id);
+            return directionDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -61,14 +65,32 @@ public class DirectionServiceImpl implements DirectionService {
     @Override
     public PaginationDTO<Direction> getWithCountByFaculty(long facultyId, long offset, long count) throws ServiceException {
         try {
-            return directionDao.getWithCountByFaculty(facultyId, offset, count);
+            PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> dto
+                    = directionDao.getWithCountByFaculty(facultyId, offset, count);
+            long totalCount = dto.getCount();
+
+            EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> entries = dto.getEntries().get(0);
+
+            List<Direction> directions = getDirections(entries);
+            return new PaginationDTO<>(directions, totalCount);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public synchronized void addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException {
+    public List<Direction> getAll() throws ServiceException {
+        try {
+            EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> entries = directionDao.getAll();
+
+            return getDirections(entries);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public synchronized boolean addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException {
         try {
             Direction direction = directionDao.get(directionId);
 
@@ -79,28 +101,37 @@ public class DirectionServiceImpl implements DirectionService {
             entranceSubjects.put(subjectId, coef);
             verifyEntranceSubjects(entranceSubjects, direction.getAverageCoefficient());
 
-            directionDao.addSubject(directionId, subjectId, coef);
+            return directionDao.addSubject(directionId, subjectId, coef);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public void deleteEntranceSubject(long directionId, long subjectId) throws ServiceException {
+    public boolean deleteEntranceSubject(long directionId, long subjectId) throws ServiceException {
         try {
-            directionDao.deleteSubject(directionId, subjectId);
+            return directionDao.deleteSubject(directionId, subjectId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
-    @Override
-    public Map<Long, String> getUserNames(long directionId) throws ServiceException {
-        try {
-            return directionDao.getUserNames(directionId);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
+    private List<Direction> getDirections(EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> entries) {
+        List<Direction> retrievedDirections = entries.getEntries();
+        List<AssociatedPairDto<Long, Long, BigDecimal>> retrievedSubjects = entries.getPairs();
+
+        List<Direction> directions = new ArrayList<>();
+
+        for(Direction direction : retrievedDirections) {
+            Map<Long, BigDecimal> subjects = retrievedSubjects.stream()
+                    .filter(pair -> pair.getOwnerId().equals(direction.getId()))
+                    .collect(Collectors.toMap(AssociatedPairDto::getKey,
+                            p -> p.getValue().setScale(2, BigDecimal.ROUND_HALF_UP)));
+
+            directions.add(new Direction(direction.getId(), direction.getName(), direction.getAverageCoefficient(),
+                    direction.getCountOfStudents(), direction.getFacultyId(), subjects));
         }
+        return directions;
     }
 
     public void verifyEntranceSubjects(Map<Long, BigDecimal> subjects, BigDecimal coefficient) throws ServiceVerificationException {

@@ -2,6 +2,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -36,34 +37,12 @@ public class JdbcUniversityDaoImplTest {
     }
 
     @Test
-    public void getTest() throws Exception {
-        Assert.assertEquals(UNIVERSITY1, universityDao.get(UNIVERSITY1.getId()));
-
-        Assert.assertNull(universityDao.get(INCORRECT_ID));
-    }
-
-    @Test
-    public void getByCityTest() throws Exception {
-        List<University> list = universityDao.getByCity(KYIV, 0, 100);
-
-        Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
-
-        //if call with name that does not exist, receive an empty list, not null
-        Assert.assertEquals(universityDao.getByCity(INCORRECT_STRING, 0, 100), Collections.emptyList());
-    }
-
-    @Test
-    public void getAllTest() throws Exception {
-        List<University> all = universityDao.getWithCount(0, 100).getEntries();
-
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
-    }
-
-    @Test
     public void addTest() throws Exception {
-        Assert.assertEquals(NEW_ID, universityDao.add(NEW_UNIVERSITY).getId());
+        long id = universityDao.add(NEW_UNIVERSITY);
+        Assert.assertEquals(NEW_ID, id);
 
-        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, NEW_UNIVERSITY),
+        University added = new University(id, NEW_UNIVERSITY.getName(), NEW_UNIVERSITY.getCity(), NEW_UNIVERSITY.getAddress());
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3, added),
                 universityDao.getWithCount(0, 100).getEntries());
 
         expected.expect(DAOException.class);
@@ -71,23 +50,53 @@ public class JdbcUniversityDaoImplTest {
     }
 
     @Test
+    public void getTest() throws Exception {
+        Assert.assertEquals(UNIVERSITY1, universityDao.get(UNIVERSITY1.getId()));
+
+        Assert.assertNull(universityDao.get(INCORRECT_ID));
+    }
+
+    @Test
     public void updateTest() throws Exception {
-        universityDao.update(UPDATED_UNIVERSITY);
+        Assert.assertTrue(universityDao.update(UPDATED_UNIVERSITY));
 
         Assert.assertEquals(UPDATED_UNIVERSITY, universityDao.get(UNIVERSITY3.getId()));
 
         //incorrect or nullable id
-        expected.expect(DAOException.class);
-        universityDao.update(NEW_UNIVERSITY);
+        Assert.assertFalse(universityDao.update(NEW_UNIVERSITY));
     }
 
     @Test
     public void deleteTest() throws Exception {
-        universityDao.delete(UNIVERSITY3.getId());
+        Assert.assertTrue(universityDao.delete(UNIVERSITY3.getId()));
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2), universityDao.getWithCount(0, 100).getEntries());
 
-        expected.expect(DAOException.class);
-        universityDao.delete(INCORRECT_ID);
+        Assert.assertFalse(universityDao.delete(INCORRECT_ID));
+    }
+
+    @Test
+    public void getByCityTest() throws Exception {
+        List<University> list = universityDao.getWithCountByCity(KYIV, 0, 100).getEntries();
+
+        Assert.assertEquals(list, Arrays.asList(UNIVERSITY1, UNIVERSITY2));
+
+        //if call with name that does not exist, receive an empty list, not null
+        Assert.assertEquals(universityDao.getWithCountByCity(INCORRECT_STRING, 0, 100).getEntries(), Collections.emptyList());
+    }
+
+    @Test
+    public void getWithCountTest() throws Exception {
+        PaginationDTO<University> allDto = universityDao.getWithCount(0, 100);
+        List<University> all = allDto.getEntries();
+
+        Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
+        Assert.assertEquals(allDto.getCount(), 3);
+
+        PaginationDTO<University> singleDto = universityDao.getWithCount(0, 1);
+        List<University> single = singleDto.getEntries();
+
+        Assert.assertEquals(Collections.singletonList(UNIVERSITY1), single);
+        Assert.assertEquals(singleDto.getCount(), 3);
     }
 }

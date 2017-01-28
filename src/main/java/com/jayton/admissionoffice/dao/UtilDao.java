@@ -9,6 +9,6 @@ import java.util.List;
 public interface UtilDao {
     List<Subject> getAllSubjects() throws DAOException;
     SessionTerms getSessionTerms(short currentYear) throws DAOException;
-    void updateSessionTerms(SessionTerms terms) throws DAOException;
-    void createSessionTerms(SessionTerms terms) throws DAOException;
+    boolean updateSessionTerms(SessionTerms terms) throws DAOException;
+    boolean createSessionTerms(SessionTerms terms) throws DAOException;
 }

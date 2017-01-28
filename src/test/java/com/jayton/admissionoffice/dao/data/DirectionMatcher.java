@@ -6,10 +6,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-public class DirectionMatcher extends Matcher<Direction> {
+public class DirectionMatcher {
 
-    @Override
-    public boolean equals(Direction first, Direction second) {
+    public boolean compare(Direction first, Direction second) {
+        if(first.getId() != second.getId()) return false;
         if(!first.getName().equals(second.getName())) return false;
         if(!scale(first.getAverageCoefficient()).equals(scale(second.getAverageCoefficient()))) return false;
         if(first.getCountOfStudents() != second.getCountOfStudents()) return false;
@@ -27,14 +27,35 @@ public class DirectionMatcher extends Matcher<Direction> {
         return true;
     }
 
-    @Override
-    public boolean equals(List<Direction> first, List<Direction> second) {
+    public boolean compareWithoutSubjects(Direction first, Direction second) {
+        if(first.getId() != second.getId()) return false;
+        if(!first.getName().equals(second.getName())) return false;
+        if(!scale(first.getAverageCoefficient()).equals(scale(second.getAverageCoefficient()))) return false;
+        if(first.getCountOfStudents() != second.getCountOfStudents()) return false;
+        return first.getFacultyId() == second.getFacultyId();
+    }
+
+    public boolean compareLists(List<Direction> first, List<Direction> second) {
         first.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         second.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
         boolean flag = first.size() == second.size();
         if(flag) {
             for(int i = 0; i < first.size(); i++) {
-                if(!(equals(first.get(i), second.get(i)))) {
+                if(!(compare(first.get(i), second.get(i)))) {
+                    return false;
+                }
+            }
+        }
+        return flag;
+    }
+
+    public boolean compareListsWithoutSubjects(List<Direction> first, List<Direction> second) {
+        first.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
+        second.sort((d1, d2) -> (int)(d1.getId() - d2.getId()));
+        boolean flag = first.size() == second.size();
+        if(flag) {
+            for(int i = 0; i < first.size(); i++) {
+                if(!(compareWithoutSubjects(first.get(i), second.get(i)))) {
                     return false;
                 }
             }
@@ -54,5 +75,9 @@ public class DirectionMatcher extends Matcher<Direction> {
             }
         }
         return flag;
+    }
+
+    protected BigDecimal scale(BigDecimal in) {
+        return in.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 }

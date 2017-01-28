@@ -4,6 +4,8 @@ import com.jayton.admissionoffice.dao.UserDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.data.UserMatcher;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
+import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
+import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -41,67 +43,67 @@ public class JdbcUserDaoImplTest {
     }
 
     @Test
-    public void getTest() throws Exception {
-        User retrieved = userDao.get(USER1.getId());
-
-        Assert.assertTrue(matcher.equals(USER1, retrieved));
-        Assert.assertNull(retrieved.getPassword());
-
-        User retrievedByEmail = userDao.getByEmail(USER1.getEmail());
-        Assert.assertTrue(matcher.equals(USER1, retrievedByEmail));
-
-        Assert.assertNull(userDao.get(INCORRECT_ID));
-    }
-
-    @Test
-    public void getAllTest() throws Exception {
-        List<User> actual = userDao.getAll(0, 100);
-
-        Assert.assertTrue(matcher.equals(actual, Arrays.asList(USER1, USER2, USER3)));
-    }
-
-    @Test
     public void addTest() throws Exception {
-        Assert.assertEquals(NEW_ID, userDao.add(NEW_USER).getId());
-        Assert.assertTrue(matcher.equals(userDao.getAll(0, 100),
-                Arrays.asList(USER1, USER2, USER3, NEW_USER_WITHOUT_CREDENTIALS) ));
+        long id = userDao.add(NEW_USER);
+        Assert.assertEquals(NEW_ID, id);
+        User added = new User(id, NEW_USER.getName(), NEW_USER.getLastName(), NEW_USER.getAddress(), NEW_USER.getEmail(),
+                NEW_USER.getPhoneNumber(), NEW_USER.getBirthDate(), NEW_USER.getAverageMark(), Collections.emptyMap());
+
+        Assert.assertEquals(added, userDao.get(id));
 
         expected.expect(DAOException.class);
         userDao.add(USER_WITH_NULLABLE_FIELDS);
     }
 
     @Test
+    public void getTest() throws Exception {
+        User retrieved = userDao.get(USER1.getId());
+
+        Assert.assertTrue(matcher.equals(USER1, retrieved));
+        Assert.assertNull(retrieved.getPassword());
+
+        Assert.assertNull(userDao.get(INCORRECT_ID));
+    }
+
+    @Test
+    public void getByEmailTest() throws Exception {
+        User retrievedByEmail = userDao.getByEmail(USER1.getEmail());
+        Assert.assertTrue(matcher.equals(USER1, retrievedByEmail));
+
+        Assert.assertNull(userDao.getByEmail(INCORRECT_STRING));
+    }
+
+    @Test
     public void updateTest() throws Exception {
-        userDao.update(UPDATED_USER);
-        Assert.assertTrue(matcher.equals(UPDATED_USER, userDao.get(USER3.getId())));
+        Assert.assertTrue(userDao.update(UPDATED_USER));
+        Assert.assertEquals(UPDATED_USER, userDao.get(USER3.getId()));
 
         //updating user that was not saved in db
-        expected.expect(DAOException.class);
-        userDao.update(NEW_USER);
+        Assert.assertFalse(userDao.update(NEW_USER));
     }
 
     @Test
     public void deleteTest() throws Exception {
-        userDao.delete(USER1.getId());
-        Assert.assertTrue(matcher.equals(Arrays.asList(USER2, USER3), userDao.getAll(0, 100)));
+        Assert.assertTrue(userDao.delete(USER1.getId()));
+        Assert.assertNull(userDao.get(USER1.getId()));
 
-        expected.expect(DAOException.class);
-        userDao.delete(INCORRECT_ID);
+        Assert.assertFalse(userDao.delete(INCORRECT_ID));
     }
 
     @Test
-    public void deleteResultTest() throws DAOException {
-        userDao.deleteResult(USER1.getId(), SUBJECT4.getId());
-        Assert.assertEquals(userDao.getResultsOfUser(USER1.getId()).size(), 3);
+    public void getWithCountTest() throws Exception {
+        PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAll(0, 100);
+        EntriesWithAssociatedPairsDto<User, Long, Long, Short> entries = dto.getEntries().get(0);
 
-        expected.expect(DAOException.class);
-        userDao.deleteResult(NEW_USER.getId(), SUBJECT1.getId());
+        List<User> users = entries.getEntries();
+        Assert.assertTrue(matcher.compareListsWithoutResults(users, Arrays.asList(USER1, USER2, USER3)));
+        Assert.assertEquals(entries.getPairs().size(), 7);
     }
 
     @Test
     public void addResultTest() throws DAOException {
-        userDao.addResult(USER2.getId(), SUBJECT4.getId(), new Short("173"));
-        Assert.assertEquals(userDao.getResultsOfUser(USER1.getId()).size(), 4);
+        Assert.assertTrue(userDao.addResult(USER2.getId(), SUBJECT4.getId(), new Short("173")));
+        Assert.assertTrue(userDao.getResultsOfUser(USER1.getId()).containsKey(SUBJECT4.getId()));
 
         //duplicated
         expected.expect(DAOException.class);
@@ -109,10 +111,18 @@ public class JdbcUserDaoImplTest {
     }
 
     @Test
-    public void getByUserTest() throws DAOException {
-        Assert.assertTrue(matcher.compareResults(userDao.getResultsOfUser(USER2.getId()), USER2.getResults()));
+    public void getResultsOfUser() throws DAOException {
+        Assert.assertEquals(userDao.getResultsOfUser(USER2.getId()), USER2.getResults());
 
         Assert.assertEquals(userDao.getResultsOfUser(INCORRECT_ID), Collections.emptyMap());
+    }
+
+    @Test
+    public void deleteResultTest() throws DAOException {
+        Assert.assertTrue(userDao.deleteResult(USER1.getId(), SUBJECT4.getId()));
+        Assert.assertFalse(userDao.getResultsOfUser(USER1.getId()).containsKey(SUBJECT4.getId()));
+
+        Assert.assertFalse(userDao.deleteResult(NEW_USER.getId(), SUBJECT1.getId()));
     }
 
     @Test

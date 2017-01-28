@@ -27,6 +27,18 @@ public class User {
         this.averageMark = averageMark;
     }
 
+    public User(long id, String name, String lastName, String address, String email, String phoneNumber,
+                LocalDate birthDate, byte averageMark) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.averageMark = averageMark;
+    }
+
     public User(long id, String name, String lastName, String address, String phoneNumber,
                 LocalDate birthDate, byte averageMark) {
         this.id = id;
@@ -98,6 +110,7 @@ public class User {
 
         User user = (User) o;
 
+        if (id != user.id) return false;
         if (averageMark != user.averageMark) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
@@ -111,7 +124,8 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);

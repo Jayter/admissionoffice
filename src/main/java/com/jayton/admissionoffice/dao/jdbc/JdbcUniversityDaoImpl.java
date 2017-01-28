@@ -26,143 +26,104 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public University add(University university) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(universityQueries.getString("university.add"),
-                    Statement.RETURN_GENERATED_KEYS);
+    public long add(University university) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.add"),
+                    Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
             statement.setString(3, university.getAddress());
 
-            int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to save university.");
-            }
-
+            statement.executeUpdate();
             try (ResultSet rs = statement.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return new University(rs.getLong(1), university.getName(), university.getCity(),
-                            university.getAddress());
-                } else {
-                    throw new DAOException("Failed to get university`s id.");
-                }
+                rs.next();
+                return rs.getLong(1);
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to save university.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
     public University get(long id) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
+        University university = null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.get"))) {
 
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(universityQueries.getString("university.get"));
             statement.setLong(1, id);
 
             try(ResultSet rs = statement.executeQuery()) {
-                if(!rs.next()) {
-                    return null;
+                if(rs.next()) {
+                    String name = rs.getString("name");
+                    String city = rs.getString("city");
+                    String address = rs.getString("address");
+
+                    university =  new University(id, name, city, address);
                 }
-
-                String name = rs.getString("name");
-                String city = rs.getString("city");
-                String address = rs.getString("address");
-
-                return new University(id, name, city, address);
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to load university.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
+        return university;
     }
 
     @Override
-    public University update(University university) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(universityQueries.getString("university.update"));
+    public boolean update(University university) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.update"))) {
 
             statement.setString(1, university.getName());
             statement.setString(2, university.getCity());
             statement.setString(3, university.getAddress());
-
             statement.setLong(4, university.getId());
 
-            int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to update university.");
-            }
-
-            return university;
-
+            return statement.executeUpdate() != 0;
         } catch (SQLException e) {
             throw new DAOException("Failed to update university.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public void delete(long id) throws DAOException {
-        daoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
+    public boolean delete(long id) throws DAOException {
+        return daoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
     }
 
     @Override
-    public List<University> getByCity(String city, long offset, long count) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
+    public PaginationDTO<University> getWithCountByCity(String city, long offset, long count) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
+            PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count.by_city"))) {
 
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
-            statement.setString(1, city);
-            statement.setLong(2, count);
-            statement.setLong(3, offset);
+            getUniversitiesSt.setString(1, city);
+            getUniversitiesSt.setLong(2, count);
+            getUniversitiesSt.setLong(3, offset);
+            getTotalCountSt.setString(1, city);
 
-            return getByStatement(statement);
+            List<University> universities = getByStatement(getUniversitiesSt);
+            long totalCount = daoHelper.getCount(getTotalCountSt);
 
+            return new PaginationDTO<>(universities, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
     public PaginationDTO<University> getWithCount(long offset, long count) throws DAOException {
-        Connection connection = null;
-        PreparedStatement getUniversitiesSt = null;
-        PreparedStatement getTotalCountSt = null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all"));
+            PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count"))) {
 
-        try {
-            connection = dataSource.getConnection();
-            getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all"));
-            getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count"));
             getUniversitiesSt.setLong(1, count);
             getUniversitiesSt.setLong(2, offset);
 
             List<University> universities = getByStatement(getUniversitiesSt);
             long totalCount = daoHelper.getCount(getTotalCountSt);
 
-            return new PaginationDTO<University>(universities, totalCount);
+            return new PaginationDTO<>(universities, totalCount);
         } catch (SQLException e) {
             throw new DAOException("Failed to load universities.", e);
-        } finally {
-            daoHelper.closeResources(connection, getUniversitiesSt, getTotalCountSt);
         }
     }
 

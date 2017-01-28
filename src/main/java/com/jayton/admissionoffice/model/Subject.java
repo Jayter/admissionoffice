@@ -28,13 +28,16 @@ public class Subject implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Subject that = (Subject) o;
+        Subject subject = (Subject) o;
 
-        return name != null ? name.equals(that.name) : that.name == null;
+        if (id != subject.id) return false;
+        return name != null ? name.equals(subject.name) : subject.name == null;
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

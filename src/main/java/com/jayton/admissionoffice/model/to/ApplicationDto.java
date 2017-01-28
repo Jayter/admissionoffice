@@ -6,12 +6,12 @@ import java.util.Map;
 /**
  * Stores info about users` applications.
  */
-public class ApplicationDTO {
+public class ApplicationDto {
     private List<Application> applications;
     private Map<Long, String> userNames;
     private long count;
 
-    public ApplicationDTO(List<Application> applications, Map<Long, String> userNames, long count) {
+    public ApplicationDto(List<Application> applications, Map<Long, String> userNames, long count) {
         this.applications = applications;
         this.userNames = userNames;
         this.count = count;

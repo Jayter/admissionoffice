@@ -41,8 +41,7 @@ public class JdbcUtilDaoTest {
 
         Assert.assertEquals(terms, SESSION_TERMS);
 
-        expected.expect(DAOException.class);
-        utilDao.getSessionTerms((short)2018);
+        Assert.assertNull(utilDao.getSessionTerms((short)2018));
     }
 
     @Test

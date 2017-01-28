@@ -28,12 +28,9 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     @Override
     public SessionTerms getSessionTerms(short currentYear) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"));
+        SessionTerms terms = null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(utilQueries.getString("sessionDate.get"))) {
 
             statement.setShort(1, currentYear);
 
@@ -42,28 +39,21 @@ public class JdbcUtilDaoImpl implements UtilDao {
                     LocalDateTime start = rs.getTimestamp("session_start").toLocalDateTime();
                     LocalDateTime end = rs.getTimestamp("session_end").toLocalDateTime();
 
-                    return new SessionTerms(currentYear, start, end);
-                } else {
-                    return null;
+                    terms = new SessionTerms(currentYear, start, end);
                 }
             }
         } catch (SQLException e) {
             throw new DAOException("Failed to load session terms.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
+        return terms;
     }
 
     @Override
     public List<Subject> getAllSubjects() throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
+        List<Subject> subjects = new ArrayList<>();
 
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(utilQueries.getString("subject.get.all"));
-
-            List<Subject> subjects = new ArrayList<>();
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(utilQueries.getString("subject.get.all"))) {
 
             try(ResultSet rs = statement.executeQuery()) {
                 while(rs.next()) {
@@ -73,60 +63,41 @@ public class JdbcUtilDaoImpl implements UtilDao {
                     subjects.add(new Subject(id, name));
                 }
             }
-            return subjects;
-
         } catch (SQLException e) {
             throw new DAOException("Failed to load subjects.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
+        return subjects;
     }
 
     @Override
-    public void updateSessionTerms(SessionTerms terms) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"));
+    public boolean updateSessionTerms(SessionTerms terms) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"))) {
 
             statement.setTimestamp(1, Timestamp.valueOf(terms.getSessionStart()));
             statement.setTimestamp(2, Timestamp.valueOf(terms.getSessionEnd()));
             statement.setShort(3, terms.getYear());
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to update session terms.");
-            }
+            return affectedRows != 0;
         } catch (SQLException e) {
             throw new DAOException("Failed to update session terms.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 
     @Override
-    public void createSessionTerms(SessionTerms terms) throws DAOException {
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"));
+    public boolean createSessionTerms(SessionTerms terms) throws DAOException {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"))) {
 
             statement.setShort(1, terms.getYear());
             statement.setTimestamp(2, Timestamp.valueOf(terms.getSessionStart()));
             statement.setTimestamp(3, Timestamp.valueOf(terms.getSessionEnd()));
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows == 0) {
-                throw new DAOException("Failed to create session terms.");
-            }
+            return affectedRows != 0;
         } catch (SQLException e) {
             throw new DAOException("Failed to create session terms.", e);
-        } finally {
-            daoHelper.closeResources(connection, statement);
         }
     }
 }

@@ -66,6 +66,7 @@
         <field name="applicationHandler" reference="applicationHandler"/>
     </bean>
     <bean id="applicationHandler" class="com.jayton.admissionoffice.service.util.ApplicationHandler">
+        <field name="directionService" reference="directionService"/>
         <field name="applicationDao" reference="applicationDao"/>
     </bean>
 

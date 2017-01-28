@@ -40,18 +40,18 @@ public class UtilServiceImpl implements UtilService {
     }
 
     @Override
-    public void updateSessionTerms(SessionTerms terms) throws ServiceException {
+    public boolean updateSessionTerms(SessionTerms terms) throws ServiceException {
         try {
-            utilDao.updateSessionTerms(terms);
+            return utilDao.updateSessionTerms(terms);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public void createSessionTerms(SessionTerms terms) throws ServiceException {
+    public boolean createSessionTerms(SessionTerms terms) throws ServiceException {
         try {
-            utilDao.createSessionTerms(terms);
+            return utilDao.createSessionTerms(terms);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

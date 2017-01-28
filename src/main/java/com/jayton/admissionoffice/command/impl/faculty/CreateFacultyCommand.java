@@ -34,9 +34,9 @@ public class CreateFacultyCommand implements Command {
 
             verifyInput(name, phone, email, address, universityId);
 
-            Faculty faculty = facultyService.add(new Faculty(name, phone, email, address, universityId));
+            long id = facultyService.add(new Faculty(name, phone, email, address, universityId));
 
-            response.sendRedirect(PAGE_NAMES.getString("controller.get_faculty")+"&id="+faculty.getId());
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_faculty")+"&id="+id);
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             convertParamsToAttributes(request, e.getMessage());

@@ -1,7 +1,6 @@
 package com.jayton.admissionoffice.service;
 
 import com.jayton.admissionoffice.dao.ApplicationDao;
-import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
@@ -18,9 +17,11 @@ import java.util.List;
 public class ApplicationHelperTest {
 
     private ApplicationDao applicationDao = (ApplicationDao)
-            BeanContextHolder.getInstance().getActualContext().getBean("universityService");
-    private DirectionDao directionDao = (DirectionDao)
-            BeanContextHolder.getInstance().getActualContext().getBean("universityService");
+            BeanContextHolder.getInstance().getActualContext().getBean("applicationDao");
+    private DirectionService directionService = (DirectionService)
+            BeanContextHolder.getInstance().getActualContext().getBean("directionService");
+    private ApplicationHandler applicationHandler = (ApplicationHandler)
+            BeanContextHolder.getInstance().getActualContext().getBean("applicationHandler");
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -38,10 +39,9 @@ public class ApplicationHelperTest {
 
     @Test
     public void handleApplicationsTest() throws Exception {
-        ApplicationHandler handler = ApplicationHandler.getInstance();
-        handler.handleApplications();
+        applicationHandler.handleApplications();
 
-        List<Direction> directions = directionDao.getAll();
+        List<Direction> directions = directionService.getAll();
         for(Direction d: directions) {
             List<Application> apps = applicationDao.getByDirection(d.getId(), 0, 100).getApplications();
             long count = apps.stream().filter(app -> app.getStatus() == Status.APPROVED).count();

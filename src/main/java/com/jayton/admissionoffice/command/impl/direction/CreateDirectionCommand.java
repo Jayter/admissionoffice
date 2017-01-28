@@ -50,9 +50,9 @@ public class CreateDirectionCommand implements Command {
             Map<Long, BigDecimal> subjects = new HashMap<Long, BigDecimal>(){{put(subject1Id, coef1);
                 put(subject2Id, coef2); put(subject3Id, coef3);}};
 
-            Direction direction = directionService.add(new Direction(name, averageCoef, countOfStuds, facultyId, subjects));
+            long id = directionService.add(new Direction(name, averageCoef, countOfStuds, facultyId, subjects));
 
-            response.sendRedirect(PAGE_NAMES.getString("controller.get_direction")+"&id="+direction.getId());
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_direction")+"&id="+id);
         } catch (VerificationException | ServiceVerificationException e) {
             logger.error("Incorrect data.", e);
             convertParamsToAttributes(request, e.getMessage());

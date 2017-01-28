@@ -37,9 +37,9 @@ public class CreateUserCommand implements Command {
             Byte averageMark = Byte.parseByte(request.getParameter(PARAM_NAMES.getString("mark")));
             verifyInput(name, lastName, address, login, password, phoneNumber, date, averageMark);
 
-            User user = userService.add(new User(name, lastName, address, login, password, phoneNumber, date, averageMark));
+            long id = userService.add(new User(name, lastName, address, login, password, phoneNumber, date, averageMark));
 
-            response.sendRedirect(PAGE_NAMES.getString("controller.get_user")+"&id="+user.getId());
+            response.sendRedirect(PAGE_NAMES.getString("controller.get_user")+"&id="+id);
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             addAttributes(request, e.getMessage());

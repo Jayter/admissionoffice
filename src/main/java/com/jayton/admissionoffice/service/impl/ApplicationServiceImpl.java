@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.service.impl;
 import com.jayton.admissionoffice.dao.*;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
-import com.jayton.admissionoffice.model.to.ApplicationDTO;
+import com.jayton.admissionoffice.model.to.ApplicationDto;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
@@ -31,7 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public synchronized Application add(User user, long directionId, LocalDateTime applied) throws ServiceException {
+    public synchronized long add(User user, long directionId, LocalDateTime applied) throws ServiceException {
         verifyApplicationDate(applied);
 
         try {
@@ -75,7 +75,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public ApplicationDTO getByDirection(long directionId, long offset, long count) throws ServiceException {
+    public ApplicationDto getByDirection(long directionId, long offset, long count) throws ServiceException {
         try {
             return applicationDao.getByDirection(directionId, offset, count);
         } catch (DAOException e) {
@@ -84,18 +84,18 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void update(long id, Status status) throws ServiceException {
+    public boolean update(long id, Status status) throws ServiceException {
         try {
-            applicationDao.update(id, status);
+            return applicationDao.update(id, status);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public void delete(long id) throws ServiceException {
+    public boolean delete(long id) throws ServiceException {
         try {
-            applicationDao.delete(id);
+            return applicationDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

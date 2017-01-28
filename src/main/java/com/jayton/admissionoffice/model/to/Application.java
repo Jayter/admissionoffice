@@ -56,18 +56,21 @@ public class Application {
 
         Application that = (Application) o;
 
+        if (id != that.id) return false;
+        if (userId != that.userId) return false;
         if (directionId != that.directionId) return false;
         if (creationTime != null ? !creationTime.equals(that.creationTime) : that.creationTime != null) return false;
-        if (mark != null ? !(mark.compareTo(that.mark) == 0) : that.mark != null) return false;
+        if (mark != null ? !mark.equals(that.mark) : that.mark != null) return false;
         return status == that.status;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (userId ^ (userId >>> 32));
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + (int) (directionId ^ (directionId >>> 32));
         result = 31 * result + (creationTime != null ? creationTime.hashCode() : 0);
-        result = 31 * result + (mark != null ? mark.intValue() : 0);
+        result = 31 * result + (mark != null ? mark.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
