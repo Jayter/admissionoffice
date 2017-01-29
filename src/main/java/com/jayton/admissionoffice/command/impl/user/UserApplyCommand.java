@@ -4,7 +4,6 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.ShownException;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.Verifier;
-import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.UtilService;
@@ -38,15 +37,6 @@ public class UserApplyCommand implements Command {
         String referer = getReferer(request);
         try {
             LocalDateTime current = LocalDateTime.now();
-
-            SessionTerms sessionTerms = utilService.getSessionTerms((short)current.getYear());
-            if(current.isAfter(sessionTerms.getSessionEnd()) || current.isBefore(sessionTerms.getSessionStart())) {
-                logger.error("Failed to cancel application.");
-                request.setAttribute(PARAM_NAMES.getString("shownException"),
-                        new ShownException("Can not apply after session term expiration."));
-                response.sendRedirect(referer);
-            }
-
             Long directionId = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("directionId")));
 
             applicationService.add(user, directionId, current);

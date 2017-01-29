@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DirectionServiceImpl implements DirectionService {
@@ -27,11 +28,14 @@ public class DirectionServiceImpl implements DirectionService {
 
     @Override
     public long add(Direction direction) throws ServiceException {
-        verifyEntranceSubjects(direction.getEntranceSubjects(), direction.getAverageCoefficient());
         try {
+            Objects.requireNonNull(direction);
+            verifyEntranceSubjects(direction.getEntranceSubjects(), direction.getAverageCoefficient());
             return directionDao.add(direction);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -47,9 +51,12 @@ public class DirectionServiceImpl implements DirectionService {
     @Override
     public boolean update(Direction direction) throws ServiceException {
         try {
+            Objects.requireNonNull(direction);
             return directionDao.update(direction);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -92,6 +99,7 @@ public class DirectionServiceImpl implements DirectionService {
     @Override
     public synchronized boolean addEntranceSubject(long directionId, long subjectId, BigDecimal coef) throws ServiceException {
         try {
+            Objects.requireNonNull(coef);
             Direction direction = directionDao.get(directionId);
 
             Map<Long, BigDecimal> entranceSubjects = direction.getEntranceSubjects();
@@ -104,6 +112,8 @@ public class DirectionServiceImpl implements DirectionService {
             return directionDao.addSubject(directionId, subjectId, coef);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -141,7 +151,7 @@ public class DirectionServiceImpl implements DirectionService {
 
         BigDecimal resultingCoef = subjects.values().stream().reduce(coefficient, BigDecimal::add)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
-        if(resultingCoef.compareTo(BigDecimal.ONE) != 0) {
+        if(subjects.size() >= 2 && resultingCoef.compareTo(BigDecimal.ONE) != 0) {
             throw new ServiceVerificationException("Total coefficient must be strictly equal to 1.");
         }
     }
