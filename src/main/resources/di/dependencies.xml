@@ -171,7 +171,7 @@
     <bean id="delete-user-result" class="com.jayton.admissionoffice.command.impl.user.DeleteUserResultCommand">
         <field name="userService" reference="userService"/>
     </bean>
-    <bean id="user-apply-command" class="com.jayton.admissionoffice.command.impl.user.UserApplyCommand">
+    <bean id="user-apply" class="com.jayton.admissionoffice.command.impl.user.UserApplyCommand">
         <field name="utilService" reference="utilService"/>
         <field name="applicationService" reference="applicationService"/>
     </bean>
