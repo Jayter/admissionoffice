@@ -37,18 +37,21 @@ public class CreateDirectionCommand implements Command {
 
             verifyInput(name, averageCoef, countOfStuds, facultyId);
 
-            Long subject1Id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("subject1Id")));
-            Long subject2Id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("subject2Id")));
-            Long subject3Id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("subject3Id")));
-            BigDecimal coef1 = Verifier.convertToBigDecimal(request.getParameter(PARAM_NAMES.getString("subject1Coefficient")));
-            BigDecimal coef2 = Verifier.convertToBigDecimal(request.getParameter(PARAM_NAMES.getString("subject2Coefficient")));
-            BigDecimal coef3 = Verifier.convertToBigDecimal(request.getParameter(PARAM_NAMES.getString("subject3Coefficient")));
+            Map<Long, BigDecimal> subjects = new HashMap<>();
+            for(int i = 1; i <= 3; i++) {
+                String idParamName = String.format(PARAM_NAMES.getString("subject%dId"), i);
+                String coefParamName = String.format(PARAM_NAMES.getString("subject%dCoefficient"), i);
+                Long subjectId = Verifier.convertToLong(request.getParameter(idParamName));
+                BigDecimal coef  = Verifier.convertToBigDecimal(request.getParameter(coefParamName));
 
-            verifySubjectIds(subject1Id, subject2Id, subject3Id);
-            Verifier.verifyCoefs(coef1, coef2, coef3);
-
-            Map<Long, BigDecimal> subjects = new HashMap<Long, BigDecimal>(){{put(subject1Id, coef1);
-                put(subject2Id, coef2); put(subject3Id, coef3);}};
+                Verifier.verifyId(subjectId);
+                Verifier.verifyCoef(coef);
+                if(!subjects.containsKey(subjectId)) {
+                    subjects.put(subjectId, coef);
+                } else {
+                    throw new VerificationException("Can not add duplicated subjects.");
+                }
+            }
 
             long id = directionService.add(new Direction(name, averageCoef, countOfStuds, facultyId, subjects));
 
@@ -70,17 +73,6 @@ public class CreateDirectionCommand implements Command {
         request.setAttribute(PARAM_NAMES.getString("name"), request.getParameter(PARAM_NAMES.getString("name")));
         request.setAttribute(PARAM_NAMES.getString("countOfStudents"), request.getParameter(PARAM_NAMES.getString("countOfStudents")));
         request.setAttribute(PARAM_NAMES.getString("coefficient"), request.getParameter(PARAM_NAMES.getString("coefficient")));
-    }
-
-    private void verifySubjectIds(Long... ids) throws VerificationException {
-        Verifier.verifyIds(ids);
-        for(int i = 0; i < ids.length - 1; i++) {
-            for(int j = i + 1; j < ids.length; j++) {
-                if(ids[i].equals(ids[j])) {
-                    throw new VerificationException("Can not add duplicated subjects.");
-                }
-            }
-        }
     }
 
     private void verifyInput(String name, BigDecimal coef, Integer count, Long facultyId) throws VerificationException {
