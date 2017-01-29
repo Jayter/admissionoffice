@@ -2,6 +2,7 @@
 <%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="paginator" uri="http://com.jayton.admissionoffice.paginator" %>
+<%@ taglib prefix="functions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="../fragments/headTag.jsp"/>
@@ -65,7 +66,7 @@
             <c:forEach items="${requestScope.directions}" var="direction">
                 <tr>
                     <td><a href="Controller?command=get-direction&id=${direction.id}">${direction.name}</a></td>
-                    <td>${direction.averageCoefficient}</td>
+                    <td>${functions:formatDecimal(direction.averageCoefficient)}</td>
                     <td>${direction.countOfStudents}</td>
                     <td>
                         <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,

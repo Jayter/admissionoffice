@@ -7,34 +7,40 @@
     <tlib-version>1.0</tlib-version>
     <short-name>functions</short-name>
     <uri>http://com.jayton.admissionoffice.functions</uri>
+    
+    <function>
+        <name>formatDecimal</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>java.lang.String format(java.math.BigDecimal)</function-signature>
+    </function>
 
     <function>
         <name>formatDateTime</name>
-        <function-class>com.jayton.admissionoffice.util.tag.DateHelper</function-class>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>java.lang.String format(java.time.LocalDateTime)</function-signature>
     </function>
 
     <function>
         <name>formatDate</name>
-        <function-class>com.jayton.admissionoffice.util.tag.DateHelper</function-class>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>java.lang.String format(java.time.LocalDate)</function-signature>
     </function>
 
     <function>
         <name>isBetween</name>
-        <function-class>com.jayton.admissionoffice.util.tag.DateHelper</function-class>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>boolean isBetween(java.time.LocalDateTime, java.time.LocalDateTime)</function-signature>
     </function>
 
     <function>
         <name>isBefore</name>
-        <function-class>com.jayton.admissionoffice.util.tag.DateHelper</function-class>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>boolean isBefore(java.time.LocalDateTime)</function-signature>
     </function>
 
     <function>
         <name>isAfter</name>
-        <function-class>com.jayton.admissionoffice.util.tag.DateHelper</function-class>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>boolean isAfter(java.time.LocalDateTime)</function-signature>
     </function>
 </taglib>

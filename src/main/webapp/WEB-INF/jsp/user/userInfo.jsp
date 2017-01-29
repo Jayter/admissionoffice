@@ -124,7 +124,7 @@
                         ${requestScope.directionNames[application.directionId]}</a></td>
                 <td>${functions:formatDateTime(application.creationTime)}</td>
                 <td>${application.status}</td>
-                <td>${application.mark}</td>
+                <td>${functions:formatDecimal(application.mark)}</td>
                 <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
                              sessionScope.sessionTerms.sessionEnd)}">
                     <td>

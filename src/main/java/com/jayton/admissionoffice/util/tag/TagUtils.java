@@ -1,5 +1,6 @@
 package com.jayton.admissionoffice.util.tag;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,12 +8,16 @@ import java.time.format.DateTimeFormatter;
 /**
  * Utility class for dates, used on jsp pages.
  */
-public class DateHelper {
+public class TagUtils {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private DateHelper() {}
+    private TagUtils() {}
+
+    public static String format(BigDecimal coefficient) {
+        return coefficient.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+    }
 
     public static String format(LocalDateTime dateTime) {
         return dateTime.format(DATE_TIME_FORMATTER);

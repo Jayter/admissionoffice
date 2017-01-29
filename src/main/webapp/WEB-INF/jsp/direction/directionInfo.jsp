@@ -48,7 +48,7 @@
             </tr>
             <tr>
                 <th>${directionCoefficient}</th>
-                <td>${direction.averageCoefficient}</td>
+                <td>${functions:formatDecimal(direction.averageCoefficient)}</td>
             </tr>
         </table>
         <c:if test="${sessionScope.isAuthorizedAdmin}">
@@ -67,7 +67,7 @@
             <c:forEach items="${direction.entranceSubjects}" var="entry">
                 <tr>
                     <td>${requestScope.subjects[entry.key].name}</td>
-                    <td>${entry.value}</td>
+                    <td>${functions:formatDecimal(entry.value)}</td>
                     <td>
                         <c:if test="${sessionScope.isAuthorizedAdmin}">
                             <button onclick="location.href='Controller?command=delete-entrance-subject&directionId=${direction.id}&subjectId=${entry.key}'">
@@ -114,7 +114,7 @@
                     ${requestScope.userNames[application.userId]}</a></td>
                 <td>${functions:formatDateTime(application.creationTime)}</td>
                 <td>${application.status}</td>
-                <td>${application.mark}</td>
+                <td>${functions:formatDecimal(application.mark)}</td>
             </tr>
         </c:forEach>
     </table>
