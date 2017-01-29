@@ -28,14 +28,14 @@ public class AdmissionOfficeContextInitializer implements ServletContextListener
             beanFactory.init(beanContext);
         } catch (InjectionException e) {
             logger.error("Failed to initialize beans.", e);
-            throw new RuntimeException("Failed to initialize beans.", e);
+            throw new RuntimeException("Failed to initialize bean context.", e);
         }
 
-        logger.info("Data source is initialized.");
+        logger.info("Bean context is initialized.");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        logger.info("Data source is destroyed.");
+        logger.info("Bean context is destroyed.");
     }
 }
