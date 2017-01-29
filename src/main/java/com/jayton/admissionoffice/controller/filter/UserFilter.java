@@ -32,7 +32,7 @@ public class UserFilter implements Filter {
                 adminCommands.add(commands.getString(key));
             }
             if(key.startsWith(USER)) {
-                adminCommands.add(commands.getString(key));
+                userCommands.add(commands.getString(key));
             }
         }
     }
