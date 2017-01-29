@@ -39,6 +39,14 @@
             <param-value>web.commands</param-value>
         </init-param>
     </filter>
+    <filter>
+        <filter-name>TimeFilter</filter-name>
+        <filter-class>com.jayton.admissionoffice.controller.filter.TimeFilter</filter-class>
+        <init-param>
+            <param-name>commandsPath</param-name>
+            <param-value>web.commands</param-value>
+        </init-param>
+    </filter>
 
     <filter-mapping>
         <filter-name>EncodingFilter</filter-name>
@@ -46,6 +54,10 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>UserFilter</filter-name>
+        <url-pattern>/Controller</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>TimeFilter</filter-name>
         <url-pattern>/Controller</url-pattern>
     </filter-mapping>
 
