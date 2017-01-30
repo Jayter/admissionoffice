@@ -6,7 +6,10 @@ import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
+import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
 import com.jayton.admissionoffice.util.di.Injected;
+
+import java.util.Objects;
 
 public class UniversityServiceImpl implements UniversityService {
 
@@ -19,9 +22,12 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public long add(University university) throws ServiceException {
         try {
+            Objects.requireNonNull(university);
             return universityDao.add(university);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -37,9 +43,12 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public boolean update(University university) throws ServiceException {
         try {
+            Objects.requireNonNull(university);
             return universityDao.update(university);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -62,11 +71,14 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public PaginationDTO<University> getByCity(String city, long offset, long count) throws ServiceException {
+    public PaginationDTO<University> getWithCountByCity(String city, long offset, long count) throws ServiceException {
         try {
+            Objects.requireNonNull(city);
             return universityDao.getWithCountByCity(city, offset, count);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 }

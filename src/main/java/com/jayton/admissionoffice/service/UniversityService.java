@@ -6,7 +6,7 @@ import com.jayton.admissionoffice.service.exception.ServiceException;
 
 public interface UniversityService extends Service<University> {
     PaginationDTO<University> getWithCount(long offset, long count) throws ServiceException;
-    PaginationDTO<University> getByCity(String city, long offset, long count) throws ServiceException;
+    PaginationDTO<University> getWithCountByCity(String city, long offset, long count) throws ServiceException;
     long add(University university) throws ServiceException;
     boolean update(University university) throws ServiceException;
 }

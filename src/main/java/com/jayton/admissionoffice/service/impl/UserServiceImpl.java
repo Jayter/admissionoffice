@@ -15,6 +15,7 @@ import com.jayton.admissionoffice.util.di.Injected;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
@@ -28,9 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public synchronized long add(User user) throws ServiceException {
         try {
+            Objects.requireNonNull(user);
             return userDao.add(user);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -46,18 +50,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByEmail(String email) throws ServiceException {
         try {
+            Objects.requireNonNull(email);
             return userDao.getByEmail(email);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
     @Override
     public boolean update(User user) throws ServiceException {
         try {
+            Objects.requireNonNull(user);
             return userDao.update(user);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -71,7 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PaginationDTO<User> getAll(long offset, long count) throws ServiceException {
+    public PaginationDTO<User> getAllWithCount(long offset, long count) throws ServiceException {
         try {
             PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(offset, count);
             long totalCount = dto.getCount();
@@ -101,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public synchronized boolean addResult(long userId, long subjectId, short mark) throws ServiceException {
         Map<Long, Short> results;
         try {
-             results = userDao.getResultsOfUser(userId);
+             results = userDao.getUserResults(userId);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -133,9 +143,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthorizationResult authorize(String login, String password) throws ServiceException {
         try {
+            Objects.requireNonNull(login);
+            Objects.requireNonNull(password);
             return userDao.authorize(login, password);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 

@@ -13,7 +13,7 @@ public interface UserService extends Service<User> {
     boolean addResult(long userId, long subjectId, short mark) throws ServiceException;
     boolean deleteResult(long userId, long subjectId) throws ServiceException;
     AuthorizationResult authorize(String login, String password) throws ServiceException;
-    PaginationDTO<User> getAll(long offset, long count) throws ServiceException;
+    PaginationDTO<User> getAllWithCount(long offset, long count) throws ServiceException;
     User getByEmail(String email) throws ServiceException;
     Map<Long, String> getDirectionNames(long userId) throws ServiceException;
 }

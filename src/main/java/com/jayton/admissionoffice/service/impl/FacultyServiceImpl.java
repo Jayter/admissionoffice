@@ -6,7 +6,10 @@ import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.service.FacultyService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
+import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
 import com.jayton.admissionoffice.util.di.Injected;
+
+import java.util.Objects;
 
 public class FacultyServiceImpl implements FacultyService {
 
@@ -19,9 +22,12 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public long add(Faculty faculty) throws ServiceException {
         try {
+            Objects.requireNonNull(faculty);
             return facultyDao.add(faculty);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -37,9 +43,12 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public boolean update(Faculty faculty) throws ServiceException {
         try {
+            Objects.requireNonNull(faculty);
             return facultyDao.update(faculty);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 

@@ -4,7 +4,6 @@ import com.jayton.admissionoffice.dao.*;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.ApplicationDto;
-import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.model.user.User;
@@ -17,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -32,9 +32,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public synchronized long add(User user, long directionId, LocalDateTime applied) throws ServiceException {
-        verifyApplicationDate(applied);
-
         try {
+            Objects.requireNonNull(user);
+            Objects.requireNonNull(applied);
+
             List<Application> retrieved = applicationDao.getByUser(user.getId());
             if(retrieved.size() >= 5) {
                 throw new ServiceVerificationException("You can apply only for 5 directions.");
@@ -86,9 +87,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean update(long id, Status status) throws ServiceException {
         try {
+            Objects.requireNonNull(status);
             return applicationDao.update(id, status);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameter.");
         }
     }
 
@@ -98,19 +102,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             return applicationDao.delete(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
-        }
-    }
-
-    private void verifyApplicationDate(LocalDateTime applied) throws ServiceException {
-        SessionTerms terms;
-        try {
-            terms = utilDao.getSessionTerms((short)applied.getYear());
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-
-        if(applied.isBefore(terms.getSessionStart()) || applied.isAfter(terms.getSessionEnd())) {
-            throw new ServiceException("Application period has already expired!");
         }
     }
 
