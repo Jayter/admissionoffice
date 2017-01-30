@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.dao.data;
+package com.jayton.admissionoffice.data;
 
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.Application;
@@ -25,6 +25,8 @@ public class TestData {
 
     public static final SessionTerms SESSION_TERMS = new SessionTerms((short)2016, LocalDateTime.of(2016, 7, 1, 12, 0),
             LocalDateTime.of(2016, 7, 21, 12, 0));
+    public static final SessionTerms SESSION_TERMS_2018 = new SessionTerms((short)2018,
+            LocalDateTime.of(2016, 11, 30, 20, 49, 30), LocalDateTime.of(2016, 11, 30, 20, 49, 30));
 
     public static final Subject SUBJECT1 = new Subject(START_SEQ, "Українська мова та література");
     public static final Subject SUBJECT2 = new Subject(START_SEQ + 1, "Англійська мова");
@@ -88,7 +90,8 @@ public class TestData {
             45, FACULTY1.getId(), new HashMap<Long, BigDecimal>(){{put(SUBJECT1.getId(), scale(new BigDecimal(0.4)));
         put(SUBJECT2.getId(), scale(new BigDecimal(0.3))); put(SUBJECT3.getId(), scale(new BigDecimal(0.25)));}});
     public static final Direction DIRECTION3 = new Direction(START_SEQ + 16, "Безпека інформаційних систем",
-            scale(new BigDecimal(0.1)), 20, FACULTY1.getId(), Collections.emptyMap());
+            scale(new BigDecimal(0.1)), 20, FACULTY1.getId(), new HashMap<Long, BigDecimal>(){{
+                put(SUBJECT1.getId(), scale(new BigDecimal("0.4"))); put(SUBJECT4.getId(), scale(new BigDecimal("0.3")));}});
     public static final Direction DIRECTION4 = new Direction(START_SEQ + 17, "Прикладна математика",
             scale(new BigDecimal(0.05)), 40, FACULTY2.getId(), Collections.emptyMap());
     public static final Direction DIRECTION5 = new Direction(START_SEQ + 18, "Програмне забезпечення автоматизованих систем",
@@ -124,6 +127,7 @@ public class TestData {
     public static final String ADMIN_PASSWORD = "a1D2m3I4n4I2s2Ch1E";
     public static final String USER_LOGIN = "dimasik";
     public static final String USER_PASSWORD = "dim_dim";
+
 
     private static BigDecimal scale(BigDecimal in) {
         return in.setScale(2, BigDecimal.ROUND_HALF_UP);

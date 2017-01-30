@@ -1,4 +1,4 @@
-package com.jayton.admissionoffice.dao.data;
+package com.jayton.admissionoffice.data;
 
 import com.jayton.admissionoffice.model.to.Application;
 

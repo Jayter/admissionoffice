@@ -1,26 +1,25 @@
-package com.jayton.admissionoffice.dao.jdbc;
+package com.jayton.admissionoffice.service;
 
-import com.jayton.admissionoffice.dao.UtilDao;
-import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
+import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import util.ContextInitializationHelper;
 import util.DbInitializationHelper;
-import org.junit.rules.ExpectedException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.jayton.admissionoffice.data.TestData.*;
+import static com.jayton.admissionoffice.data.TestData.SUBJECT4;
 
-public class JdbcUtilDaoTest {
-
-    private UtilDao utilDao = (UtilDao)
-            BeanContextHolder.getInstance().getActualContext().getBean("utilDao");
+public class UtilServiceImplTest {
+    private UtilService utilService = (UtilService)
+            BeanContextHolder.getInstance().getActualContext().getBean("utilService");
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -33,47 +32,47 @@ public class JdbcUtilDaoTest {
 
     @Before
     public void setUpDb() throws Exception {
-        DbInitializationHelper.getInstance().executeDbPopulate("populateForDaoTest.sql");
+        DbInitializationHelper.getInstance().executeDbPopulate("populateForServiceTest.sql");
     }
 
     @Test
     public void getSessionTermsTest() throws Exception {
-        SessionTerms terms = utilDao.getSessionTerms((short)2016);
+        SessionTerms terms = utilService.getSessionTerms((short)2016);
 
         Assert.assertEquals(terms, SESSION_TERMS);
     }
 
     @Test
     public void getNonExistedSessionTermsTest() throws Exception {
-        Assert.assertNull(utilDao.getSessionTerms((short)2018));
+        Assert.assertNull(utilService.getSessionTerms((short)2018));
     }
 
     @Test
     public void getAllSubjectsTest() throws Exception {
-        List<Subject> subjects = utilDao.getAllSubjects();
+        List<Subject> subjects = utilService.getAllSubjects();
 
         Assert.assertEquals(subjects, Arrays.asList(SUBJECT1, SUBJECT2, SUBJECT3, SUBJECT4));
     }
 
     @Test
     public void createSessionTermsTest() throws Exception {
-        Assert.assertTrue(utilDao.createSessionTerms(SESSION_TERMS_2018));
+        Assert.assertTrue(utilService.createSessionTerms(SESSION_TERMS_2018));
     }
 
     @Test
     public void createExistedTermsTest() throws Exception {
-        expected.expect(DAOException.class);
-        utilDao.createSessionTerms(SESSION_TERMS);
+        expected.expect(ServiceException.class);
+        utilService.createSessionTerms(SESSION_TERMS);
     }
 
     @Test
     public void updateSessionTermsTest() throws Exception {
-        Assert.assertTrue(utilDao.updateSessionTerms(new SessionTerms(SESSION_TERMS.getYear(),
+        Assert.assertTrue(utilService.updateSessionTerms(new SessionTerms(SESSION_TERMS.getYear(),
                 SESSION_TERMS.getSessionStart(), LocalDateTime.of(2016, 10, 9, 8, 7))));
     }
 
     @Test
     public void updateNonExistedSessionTermsTest() throws Exception {
-        Assert.assertFalse(utilDao.updateSessionTerms(SESSION_TERMS_2018));
+        Assert.assertFalse(utilService.updateSessionTerms(SESSION_TERMS_2018));
     }
 }

@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.ApplicationDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.dao.data.ApplicationMatcher;
+import com.jayton.admissionoffice.data.ApplicationMatcher;
 import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.ApplicationDto;
 import com.jayton.admissionoffice.model.to.Status;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jayton.admissionoffice.dao.data.TestData.*;
+import static com.jayton.admissionoffice.data.TestData.*;
 
 public class JdbcApplicationDaoImplTest {
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <!-- Pool configuration -->
+    <bean id="poolProperties" class="org.apache.tomcat.jdbc.pool.PoolProperties">
+        <field name="url" value="jdbc:postgresql://localhost:5432/admissionofficetest"/>
+        <field name="driverClassName" value="org.postgresql.Driver"/>
+        <field name="username" value="test_user"/>
+        <field name="password" value="password"/>
+    </bean>
+
+    <bean id="utilTag" class="com.jayton.admissionoffice.util.tag.TagUtils">
+    </bean>
+</beans>

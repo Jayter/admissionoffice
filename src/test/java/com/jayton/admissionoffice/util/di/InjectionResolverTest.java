@@ -11,9 +11,9 @@ import util.DbInitializationHelper;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.jayton.admissionoffice.dao.data.TestData.UNIVERSITY1;
-import static com.jayton.admissionoffice.dao.data.TestData.UNIVERSITY2;
-import static com.jayton.admissionoffice.dao.data.TestData.UNIVERSITY3;
+import static com.jayton.admissionoffice.data.TestData.UNIVERSITY1;
+import static com.jayton.admissionoffice.data.TestData.UNIVERSITY2;
+import static com.jayton.admissionoffice.data.TestData.UNIVERSITY3;
 
 public class InjectionResolverTest {
 
@@ -41,5 +41,26 @@ public class InjectionResolverTest {
 
         List<University> all = universityService.getWithCount(0, 100).getEntries();
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
+    }
+
+    @Test
+    public void initBeanWithIncorrectFieldTest() throws Exception {
+        expected.expect(InjectionException.class);
+        XmlBeanContext resolver = new XmlBeanContext("di/incorrectDependencies.xml");
+        resolver.init();
+    }
+
+    @Test
+    public void initByIncorrectPathTest() throws Exception {
+        expected.expect(InjectionException.class);
+        XmlBeanContext resolver = new XmlBeanContext("dummyPath.xml");
+        resolver.init();
+    }
+
+    @Test
+    public void initBeanWithPrivateConstructorTest() throws Exception {
+        expected.expect(InjectionException.class);
+        XmlBeanContext resolver = new XmlBeanContext("di/incorrectDependencies1.xml");
+        resolver.init();
     }
 }
