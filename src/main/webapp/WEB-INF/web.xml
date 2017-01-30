@@ -64,7 +64,4 @@
     <listener>
         <listener-class>com.jayton.admissionoffice.controller.listener.AdmissionOfficeContextInitializer</listener-class>
     </listener>
-    <listener>
-        <listener-class>com.jayton.admissionoffice.controller.listener.SessionListener</listener-class>
-    </listener>
 </web-app>

@@ -38,7 +38,7 @@ public class AddUserResultCommand implements Command {
         } catch (VerificationException e) {
             logger.error("Incorrect data.", e);
             request.setAttribute(PARAM_NAMES.getString("shownException"), new ShownException(e.getMessage()));
-            request.getRequestDispatcher(PAGE_NAMES.getString("controller.edit_user")+"&id="+userId).forward(request, response);
+            request.getRequestDispatcher(PAGE_NAMES.getString("controller.get_user")+"&id="+userId).forward(request, response);
         }
         catch (ServiceException e) {
             logger.error("Exception is caught.", e);
