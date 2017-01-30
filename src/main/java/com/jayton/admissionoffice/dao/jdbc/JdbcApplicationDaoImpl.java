@@ -7,6 +7,8 @@ import com.jayton.admissionoffice.model.to.Application;
 import com.jayton.admissionoffice.model.to.ApplicationDto;
 import com.jayton.admissionoffice.model.to.Status;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
@@ -18,6 +20,7 @@ import java.util.*;
 public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     private final ResourceBundle applicationQueries = ResourceBundle.getBundle("db.queries.applicationQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcApplicationDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -44,6 +47,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 return rs.getLong(1);
             }
         } catch (SQLException e) {
+            logger.error("Failed to save application.", e);
             throw new DAOException("Failed to save application.", e);
         }
     }
@@ -67,6 +71,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to get applications.", e);
             throw new DAOException("Failed to get applications.", e);
         }
         return application;
@@ -82,6 +87,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to get application.", e);
             throw new DAOException("Failed to get application.", e);
         }
     }
@@ -109,6 +115,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to update applications.", e);
             throw new DAOException("Failed to update applications.", e);
         }
         return updated;
@@ -145,6 +152,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             return new ApplicationDto(applications, userNames, totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to get applications.", e);
             throw new DAOException("Failed to get applications.", e);
         }
     }
@@ -157,6 +165,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             return getApplicationsByStatement(statement);
         } catch (SQLException e) {
+            logger.error("Failed to get applications.", e);
             throw new DAOException("Failed to get applications.", e);
         }
     }
@@ -168,6 +177,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
             return getApplicationsByStatement(statement);
         } catch (SQLException e) {
+            logger.error("Failed to get applications.", e);
             throw new DAOException("Failed to get applications.", e);
         }
     }

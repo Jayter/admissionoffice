@@ -3,10 +3,14 @@ package com.jayton.admissionoffice.dao.jdbc.util;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.util.di.Injected;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class DaoHelper {
+
+    private final Logger logger = LoggerFactory.getLogger(DaoHelper.class);
 
     @Injected
     private DataSource dataSource;
@@ -26,6 +30,7 @@ public class DaoHelper {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error(script, e);
             throw new DAOException(errorMessage, e);
         }
     }

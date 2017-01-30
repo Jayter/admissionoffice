@@ -6,6 +6,8 @@ import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -16,6 +18,7 @@ import java.util.ResourceBundle;
 public class JdbcFacultyDaoImpl implements FacultyDao {
 
     private final ResourceBundle facultyQueries = ResourceBundle.getBundle("db.queries.facultyQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcFacultyDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -43,6 +46,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
                 return rs.getLong(1);
             }
         } catch (SQLException e) {
+            logger.error("Failed to save faculty.", e);
             throw new DAOException("Failed to save faculty.", e);
         }
     }
@@ -67,6 +71,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to load faculty.", e);
             throw new DAOException("Failed to load faculty.", e);
         }
         return faculty;
@@ -85,6 +90,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to update faculty.", e);
             throw new DAOException("Failed to update faculty.", e);
         }
     }
@@ -109,6 +115,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
             return new PaginationDTO<>(faculties, totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to load faculties.", e);
             throw new DAOException("Failed to load faculties.", e);
         }
     }
@@ -120,6 +127,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
             return getByStatement(statement);
         } catch (SQLException e) {
+            logger.error("Failed to load faculties.", e);
             throw new DAOException("Failed to load faculties.", e);
         }
     }

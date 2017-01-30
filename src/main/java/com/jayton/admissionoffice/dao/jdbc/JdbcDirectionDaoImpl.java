@@ -8,6 +8,8 @@ import com.jayton.admissionoffice.model.to.AssociatedPairDto;
 import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import java.util.*;
 public class JdbcDirectionDaoImpl implements DirectionDao {
 
     private final ResourceBundle directionQueries = ResourceBundle.getBundle("db.queries.directionQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcDirectionDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -62,6 +65,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             return id;
         } catch (SQLException e) {
+            logger.error("Failed to save direction.", e);
             throw new DAOException("Failed to save direction.", e);
         }
     }
@@ -96,6 +100,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                }
             }
         } catch (SQLException e) {
+            logger.error("Failed to load direction.", e);
             throw new DAOException("Failed to load direction.", e);
         }
         return direction;
@@ -113,6 +118,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             return updateDirectionSt.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to update direction.", e);
             throw new DAOException("Failed to update direction.", e);
         }
     }
@@ -133,6 +139,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             return new EntriesWithAssociatedPairsDto<>(directions, subjects);
         } catch (SQLException e) {
+            logger.error("Failed to load directions.", e);
             throw new DAOException("Failed to load directions.", e);
         }
     }
@@ -159,6 +166,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                     = new EntriesWithAssociatedPairsDto<>(directions, subjects);
             return new PaginationDTO<>(Collections.singletonList(directionsDTO), totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to load directions.", e);
             throw new DAOException("Failed to load directions.", e);
         }
     }
@@ -174,6 +182,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to save entrance subject.", e);
             throw new DAOException("Failed to save entrance subject.", e);
         }
     }
@@ -198,6 +207,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to get entrance subjects.", e);
             throw new DAOException("Failed to get entrance subjects.", e);
         }
         return entranceSubjects;

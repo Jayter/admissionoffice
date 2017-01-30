@@ -6,6 +6,8 @@ import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -16,6 +18,7 @@ import java.util.ResourceBundle;
 public class JdbcUniversityDaoImpl implements UniversityDao {
 
     private final ResourceBundle universityQueries = ResourceBundle.getBundle("db.queries.universityQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcUniversityDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -41,6 +44,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                 return rs.getLong(1);
             }
         } catch (SQLException e) {
+            logger.error("Failed to save university.", e);
             throw new DAOException("Failed to save university.", e);
         }
     }
@@ -63,6 +67,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to load university.", e);
             throw new DAOException("Failed to load university.", e);
         }
         return university;
@@ -80,6 +85,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to update university.", e);
             throw new DAOException("Failed to update university.", e);
         }
     }
@@ -105,6 +111,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             return new PaginationDTO<>(universities, totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to load universities.", e);
             throw new DAOException("Failed to load universities.", e);
         }
     }
@@ -123,6 +130,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
             return new PaginationDTO<>(universities, totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to load universities.", e);
             throw new DAOException("Failed to load universities.", e);
         }
     }

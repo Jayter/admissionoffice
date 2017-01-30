@@ -9,6 +9,8 @@ import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
 import com.jayton.admissionoffice.model.to.PaginationDTO;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -19,6 +21,7 @@ import java.util.*;
 public class JdbcUserDaoImpl implements UserDao {
 
     private final ResourceBundle userQueries = ResourceBundle.getBundle("db.queries.userQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcUserDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -62,6 +65,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             return id;
         } catch (SQLException e) {
+            logger.error("Failed to save user.", e);
             throw new DAOException("Failed to save user.", e);
         }
     }
@@ -77,6 +81,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             return getUserByStatements(getUserSt, getResultsSt);
         } catch (SQLException e) {
+            logger.error("Failed to load user.", e);
             throw new DAOException("Failed to load user.", e);
         }
     }
@@ -96,6 +101,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             return updateUserSt.executeUpdate() != 0;
         } catch (SQLException e) {
+            logger.error("Failed to update user.", e);
             throw new DAOException("Failed to update user.", e);
         }
     }
@@ -111,6 +117,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             return getUserByStatements(getUserSt, getResultsSt);
         } catch (SQLException e) {
+            logger.error("Failed to load user.", e);
             throw new DAOException("Failed to load user.", e);
         }
     }
@@ -138,6 +145,7 @@ public class JdbcUserDaoImpl implements UserDao {
                     = new EntriesWithAssociatedPairsDto<>(users, results);
             return new PaginationDTO(Collections.singletonList(usersDTO), totalCount);
         } catch (SQLException e) {
+            logger.error("Failed to load users.", e);
             throw new DAOException("Failed to load users.", e);
         }
     }
@@ -153,7 +161,8 @@ public class JdbcUserDaoImpl implements UserDao {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
-            throw new DAOException("Failed to save result.", e);
+            logger.error("Failed to save user result.", e);
+            throw new DAOException("Failed to save user result.", e);
         }
     }
 
@@ -172,7 +181,8 @@ public class JdbcUserDaoImpl implements UserDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException("Failed to get results.", e);
+            logger.error("Failed to get user results.", e);
+            throw new DAOException("Failed to get user results.", e);
         }
         return results;
     }
@@ -194,6 +204,7 @@ public class JdbcUserDaoImpl implements UserDao {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
+            logger.error("Failed to check email.", e);
             throw new DAOException("Failed to check email.", e);
         }
     }
@@ -217,6 +228,7 @@ public class JdbcUserDaoImpl implements UserDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to authorize.", e);
             throw new DAOException("Failed to authorize.", e);
         }
     }
@@ -235,6 +247,7 @@ public class JdbcUserDaoImpl implements UserDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to get direction names.", e);
             throw new DAOException("Failed to get direction names.", e);
         }
         return names;

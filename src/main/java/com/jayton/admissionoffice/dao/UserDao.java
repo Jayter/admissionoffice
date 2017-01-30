@@ -12,7 +12,7 @@ public interface UserDao extends Dao<User> {
     boolean addResult(long userId, long subjectId, short mark) throws DAOException;
     boolean deleteResult(long userId, long subjectId) throws DAOException;
     User getByEmail(String email) throws DAOException;
-    Map<Long, Short> getResultsOfUser(long userId) throws DAOException;
+    Map<Long, Short> getUserResults(long userId) throws DAOException;
     AuthorizationResult authorize(String login, String password) throws DAOException;
     int checkEmail(String email) throws DAOException;
     PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAllWithCount(long offset, long count) throws DAOException;

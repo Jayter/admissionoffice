@@ -6,6 +6,8 @@ import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.Subject;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +19,7 @@ import java.util.ResourceBundle;
 public class JdbcUtilDaoImpl implements UtilDao {
 
     private final ResourceBundle utilQueries = ResourceBundle.getBundle("db.queries.utilQueries");
+    private final Logger logger = LoggerFactory.getLogger(JdbcUtilDaoImpl.class);
 
     @Injected
     private DataSource dataSource;
@@ -43,6 +46,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to load session terms.", e);
             throw new DAOException("Failed to load session terms.", e);
         }
         return terms;
@@ -64,6 +68,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
                 }
             }
         } catch (SQLException e) {
+            logger.error("Failed to load subjects.", e);
             throw new DAOException("Failed to load subjects.", e);
         }
         return subjects;
@@ -81,6 +86,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
             int affectedRows = statement.executeUpdate();
             return affectedRows != 0;
         } catch (SQLException e) {
+            logger.error("Failed to update session terms.", e);
             throw new DAOException("Failed to update session terms.", e);
         }
     }
@@ -97,6 +103,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
             int affectedRows = statement.executeUpdate();
             return affectedRows != 0;
         } catch (SQLException e) {
+            logger.error("Failed to create session terms.", e);
             throw new DAOException("Failed to create session terms.", e);
         }
     }
