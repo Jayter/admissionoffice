@@ -73,7 +73,7 @@
     <!-- Controller layer -->
     <!-- admin -->
     <bean id="admin-page" class="com.jayton.admissionoffice.command.impl.admin.AdminPageCommand"/>
-    <bean id="createSessionTerms" class="com.jayton.admissionoffice.command.impl.admin.CreateSessionTermsCommand">
+    <bean id="create-session-terms" class="com.jayton.admissionoffice.command.impl.admin.CreateSessionTermsCommand">
         <field name="utilService" reference="utilService"/>
     </bean>
     <bean id="edit-session-terms" class="com.jayton.admissionoffice.command.impl.admin.EditSessionTermsCommand">
@@ -187,6 +187,7 @@
     </bean>
     <bean id="load-main" class="com.jayton.admissionoffice.command.impl.util.LoadMainPageCommand">
         <field name="universityService" reference="universityService"/>
+        <field name="utilService" reference="utilService"/>
     </bean>
     <bean id="change-locale" class="com.jayton.admissionoffice.command.impl.util.ChangeLocaleCommand"/>
     <bean id="logout" class="com.jayton.admissionoffice.command.impl.util.LogoutCommand"/>
