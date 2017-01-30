@@ -11,6 +11,7 @@ import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
 import com.jayton.admissionoffice.util.di.Injected;
+import com.jayton.admissionoffice.util.lock.Synchronizer;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,34 +27,43 @@ public class ApplicationServiceImpl implements ApplicationService {
     private DirectionDao directionDao;
     @Injected
     private UtilDao utilDao;
+    @Injected
+    private Synchronizer synchronizer;
 
     public ApplicationServiceImpl() {
     }
 
     @Override
-    public synchronized long add(User user, long directionId, LocalDateTime applied) throws ServiceException {
+    public long add(User user, long directionId, LocalDateTime applied) throws ServiceException {
         try {
             Objects.requireNonNull(user);
             Objects.requireNonNull(applied);
 
-            List<Application> retrieved = applicationDao.getByUser(user.getId());
-            if(retrieved.size() >= 5) {
-                throw new ServiceVerificationException("You can apply only for 5 directions.");
+            try {
+                synchronizer.lock(user.getId());
+                List<Application> retrieved = applicationDao.getByUser(user.getId());
+                if(retrieved.size() >= 5) {
+                    throw new ServiceVerificationException("You can apply only for 5 directions.");
+                }
+
+                long countOfDuplicated = retrieved.stream().filter(app -> app.getDirectionId()== directionId).count();
+                if(countOfDuplicated != 0) {
+                    throw new ServiceVerificationException("You have already applied for this direction.");
+                }
+
+                Direction direction = directionDao.get(directionId);
+                BigDecimal mark = getMark(user, direction);
+
+                Application application = new Application(user.getId(), directionId, applied, mark);
+
+                return applicationDao.add(application);
+            } finally {
+                synchronizer.unlock(user.getId());
             }
-
-            long countOfDuplicated = retrieved.stream().filter(app -> app.getDirectionId()== directionId).count();
-            if(countOfDuplicated != 0) {
-                throw new ServiceVerificationException("You have already applied for this direction.");
-            }
-
-            Direction direction = directionDao.get(directionId);
-            BigDecimal mark = getMark(user, direction);
-
-            Application application = new Application(user.getId(), directionId, applied, mark);
-
-            return applicationDao.add(application);
         } catch (DAOException e) {
             throw new ServiceException(e);
+        } catch (NullPointerException e) {
+            throw new ServiceVerificationException("Nullable input parameters.");
         }
     }
 

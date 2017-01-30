@@ -14,6 +14,9 @@
         <field name="poolProperties" reference="poolProperties"/>
     </bean>
 
+    <!-- Synchronizer -->
+    <bean id="synchronizer" class="com.jayton.admissionoffice.util.lock.Synchronizer"/>
+
     <!-- DAO layer -->
     <bean id="daoHelper" class="com.jayton.admissionoffice.dao.jdbc.util.DaoHelper">
         <field name="dataSource" reference="dataSource"/>
@@ -48,6 +51,7 @@
         <field name="applicationDao" reference="applicationDao"/>
         <field name="directionDao" reference="directionDao"/>
         <field name="utilDao" reference="utilDao"/>
+        <field name="synchronizer" reference="synchronizer"/>
     </bean>
     <bean id="directionService" class="com.jayton.admissionoffice.service.impl.DirectionServiceImpl">
         <field name="directionDao" reference="directionDao"/>
