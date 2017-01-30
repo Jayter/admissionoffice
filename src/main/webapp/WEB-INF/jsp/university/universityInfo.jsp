@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="paginator" uri="http://com.jayton.admissionoffice.paginator" %>
+<%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="../fragments/headTag.jsp"/>
@@ -26,6 +27,7 @@
 <body>
 <jsp:include page="../fragments/header.jsp"/>
 <div class="outer">
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <jsp:useBean id="university" type="com.jayton.admissionoffice.model.university.University" scope="request"/>
     <div class="inner_info">
         <table class="info">
@@ -43,7 +45,7 @@
                 <td>${university.address}</td>
             </tr>
         </table>
-        <c:if test="${sessionScope.isAuthorizedAdmin}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
             <button onclick="location.href='Controller?command=edit-university&id=${university.id}'" class="button">
                 ${edit}</button>
         </c:if>
@@ -67,7 +69,7 @@
     </table>
     <paginator:display url="Controller?command=edit-faculty&universityId=${university.id}" currentPage="${requestScope.page}"
                        totalPagesCount="${requestScope.pagesCount}" linksCount="${requestScope.count}"/>
-    <c:if test="${sessionScope.isAuthorizedAdmin}">
+    <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
         <button onclick="location.href='Controller?command=edit-faculty&universityId=${university.id}'" class="button">
             ${add}</button>
     </c:if>

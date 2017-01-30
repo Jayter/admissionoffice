@@ -28,6 +28,8 @@
 
 <body>
     <jsp:include page="../fragments/header.jsp"/>
+    <c:set scope="request" var="isWithinSessionTerms" value="${dateFunctions:isWithinSessionTerms(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <div class="outer">
         <jsp:useBean id="faculty" type="com.jayton.admissionoffice.model.university.Faculty" scope="request"/>
         <div class="inner_info">
@@ -50,7 +52,7 @@
                     <td>${faculty.officeAddress}</td>
                 </tr>
             </table>
-            <c:if test="${sessionScope.isAuthorizedAdmin}">
+            <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
                 <button onclick="location.href='Controller?command=edit-faculty&id=${faculty.id}'" class="button">
                     ${edit}</button>
             </c:if>
@@ -69,8 +71,8 @@
                     <td>${functions:formatDecimal(direction.averageCoefficient)}</td>
                     <td>${direction.countOfStudents}</td>
                     <td>
-                        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
-                            sessionScope.sessionTerms.sessionEnd)}">
+                        <c:if test="${sessionScope.isAuthorizedUser and isWithinSessionTerms and
+                         dateFunctions:containsAll(direction, sessionScope.user)}">
                             <form method="post" action="Controller?command=user-apply">
                                 <input type="hidden" name="directionId" value="${direction.id}"/>
                                 <input type="submit" value="${apply}"/>
@@ -82,7 +84,7 @@
         </table>
         <paginator:display url="Controller?command=get-faculty&id=${faculty.id}" currentPage="${requestScope.page}"
                            totalPagesCount="${requestScope.pagesCount}" linksCount="${requestScope.count}"/>
-        <c:if test="${sessionScope.isAuthorizedAdmin}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
             <button onclick="location.href='Controller?command=edit-direction&facultyId=${faculty.id}'" class="button">
                 ${add}</button>
         </c:if>

@@ -33,6 +33,8 @@
 <body>
 <jsp:include page="../fragments/header.jsp"/>
 <div class="outer">
+    <c:set scope="request" var="isWithinSessionTerms" value="${dateFunctions:isWithinSessionTerms(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <jsp:useBean id="user" type="com.jayton.admissionoffice.model.user.User" scope="request"/>
     <div class="inner_info">
         <table class="info">
@@ -66,7 +68,7 @@
                 <td>${user.averageMark}</td>
             </tr>
         </table>
-        <c:if test="${sessionScope.isAuthorizedAdmin}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
             <button onclick="location.href='Controller?command=edit-user&id=${user.id}'" class="button">${edit}</button>
         </c:if>
     </div>
@@ -84,7 +86,7 @@
                 <tr>
                     <td>${requestScope.subjects[pair.key].name}</td>
                     <td>${pair.value}</td>
-                    <c:if test="${sessionScope.isAuthorizedAdmin}">
+                    <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
                         <td>
                             <button onclick="location.href='Controller?command=delete-user-result&id=${user.id}&subjectId=${pair.key}'">
                                     ${delete}</button>
@@ -93,7 +95,7 @@
                 </tr>
             </c:forEach>
         </table>
-        <c:if test="${sessionScope.isAuthorizedAdmin && user.results.size() lt 4}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms and user.results.size() lt 4}">
             <form method="post" action="Controller?command=add-user-result">
                 <input type="hidden" name="id" value="${user.id}"/>
                 <select name="subjectId">
@@ -125,8 +127,7 @@
                 <td>${functions:formatDateTime(application.creationTime)}</td>
                 <td>${application.status}</td>
                 <td>${functions:formatDecimal(application.mark)}</td>
-                <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
-                             sessionScope.sessionTerms.sessionEnd)}">
+                <c:if test="${sessionScope.isAuthorizedUser and isWithinSessionTerms}">
                     <td>
                         <button onclick="location.href='Controller?command=user-cancel-application&id=${application.id}'">
                                 ${cancel}</button>

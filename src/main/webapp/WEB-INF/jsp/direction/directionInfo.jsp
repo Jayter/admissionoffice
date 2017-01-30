@@ -34,6 +34,9 @@
 <body>
 <jsp:include page="../fragments/header.jsp"/>
 <div class="outer">
+    <c:set scope="request" var="isWithinSessionTerms" value="${dateFunctions:isWithinSessionTerms(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
+
     <jsp:useBean id="direction" type="com.jayton.admissionoffice.model.university.Direction" scope="request"/>
     <div class="inner_info">
         <table class="info">
@@ -51,7 +54,7 @@
                 <td>${functions:formatDecimal(direction.averageCoefficient)}</td>
             </tr>
         </table>
-        <c:if test="${sessionScope.isAuthorizedAdmin}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
             <button onclick="location.href='Controller?command=edit-direction&id=${direction.id}'" class="button">
                 ${edit}</button>
         </c:if>
@@ -69,7 +72,7 @@
                     <td>${requestScope.subjects[entry.key].name}</td>
                     <td>${functions:formatDecimal(entry.value)}</td>
                     <td>
-                        <c:if test="${sessionScope.isAuthorizedAdmin}">
+                        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
                             <button onclick="location.href='Controller?command=delete-entrance-subject&directionId=${direction.id}&subjectId=${entry.key}'">
                                 ${delete}</button>
                         </c:if>
@@ -77,14 +80,13 @@
                 </tr>
             </c:forEach>
         </table>
-        <c:if test="${sessionScope.isAuthorizedUser and dateFunctions:isBetween(sessionScope.sessionTerms.sessionStart,
-            sessionScope.sessionTerms.sessionEnd)}">
+        <c:if test="${sessionScope.isAuthorizedUser and isWithinSessionTerms and dateFunctions:containsAll(direction, sessionScope.user)}">
             <form method="post" action="Controller?command=user-apply">
                 <input type="hidden" name="directionId" value="${direction.id}"/>
                 <input type="submit" value="${apply}"/>
             </form>
         </c:if>
-        <c:if test="${sessionScope.isAuthorizedAdmin && direction.entranceSubjects.size() lt 3}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms and direction.entranceSubjects.size() lt 3}">
             <form method="post" action="Controller?command=add-entrance-subject">
                 <input type="hidden" name="directionId" value="${direction.id}"/>
                 <select name="subjectId">

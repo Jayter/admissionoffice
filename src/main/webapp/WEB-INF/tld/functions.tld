@@ -25,6 +25,38 @@
         <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>java.lang.String format(java.time.LocalDate)</function-signature>
     </function>
+    
+    <function>
+        <name>isBeforeSessionStart</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>
+            boolean isBeforeSessionStart(com.jayton.admissionoffice.model.to.SessionTerms)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>isAfterSessionEnd</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>
+            boolean isAfterSessionEnd(com.jayton.admissionoffice.model.to.SessionTerms)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>isWithinSessionTerms</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>
+            boolean isWithinSessionStart(com.jayton.admissionoffice.model.to.SessionTerms)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>isBeyondSessionTerms</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>
+            boolean isBeyondSessionStart(com.jayton.admissionoffice.model.to.SessionTerms)
+        </function-signature>
+    </function>
 
     <function>
         <name>isBetween</name>
@@ -42,5 +74,14 @@
         <name>isAfter</name>
         <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
         <function-signature>boolean isAfter(java.time.LocalDateTime)</function-signature>
+    </function>
+    
+    <function>
+        <name>containsAll</name>
+        <function-class>com.jayton.admissionoffice.util.tag.TagUtils</function-class>
+        <function-signature>
+            boolean containsAllSubjects(com.jayton.admissionoffice.model.university.Direction,
+            com.jayton.admissionoffice.model.user.User)
+        </function-signature>
     </function>
 </taglib>

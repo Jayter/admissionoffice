@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="paginator" uri="http://com.jayton.admissionoffice.paginator" %>
 <%@ taglib prefix="functions" uri="http://com.jayton.admissionoffice.functions" %>
+<%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="fragments/headTag.jsp"/>
@@ -23,6 +24,7 @@
 <fmt:message bundle="${loc}" key="button.search" var="search"/>
 
 <body>
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <jsp:include page="fragments/header.jsp"/>
     <div class="outer">
         <c:choose>
@@ -63,7 +65,7 @@
         </table>
         <paginator:display url="Controller?command=load-main" currentPage="${requestScope.page}"
                            totalPagesCount="${requestScope.pagesCount}" linksCount="${requestScope.count}"/>
-        <c:if test="${sessionScope.isAuthorizedAdmin}">
+        <c:if test="${sessionScope.isAuthorizedAdmin and isBeyondSessionTerms}">
             <button onclick="location.href='Controller?command=edit-university'" class="button">${add}</button>
         </c:if>
     </div>

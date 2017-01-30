@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://com.jayton.admissionoffice.functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="dateFunctions" uri="http://com.jayton.admissionoffice.functions" %>
 
 <jsp:include page="../fragments/headTag.jsp"/>
 
@@ -19,6 +20,9 @@
 
 <body>
     <jsp:include page="../fragments/header.jsp"/>
+    <c:set scope="request" var="isBeforeSessionStart" value="${dateFunctions:isBeforeSessionStart(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isAfterSessionEnd" value="${dateFunctions:isBeforeSessionStart(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <div class="edit_outer">
         <c:if test="${not empty sessionScope.sessionTerms}">
             <table class="info">
@@ -32,10 +36,16 @@
                 </tr>
             </table>
         </c:if>
-        <button onclick="location.href='Controller?command=edit-session-terms'">
-            ${not empty sessionScope.sessionTerms ? edit: create}</button>
-        <button onclick="location.href='Controller?command=handle-applications'">${handleApps}</button>
-        <button onclick="location.href='Controller?command=edit-user'">${createUser}</button>
-        <button onclick="location.href='Controller?command=edit-university'">${createUniv}</button>
+        <c:if test="${isBeforeSessionStart}">
+            <button onclick="location.href='Controller?command=edit-session-terms'">
+                    ${not empty sessionScope.sessionTerms ? edit: create}</button>
+        </c:if>
+        <c:if test="${isAfterSessionEnd}">
+            <button onclick="location.href='Controller?command=handle-applications'">${handleApps}</button>
+        </c:if>
+        <c:if test="${isBeyondSessionTerms}">
+            <button onclick="location.href='Controller?command=edit-user'">${createUser}</button>
+            <button onclick="location.href='Controller?command=edit-university'">${createUniv}</button>
+        </c:if>
     </div>
 </body>
