@@ -1,3 +1,7 @@
+* {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+}
+
 .header_outer {
     width: inherit;
     height: 25px;
@@ -152,4 +156,9 @@ a:focus {
     color: #5a75af;
     font-size: 110%;
     font-weight: bold
+}
+
+.default {
+    font-size: 16px;
+    text-align: left;
 }

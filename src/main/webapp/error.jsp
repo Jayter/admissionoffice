@@ -16,7 +16,7 @@
 <body onload='startTimer()'>
     <jsp:include page="WEB-INF/jsp/fragments/header.jsp"/>
     <div class="outer">
-        <h2>${description}</h2>
+        <h4>${description}</h4>
         <h3>${requestScope.errorMessage}</h3>
         <h3>${requestScope.exception.message}</h3>
         <c:if test="${not empty requestScope.exception.cause.message}">
@@ -31,9 +31,9 @@
         <c:if test="${not empty requestScope.exception.cause.cause.cause.cause.message}">
             <h4>${cause} 4: ${requestScope.exception.cause.cause.cause.cause.message}</h4>
         </c:if>
-        <h2>${redirect}
+        <h4>${redirect}
             <span id="my_timer">8</span>
             ${seconds}
-        </h2>
+        </h4>
     </div>
 </body>
