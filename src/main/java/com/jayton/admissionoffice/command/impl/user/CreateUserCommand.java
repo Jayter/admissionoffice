@@ -33,8 +33,8 @@ public class CreateUserCommand implements Command {
             String login = request.getParameter(PARAM_NAMES.getString("login"));
             String password = request.getParameter(PARAM_NAMES.getString("password"));
             String phoneNumber = request.getParameter(PARAM_NAMES.getString("phone"));
-            LocalDate date = LocalDate.parse(request.getParameter(PARAM_NAMES.getString("birthDate")));
-            Byte averageMark = Byte.parseByte(request.getParameter(PARAM_NAMES.getString("mark")));
+            LocalDate date = Verifier.convertToLocalDate(request.getParameter(PARAM_NAMES.getString("birthDate")));
+            Byte averageMark = Verifier.convertToByte(request.getParameter(PARAM_NAMES.getString("mark")));
             verifyInput(name, lastName, address, login, password, phoneNumber, date, averageMark);
 
             long id = userService.add(new User(name, lastName, address, login, password, phoneNumber, date, averageMark));
