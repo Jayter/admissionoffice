@@ -1,6 +1,10 @@
 package com.jayton.admissionoffice.util.lock;
 
-import java.util.HashMap;
+import com.jayton.admissionoffice.util.exception.ApplicationException;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -8,32 +12,31 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Synchronizer {
 
-    private HashMap<Long, ReentrantLock> locks = new HashMap<>();
+    private Map<Long, Lock> locks = new ConcurrentHashMap<>();
 
     public Synchronizer() {
     }
 
-    public synchronized void lock(Long key) {
-        ReentrantLock lock = locks.get(key);
-        if(lock == null) {
-            lock = new ReentrantLock();
-            locks.put(key, lock);
-        }
-        lock.lock();
-    }
-
-    public void unlock(Long key) {
-        ReentrantLock lock = locks.get(key);
-        if(lock != null) {
-            lock.unlock();
-        }
-    }
-
-    public synchronized void invalidateLock(Long key) {
-        ReentrantLock lock = locks.remove(key);
-        if(lock != null) {
+    public <T> T executeSynchronously(Long id, NullaryFunction<T> function) throws ApplicationException {
+        Lock lock = getLock(id);
+        try {
             lock.lock();
+            return function.apply();
+        } finally {
             lock.unlock();
         }
+    }
+
+    private Lock getLock(Long id) {
+        Lock lock = locks.get(id);
+        if(lock == null) {
+            synchronized (this) {
+                if(lock == null) {
+                    lock = new ReentrantLock();
+                    locks.put(id, lock);
+                }
+            }
+        }
+        return lock;
     }
 }
