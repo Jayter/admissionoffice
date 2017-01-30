@@ -19,8 +19,7 @@ public class Controller extends HttpServlet {
         BeanContext context = (BeanContext) getServletContext().getAttribute("beanContext");
         Command command = (Command) context.getBean(commandName);
         if(command == null) {
-            request.setAttribute("exception", new IllegalArgumentException("Resource not found."));
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } else {
             try {
                 command.execute(request, response);
