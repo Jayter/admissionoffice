@@ -92,7 +92,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
             boolean updated = affectedRows != 0;
 
             if(updated) {
-                termsCache.replace(terms.getYear(), terms);
+                termsCache.remove(terms.getYear());
             }
 
             return updated;
