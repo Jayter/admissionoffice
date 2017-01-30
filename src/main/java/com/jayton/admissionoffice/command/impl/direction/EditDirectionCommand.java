@@ -32,6 +32,7 @@ public class EditDirectionCommand implements Command {
                 Verifier.verifyId(directionId);
 
                 Direction direction = directionService.get(directionId);
+                Verifier.verifyObject(direction);
 
                 request.setAttribute(PARAM_NAMES.getString("direction"), direction);
                 request.getRequestDispatcher(PAGE_NAMES.getString("page.direction.edit")).forward(request, response);

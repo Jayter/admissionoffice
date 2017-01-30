@@ -51,8 +51,9 @@ public class GetDirectionCommand implements Command {
             Verifier.verifyNonNegative(countPerPage);
 
             Direction direction = directionService.get(id);
-            ApplicationDto dto = applicationService.getByDirection(id, offset, countPerPage);
+            Verifier.verifyObject(direction);
 
+            ApplicationDto dto = applicationService.getByDirection(id, offset, countPerPage);
             Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);
 
             request.setAttribute(PARAM_NAMES.getString("direction"), direction);

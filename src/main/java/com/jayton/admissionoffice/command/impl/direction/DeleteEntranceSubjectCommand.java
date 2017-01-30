@@ -28,7 +28,11 @@ public class DeleteEntranceSubjectCommand implements Command {
             Long subjectId = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("subjectId")));
             Verifier.verifyIds(directionId, subjectId);
 
-            directionService.deleteEntranceSubject(directionId, subjectId);
+            if(!directionService.deleteEntranceSubject(directionId, subjectId)) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to delete entrance subject."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             request.getRequestDispatcher(PAGE_NAMES.getString("controller.get_direction")+"&id="+directionId).forward(request, response);
         } catch (ServiceException e) {

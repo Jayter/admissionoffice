@@ -27,7 +27,11 @@ public class DeleteFacultyCommand implements Command {
             Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
             Verifier.verifyId(id);
 
-            facultyService.delete(id);
+            if(!facultyService.delete(id)) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to delete faculty."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             response.sendRedirect(PAGE_NAMES.getString("controller.load_main"));
         } catch (ServiceException e) {

@@ -46,6 +46,8 @@ public class GetUniversityCommand implements Command {
             Verifier.verifyNonNegative(countPerPage);
 
             University university = universityService.get(id);
+            Verifier.verifyObject(university);
+
             PaginationDTO<Faculty> dto = facultyService.getWithCountByUniversity(id, offset, countPerPage);
 
             Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);

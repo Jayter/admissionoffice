@@ -29,7 +29,6 @@ public class EditSessionTermsCommand implements Command {
             request.setAttribute(PARAM_NAMES.getString("year"), currentYear);
 
             SessionTerms currentTerms = utilService.getSessionTerms(currentYear);
-
             if(currentTerms != null) {
                 request.setAttribute(PARAM_NAMES.getString("isNew"), false);
                 request.setAttribute(PARAM_NAMES.getString("sessionStart"), currentTerms.getSessionStart());

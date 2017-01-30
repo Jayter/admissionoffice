@@ -32,6 +32,7 @@ public class EditFacultyCommand implements Command {
                 Verifier.verifyId(facultyId);
 
                 Faculty faculty = facultyService.get(facultyId);
+                Verifier.verifyObject(faculty);
 
                 request.setAttribute(PARAM_NAMES.getString("id"), faculty.getId());
                 request.setAttribute(PARAM_NAMES.getString("universityId"), faculty.getUniversityId());

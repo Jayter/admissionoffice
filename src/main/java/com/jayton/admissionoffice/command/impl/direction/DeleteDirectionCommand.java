@@ -27,7 +27,11 @@ public class DeleteDirectionCommand implements Command {
             Long id = Verifier.convertToLong(request.getParameter(PARAM_NAMES.getString("id")));
             Verifier.verifyId(id);
 
-            directionService.delete(id);
+            if(!directionService.delete(id)) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to delete direction."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             response.sendRedirect(PAGE_NAMES.getString("controller.load_main"));
         } catch (ServiceException e) {

@@ -32,6 +32,8 @@ public class EditUniversityCommand implements Command {
                 Verifier.verifyId(universityId);
 
                 University university = universityService.get(universityId);
+                Verifier.verifyObject(university);
+
                 request.setAttribute(PARAM_NAMES.getString("id"), university.getId());
                 request.setAttribute(PARAM_NAMES.getString("name"), university.getName());
                 request.setAttribute(PARAM_NAMES.getString("city"), university.getCity());

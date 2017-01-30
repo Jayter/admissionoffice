@@ -36,7 +36,11 @@ public class UpdateUniversityCommand implements Command {
 
             Verifier.verifyStrings(name, city, address);
 
-            universityService.update(new University(id, name, city, address));
+            if(!universityService.update(new University(id, name, city, address))) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to update university."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             response.sendRedirect(PAGE_NAMES.getString("controller.get_university")+"&id="+id);
         } catch (VerificationException e) {

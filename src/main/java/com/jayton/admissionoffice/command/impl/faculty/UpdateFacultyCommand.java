@@ -38,7 +38,11 @@ public class UpdateFacultyCommand implements Command {
 
             verifyInput(name, phone, email, address, universityId);
 
-            facultyService.update(new Faculty(id, name, phone, email, address, universityId));
+            if(!facultyService.update(new Faculty(id, name, phone, email, address, universityId))) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to update faculty."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             response.sendRedirect(PAGE_NAMES.getString("controller.get_faculty")+"&id="+id);
         } catch (VerificationException e) {

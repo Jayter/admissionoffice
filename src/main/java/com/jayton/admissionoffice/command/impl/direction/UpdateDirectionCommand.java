@@ -37,7 +37,11 @@ public class UpdateDirectionCommand implements Command {
 
             verifyInput(id, facultyId, name, averageCoef, countOfStuds);
 
-            directionService.update(new Direction(id, name, averageCoef, countOfStuds, facultyId));
+            if(!directionService.update(new Direction(id, name, averageCoef, countOfStuds, facultyId))) {
+                request.setAttribute(PARAM_NAMES.getString("exception"),
+                        new VerificationException("Failed to update direction."));
+                request.getRequestDispatcher(PAGE_NAMES.getString("page.exception")).forward(request, response);
+            }
 
             response.sendRedirect(PAGE_NAMES.getString("controller.get_direction"+"&id="+id));
         } catch (VerificationException e) {
