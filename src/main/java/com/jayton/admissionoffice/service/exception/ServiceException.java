@@ -1,6 +1,8 @@
 package com.jayton.admissionoffice.service.exception;
 
-public class ServiceException extends Exception {
+import com.jayton.admissionoffice.util.exception.ApplicationException;
+
+public class ServiceException extends ApplicationException {
     public ServiceException() {
     }
 

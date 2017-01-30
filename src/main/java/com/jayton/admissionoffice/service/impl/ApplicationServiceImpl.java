@@ -11,6 +11,7 @@ import com.jayton.admissionoffice.service.ApplicationService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
 import com.jayton.admissionoffice.util.di.Injected;
+import com.jayton.admissionoffice.util.exception.ApplicationException;
 import com.jayton.admissionoffice.util.lock.Synchronizer;
 
 import java.math.BigDecimal;
@@ -39,8 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             Objects.requireNonNull(user);
             Objects.requireNonNull(applied);
 
-            try {
-                synchronizer.lock(user.getId());
+            return synchronizer.executeSynchronously(user.getId(), () -> {
                 List<Application> retrieved = applicationDao.getByUser(user.getId());
                 if(retrieved.size() >= 5) {
                     throw new ServiceVerificationException("You can apply only for 5 directions.");
@@ -57,13 +57,15 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Application application = new Application(user.getId(), directionId, applied, mark);
 
                 return applicationDao.add(application);
-            } finally {
-                synchronizer.unlock(user.getId());
-            }
+            });
         } catch (DAOException e) {
             throw new ServiceException(e);
         } catch (NullPointerException e) {
             throw new ServiceVerificationException("Nullable input parameters.");
+        } catch (ServiceException e) {
+            throw e;
+        } catch (ApplicationException e) {
+            throw new ServiceException("Internal server error.");
         }
     }
 

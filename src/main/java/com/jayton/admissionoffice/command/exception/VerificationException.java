@@ -1,6 +1,8 @@
 package com.jayton.admissionoffice.command.exception;
 
-public class VerificationException extends Exception {
+import com.jayton.admissionoffice.util.exception.ApplicationException;
+
+public class VerificationException extends ApplicationException {
 
     public VerificationException(String message) {
         super(message);

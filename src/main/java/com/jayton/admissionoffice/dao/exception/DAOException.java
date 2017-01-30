@@ -1,6 +1,8 @@
 package com.jayton.admissionoffice.dao.exception;
 
-public class DAOException extends Exception {
+import com.jayton.admissionoffice.util.exception.ApplicationException;
+
+public class DAOException extends ApplicationException {
 
     public DAOException() {
     }
