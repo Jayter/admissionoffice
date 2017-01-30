@@ -5,7 +5,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
 import com.jayton.admissionoffice.model.to.AssociatedPairDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
@@ -31,6 +31,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public long add(Direction direction) throws DAOException {
+        logger.info("Adding direction: %s.", direction.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement addDirectionSt = connection.prepareStatement(directionQueries.getString("direction.add"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -72,6 +73,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public Direction get(long id) throws DAOException {
+        logger.info("Getting direction by id: %d.", id);
         Direction direction = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionSt = connection.prepareStatement(directionQueries.getString("direction.get"));
@@ -108,6 +110,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean update(Direction direction) throws DAOException {
+        logger.info("Updating direction: %s.", direction.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement updateDirectionSt = connection.prepareStatement(directionQueries.getString("direction.update"));) {
 
@@ -125,11 +128,13 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
+        logger.info("Deleting direction by id: %d.", id);
         return daoHelper.delete(directionQueries.getString("direction.delete"), "Failed to delete direction.", id);
     }
 
     @Override
     public EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> getAll() throws DAOException {
+        logger.info("Getting all directions.");
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("direction.get.all"));
             PreparedStatement getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all"))) {
@@ -145,7 +150,9 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     }
 
     @Override
-    public PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> getWithCountByFaculty(long facultyId, long offset, long count) throws DAOException {
+    public PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>>
+            getWithCountByFaculty(long facultyId, long offset, long count) throws DAOException {
+        logger.info("Getting directions by faculty id: %d, offset: %d, count: %d.", facultyId, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
             PreparedStatement getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_faculty"));
@@ -164,7 +171,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
             EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> directionsDTO
                     = new EntriesWithAssociatedPairsDto<>(directions, subjects);
-            return new PaginationDTO<>(Collections.singletonList(directionsDTO), totalCount);
+            return new PaginationDto<>(Collections.singletonList(directionsDTO), totalCount);
         } catch (SQLException e) {
             logger.error("Failed to load directions.", e);
             throw new DAOException("Failed to load directions.", e);
@@ -173,6 +180,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean addSubject(long directionId, long subjectId, BigDecimal coef) throws DAOException {
+        logger.info("Adding entrance subject: directionId: %d, subjectId: %d, coef: %f.", directionId, subjectId, coef);
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(directionQueries.getString("subject.add"))) {
 
@@ -189,12 +197,14 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean deleteSubject(long directionId, long subjectId) throws DAOException {
+        logger.info("Deleting entrance subject: directionId: %d, subjectId: %d.", directionId, subjectId);
         return daoHelper.delete(directionQueries.getString("subject.delete"), "Failed to delete entrance subject.",
                 directionId, subjectId);
     }
 
     @Override
     public Map<Long, BigDecimal> getSubjects(long directionId) throws DAOException {
+        logger.info("Getting subjects by directionId: %d.", directionId);
         Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_direction"))) {

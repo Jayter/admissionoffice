@@ -88,4 +88,16 @@ public class Direction {
         result = 31 * result + (entranceSubjects != null ? entranceSubjects.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Direction{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", averageCoefficient=" + averageCoefficient +
+                ", countOfStudents=" + countOfStudents +
+                ", facultyId=" + facultyId +
+                ", entranceSubjects=" + entranceSubjects +
+                '}';
+    }
 }

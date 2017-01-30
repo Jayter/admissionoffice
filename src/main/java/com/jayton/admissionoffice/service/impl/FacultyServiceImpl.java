@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.service.impl;
 
 import com.jayton.admissionoffice.dao.FacultyDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.service.FacultyService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -62,7 +62,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public PaginationDTO<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws ServiceException {
+    public PaginationDto<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws ServiceException {
         try {
             return facultyDao.getWithCountByUniversity(universityId, offset, count);
         } catch (DAOException e) {

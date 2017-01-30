@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.FacultyDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -102,7 +102,7 @@ public class JdbcFacultyDaoImplTest {
 
     @Test
     public void getWithCountByUniversityTest() throws Exception {
-        PaginationDTO<Faculty> allDto = facultyDao.getWithCountByUniversity(UNIVERSITY2.getId(), 0, 100);
+        PaginationDto<Faculty> allDto = facultyDao.getWithCountByUniversity(UNIVERSITY2.getId(), 0, 100);
         List<Faculty> faculties = allDto.getEntries();
 
         Assert.assertEquals(faculties, Arrays.asList(FACULTY3, FACULTY4));
@@ -111,7 +111,7 @@ public class JdbcFacultyDaoImplTest {
 
     @Test
     public void getWithCountByIncorrectIdTest() throws Exception {
-        PaginationDTO<Faculty> incorrectDto = facultyDao.getWithCountByUniversity(INCORRECT_ID, 0, 100);
+        PaginationDto<Faculty> incorrectDto = facultyDao.getWithCountByUniversity(INCORRECT_ID, 0, 100);
 
         Assert.assertEquals(incorrectDto.getEntries(), Collections.emptyList());
         Assert.assertEquals(incorrectDto.getCount(), 0);

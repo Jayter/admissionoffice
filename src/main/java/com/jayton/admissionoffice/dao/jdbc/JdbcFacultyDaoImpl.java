@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.FacultyDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
@@ -30,6 +30,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public long add(Faculty faculty) throws DAOException {
+        logger.info("Adding faculty: %s.", faculty.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.add"),
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -53,6 +54,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public Faculty get(long id) throws DAOException {
+        logger.info("Getting faculty by id: %d.", id);
         Faculty faculty = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.get"))) {
@@ -79,6 +81,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean update(Faculty faculty) throws DAOException {
+        logger.info("Updating faculty: %s.", faculty.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.update"))) {
 
@@ -97,11 +100,13 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
+        logger.info("Deleting faculty by id: %d.", id);
         return daoHelper.delete(facultyQueries.getString("faculty.delete"), "Failed to delete faculty.", id);
     }
 
     @Override
-    public PaginationDTO<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws DAOException {
+    public PaginationDto<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws DAOException {
+        logger.info("Getting faculties by university id: %d, offset: %D, count: %d.", universityId, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getFacultiesSt = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(facultyQueries.getString("faculty.count"));) {
@@ -113,7 +118,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
             List<Faculty> faculties =  getByStatement(getFacultiesSt);
             long totalCount = daoHelper.getCount(getTotalCountSt, universityId);
 
-            return new PaginationDTO<>(faculties, totalCount);
+            return new PaginationDto<>(faculties, totalCount);
         } catch (SQLException e) {
             logger.error("Failed to load faculties.", e);
             throw new DAOException("Failed to load faculties.", e);
@@ -122,6 +127,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public List<Faculty> getAll() throws DAOException {
+        logger.info("Getting all faculties.");
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.get.all"))) {
 

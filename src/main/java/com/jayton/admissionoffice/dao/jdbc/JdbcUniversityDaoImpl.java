@@ -3,7 +3,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
@@ -30,6 +30,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public long add(University university) throws DAOException {
+        logger.info("Adding university: %s.", university.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.add"),
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -51,6 +52,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public University get(long id) throws DAOException {
+        logger.info("Getting university by id: %d.", id);
         University university = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.get"))) {
@@ -75,6 +77,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public boolean update(University university) throws DAOException {
+        logger.info("Updating university: %s.", university.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.update"))) {
 
@@ -92,11 +95,13 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
+        logger.info("Deleting university by id: %id.", id);
         return daoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
     }
 
     @Override
-    public PaginationDTO<University> getWithCountByCity(String city, long offset, long count) throws DAOException {
+    public PaginationDto<University> getWithCountByCity(String city, long offset, long count) throws DAOException {
+        logger.info("Getting universitites by city: %s, offset: %d, count: %d.", city, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count.by_city"))) {
@@ -109,7 +114,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             List<University> universities = getByStatement(getUniversitiesSt);
             long totalCount = daoHelper.getCount(getTotalCountSt);
 
-            return new PaginationDTO<>(universities, totalCount);
+            return new PaginationDto<>(universities, totalCount);
         } catch (SQLException e) {
             logger.error("Failed to load universities.", e);
             throw new DAOException("Failed to load universities.", e);
@@ -117,7 +122,8 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
     }
 
     @Override
-    public PaginationDTO<University> getWithCount(long offset, long count) throws DAOException {
+    public PaginationDto<University> getWithCount(long offset, long count) throws DAOException {
+        logger.info("Getting universitites: offset: %d, count: %d.", offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count"))) {
@@ -128,7 +134,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
             List<University> universities = getByStatement(getUniversitiesSt);
             long totalCount = daoHelper.getCount(getTotalCountSt);
 
-            return new PaginationDTO<>(universities, totalCount);
+            return new PaginationDto<>(universities, totalCount);
         } catch (SQLException e) {
             logger.error("Failed to load universities.", e);
             throw new DAOException("Failed to load universities.", e);

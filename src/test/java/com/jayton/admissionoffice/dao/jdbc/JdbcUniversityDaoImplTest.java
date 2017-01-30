@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.dao.jdbc;
 
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -106,7 +106,7 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void getWithCountTest() throws Exception {
-        PaginationDTO<University> allDto = universityDao.getWithCount(0, 100);
+        PaginationDto<University> allDto = universityDao.getWithCount(0, 100);
         List<University> all = allDto.getEntries();
 
         Assert.assertEquals(Arrays.asList(UNIVERSITY1, UNIVERSITY2, UNIVERSITY3), all);
@@ -115,7 +115,7 @@ public class JdbcUniversityDaoImplTest {
 
     @Test
     public void getSingleWithCountTest() throws Exception {
-        PaginationDTO<University> singleDto = universityDao.getWithCount(0, 1);
+        PaginationDto<University> singleDto = universityDao.getWithCount(0, 1);
         List<University> single = singleDto.getEntries();
 
         Assert.assertEquals(Collections.singletonList(UNIVERSITY1), single);

@@ -8,11 +8,11 @@ import java.util.List;
  * Used to transfer data such as list of items and total count of them.
  * This data is mostly used for pagination.
  */
-public class PaginationDTO<T> {
+public class PaginationDto<T> {
     private List<T> entries;
     private long count;
 
-    public PaginationDTO(List<T> entries, long count) {
+    public PaginationDto(List<T> entries, long count) {
         this.entries = entries;
         this.count = count;
     }

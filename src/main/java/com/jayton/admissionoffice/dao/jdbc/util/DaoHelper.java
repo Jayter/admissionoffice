@@ -21,6 +21,7 @@ public class DaoHelper {
     public boolean delete(String script, String errorMessage, Long... params) throws DAOException {
         try(Connection connection = dataSource.getConnection(); PreparedStatement statement =
                 connection.prepareStatement(script)) {
+            logger.info("Executing delete query: \"%s\".", script);
             if(params == null) {
                 throw new DAOException(errorMessage);
             }
@@ -30,7 +31,7 @@ public class DaoHelper {
 
             return statement.executeUpdate() != 0;
         } catch (SQLException e) {
-            logger.error(script, e);
+            logger.error(errorMessage, e);
             throw new DAOException(errorMessage, e);
         }
     }

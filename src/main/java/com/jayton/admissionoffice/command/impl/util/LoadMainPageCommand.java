@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.to.SessionTerms;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
@@ -44,7 +44,7 @@ public class LoadMainPageCommand implements Command {
             Verifier.verifyNonNegative(page);
             Verifier.verifyNonNegative(countPerPage);
 
-            PaginationDTO<University> dto;
+            PaginationDto<University> dto;
             if(city == null || city.isEmpty()) {
                 dto = universityService.getWithCount(offset, countPerPage);
             } else {

@@ -45,4 +45,13 @@ public class SessionTerms implements Serializable {
         result = 31 * result + (sessionEnd != null ? sessionEnd.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SessionTerms{" +
+                "year=" + year +
+                ", sessionStart=" + sessionStart +
+                ", sessionEnd=" + sessionEnd +
+                '}';
+    }
 }

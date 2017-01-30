@@ -1,14 +1,16 @@
 package com.jayton.admissionoffice.service;
 
 import com.jayton.admissionoffice.data.DirectionMatcher;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
+import com.jayton.admissionoffice.service.impl.DirectionServiceImpl;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.slf4j.LoggerFactory;
 import util.ContextInitializationHelper;
 import util.DbInitializationHelper;
 
@@ -120,7 +122,7 @@ public class DirectionServiceImplTest {
 
     @Test
     public void getByFacultyTest() throws Exception {
-        PaginationDTO<Direction> dto = directionService.getWithCountByFaculty(FACULTY1.getId(), 0, 100);
+        PaginationDto<Direction> dto = directionService.getWithCountByFaculty(FACULTY1.getId(), 0, 100);
 
         System.out.println(dto.getEntries());
         Assert.assertTrue(matcher.compareLists(dto.getEntries(), Arrays.asList(DIRECTION1, DIRECTION2, DIRECTION3)));
@@ -129,7 +131,7 @@ public class DirectionServiceImplTest {
 
     @Test
     public void getByFacultyWithSingleResultTest() throws Exception {
-        PaginationDTO<Direction> singleDto = directionService.getWithCountByFaculty(FACULTY1.getId(), 0, 1);
+        PaginationDto<Direction> singleDto = directionService.getWithCountByFaculty(FACULTY1.getId(), 0, 1);
 
         Assert.assertTrue(matcher.compareLists(singleDto.getEntries(), Collections.singletonList(DIRECTION1)));
         Assert.assertEquals(singleDto.getCount(), 3);
@@ -137,7 +139,7 @@ public class DirectionServiceImplTest {
 
     @Test
     public void getByFacultyByIncorrectIdTest() throws Exception {
-        PaginationDTO<Direction> emptyDto = directionService.getWithCountByFaculty(INCORRECT_ID, 0, 100);
+        PaginationDto<Direction> emptyDto = directionService.getWithCountByFaculty(INCORRECT_ID, 0, 100);
 
         Assert.assertEquals(Collections.emptyList(), emptyDto.getEntries());
     }

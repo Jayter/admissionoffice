@@ -5,7 +5,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.data.UserMatcher;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -109,7 +109,7 @@ public class JdbcUserDaoImplTest {
 
     @Test
     public void getAllWithCountTest() throws Exception {
-        PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(0, 100);
+        PaginationDto<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(0, 100);
         EntriesWithAssociatedPairsDto<User, Long, Long, Short> entries = dto.getEntries().get(0);
 
         List<User> users = entries.getEntries();

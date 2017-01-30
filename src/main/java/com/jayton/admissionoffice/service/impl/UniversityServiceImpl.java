@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.service.impl;
 
 import com.jayton.admissionoffice.dao.UniversityDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.UniversityService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -62,7 +62,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public PaginationDTO<University> getWithCount(long offset, long count) throws ServiceException {
+    public PaginationDto<University> getWithCount(long offset, long count) throws ServiceException {
         try {
             return universityDao.getWithCount(offset, count);
         } catch (DAOException e) {
@@ -71,7 +71,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public PaginationDTO<University> getWithCountByCity(String city, long offset, long count) throws ServiceException {
+    public PaginationDto<University> getWithCountByCity(String city, long offset, long count) throws ServiceException {
         try {
             Objects.requireNonNull(city);
             return universityDao.getWithCountByCity(city, offset, count);

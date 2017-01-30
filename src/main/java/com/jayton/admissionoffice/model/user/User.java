@@ -136,4 +136,19 @@ public class User {
         result = 31 * result + (results != null ? results.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", birthDate=" + birthDate +
+                ", averageMark=" + averageMark +
+                ", results=" + results +
+                '}';
+    }
 }

@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.data.DirectionMatcher;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.exception.InjectionException;
@@ -111,7 +111,7 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void getByFacultyTest() throws Exception {
-        PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> dto =
+        PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> dto =
                 directionDao.getWithCountByFaculty(FACULTY1.getId(), 0, 100);
         EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> retrievedEntries = dto.getEntries().get(0);
 
@@ -122,7 +122,7 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void getByFacultyWithSingleResultTest() throws Exception {
-        PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> singleDto =
+        PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> singleDto =
                 directionDao.getWithCountByFaculty(FACULTY1.getId(), 0, 1);
         EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> singleEntry = singleDto.getEntries().get(0);
 
@@ -132,7 +132,7 @@ public class JdbcDirectionDaoImplTest {
 
     @Test
     public void getByFacultyByIncorrectIdTest() throws Exception {
-        PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> emptyDto =
+        PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> emptyDto =
                 directionDao.getWithCountByFaculty(INCORRECT_ID, 0, 100);
         EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> emptyEntries = emptyDto.getEntries().get(0);
         Assert.assertEquals(Collections.emptyList(), emptyEntries.getEntries());

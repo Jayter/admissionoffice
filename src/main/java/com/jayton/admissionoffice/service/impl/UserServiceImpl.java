@@ -5,7 +5,7 @@ import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.AssociatedPairDto;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.UserService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -81,9 +81,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PaginationDTO<User> getAllWithCount(long offset, long count) throws ServiceException {
+    public PaginationDto<User> getAllWithCount(long offset, long count) throws ServiceException {
         try {
-            PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(offset, count);
+            PaginationDto<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> dto = userDao.getAllWithCount(offset, count);
             long totalCount = dto.getCount();
 
             EntriesWithAssociatedPairsDto<User, Long, Long, Short> entries = dto.getEntries().get(0);
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
                         user.getPhoneNumber(), user.getBirthDate(), user.getAverageMark(), results));
             }
 
-            return new PaginationDTO<>(users, totalCount);
+            return new PaginationDto<>(users, totalCount);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

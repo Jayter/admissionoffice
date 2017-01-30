@@ -2,7 +2,7 @@ package com.jayton.admissionoffice.service;
 
 import com.jayton.admissionoffice.data.UserMatcher;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
@@ -125,7 +125,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getAllWithCountTest() throws Exception {
-        PaginationDTO<User> dto = userService.getAllWithCount(0, 100);
+        PaginationDto<User> dto = userService.getAllWithCount(0, 100);
 
         Assert.assertTrue(matcher.compareListsWithoutResults(dto.getEntries(), Arrays.asList(USER1, USER2, USER3)));
     }

@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.command.Command;
 import com.jayton.admissionoffice.command.exception.VerificationException;
 import com.jayton.admissionoffice.command.util.CommandUtils;
 import com.jayton.admissionoffice.command.util.Verifier;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.model.university.University;
 import com.jayton.admissionoffice.service.FacultyService;
@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 public class GetUniversityCommand implements Command {
 
@@ -48,7 +47,7 @@ public class GetUniversityCommand implements Command {
             University university = universityService.get(id);
             Verifier.verifyObject(university);
 
-            PaginationDTO<Faculty> dto = facultyService.getWithCountByUniversity(id, offset, countPerPage);
+            PaginationDto<Faculty> dto = facultyService.getWithCountByUniversity(id, offset, countPerPage);
 
             Long totalPagesCount = CommandUtils.getTotalCountOfPages(dto.getCount(), countPerPage);
 

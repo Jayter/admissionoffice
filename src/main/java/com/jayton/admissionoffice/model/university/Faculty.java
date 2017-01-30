@@ -74,4 +74,16 @@ public class Faculty {
         result = 31 * result + (int) (universityId ^ (universityId >>> 32));
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Faculty{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", officePhone='" + officePhone + '\'' +
+                ", officeEmail='" + officeEmail + '\'' +
+                ", officeAddress='" + officeAddress + '\'' +
+                ", universityId=" + universityId +
+                '}';
+    }
 }

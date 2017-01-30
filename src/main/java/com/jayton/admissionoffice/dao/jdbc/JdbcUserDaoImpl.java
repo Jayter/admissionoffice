@@ -6,7 +6,7 @@ import com.jayton.admissionoffice.dao.jdbc.util.DaoHelper;
 import com.jayton.admissionoffice.model.to.AssociatedPairDto;
 import com.jayton.admissionoffice.model.to.AuthorizationResult;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.di.Injected;
 import org.slf4j.Logger;
@@ -33,6 +33,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public long add(User user) throws DAOException {
+        logger.info("Adding user: %s.", user);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement addUserSt = connection.prepareStatement(userQueries.getString("user.add"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -72,6 +73,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public User get(long id) throws DAOException {
+        logger.info("Getting user by id: %d.", id);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all.by_id"))) {
@@ -88,6 +90,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean update(User user) throws DAOException {
+        logger.info("Updating user: %s.", user);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement updateUserSt = connection.prepareStatement(userQueries.getString("user.update"))) {
 
@@ -108,6 +111,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public User getByEmail(String email) throws DAOException {
+        logger.info("Getting user by email: %s.", email);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all.by_email"))) {
@@ -124,11 +128,13 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
+        logger.info("Deleting user by id: %d.", id);
         return daoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
     }
 
     @Override
-    public PaginationDTO<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAllWithCount(long offset, long count) throws DAOException {
+    public PaginationDto<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAllWithCount(long offset, long count) throws DAOException {
+        logger.info("Getting users: offset: %d, count: %d.", offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
@@ -143,7 +149,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
             EntriesWithAssociatedPairsDto<User, Long, Long, Short> usersDTO
                     = new EntriesWithAssociatedPairsDto<>(users, results);
-            return new PaginationDTO(Collections.singletonList(usersDTO), totalCount);
+            return new PaginationDto(Collections.singletonList(usersDTO), totalCount);
         } catch (SQLException e) {
             logger.error("Failed to load users.", e);
             throw new DAOException("Failed to load users.", e);
@@ -152,6 +158,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean addResult(long userId, long subjectId, short mark) throws DAOException {
+        logger.info("Adding user result: userId: %d, subjectId: %d, mark: %d.", userId, subjectId, mark);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("result.add"))) {
 
@@ -168,6 +175,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public Map<Long, Short> getUserResults(long userId) throws DAOException {
+        logger.info("Getting results of user by id: %d.", userId);
         Map<Long, Short> results = new HashMap<>();
 
         try(Connection connection = dataSource.getConnection();
@@ -189,11 +197,13 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteResult(long userId, long subjectId) throws DAOException {
+        logger.info("Deleting user result: userId: %d, subjectId: %d.", userId, subjectId);
         return daoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
     }
 
     @Override
     public int checkEmail(String email) throws DAOException {
+        logger.info("Checking email: %s.", email);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));) {
 
@@ -211,6 +221,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public AuthorizationResult authorize(String login, String password) throws DAOException {
+        logger.info("Authorizing by login: %s.", login);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize"))) {
 
@@ -235,6 +246,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public Map<Long, String> getDirectionNames(long userId) throws DAOException {
+        logger.info("Getting direction names by user id: %d.", userId);
         Map<Long, String> names = new HashMap<>();
 
         try(Connection connection = dataSource.getConnection();

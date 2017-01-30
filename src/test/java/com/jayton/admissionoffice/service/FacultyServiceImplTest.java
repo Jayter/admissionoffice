@@ -1,6 +1,6 @@
 package com.jayton.admissionoffice.service;
 
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Faculty;
 import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.service.exception.ServiceVerificationException;
@@ -110,7 +110,7 @@ public class FacultyServiceImplTest {
 
     @Test
     public void getWithCountByUniversityTest() throws Exception {
-        PaginationDTO<Faculty> allDto = facultyService.getWithCountByUniversity(UNIVERSITY2.getId(), 0, 100);
+        PaginationDto<Faculty> allDto = facultyService.getWithCountByUniversity(UNIVERSITY2.getId(), 0, 100);
         List<Faculty> faculties = allDto.getEntries();
 
         Assert.assertEquals(faculties, Arrays.asList(FACULTY3, FACULTY4));
@@ -119,7 +119,7 @@ public class FacultyServiceImplTest {
 
     @Test
     public void getWithCountByIncorrectIdTest() throws Exception {
-        PaginationDTO<Faculty> incorrectDto = facultyService.getWithCountByUniversity(INCORRECT_ID, 0, 100);
+        PaginationDto<Faculty> incorrectDto = facultyService.getWithCountByUniversity(INCORRECT_ID, 0, 100);
 
         Assert.assertEquals(incorrectDto.getEntries(), Collections.emptyList());
         Assert.assertEquals(incorrectDto.getCount(), 0);

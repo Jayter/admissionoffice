@@ -32,6 +32,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public long add(Application application) throws DAOException {
+        logger.info("Adding application: %s.", application.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.add"),
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -40,6 +41,8 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
             statement.setLong(2, application.getDirectionId());
             statement.setTimestamp(3, Timestamp.valueOf(application.getCreationTime()));
             statement.setBigDecimal(4, application.getMark());
+
+            logger.info("Executing query: \"%s\"", statement.toString());
 
             statement.executeUpdate();
             try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -54,6 +57,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public Application get(long id) throws DAOException {
+        logger.info("Getting application by id: %d.", id);
         Application application = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.get"))) {
@@ -79,6 +83,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public boolean update(long id, Status status) throws DAOException {
+        logger.info("Updating application: id: %d, status: %s.", id, status);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.update"))) {
 
@@ -94,11 +99,13 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
+        logger.info("Deleting application by id: %d.", id);
         return daoHelper.delete(applicationQueries.getString("application.delete"), "Failed to delete application.", id);
     }
 
     @Override
     public boolean updateAll(List<Application> applications, Status status) throws DAOException {
+        logger.info("Updating applications with status: %s.", status);
         boolean updated = true;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.update"))) {
@@ -123,6 +130,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public ApplicationDto getByDirection(long directionId, long offset, long count) throws DAOException {
+        logger.info("Getting applications by direction id: %d, offset: %d, count: %d.", directionId, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getApplicationsSt = connection.prepareStatement(applicationQueries.getString("application.get.all.by_direction"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(applicationQueries.getString("application.count"))) {
@@ -159,6 +167,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public List<Application> getByUser(long userId) throws DAOException {
+        logger.info("Getting applications by user id: %d.", userId);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.get.all.by_user"))) {
             statement.setLong(1, userId);
@@ -172,6 +181,7 @@ public class JdbcApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public List<Application> getAll() throws DAOException {
+        logger.info("Getting all applications.");
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(applicationQueries.getString("application.get.all"))) {
 

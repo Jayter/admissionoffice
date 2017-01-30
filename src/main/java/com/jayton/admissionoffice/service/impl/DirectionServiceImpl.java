@@ -4,7 +4,7 @@ import com.jayton.admissionoffice.dao.DirectionDao;
 import com.jayton.admissionoffice.dao.exception.DAOException;
 import com.jayton.admissionoffice.model.to.AssociatedPairDto;
 import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
-import com.jayton.admissionoffice.model.to.PaginationDTO;
+import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.university.Direction;
 import com.jayton.admissionoffice.service.DirectionService;
 import com.jayton.admissionoffice.service.exception.ServiceException;
@@ -70,16 +70,16 @@ public class DirectionServiceImpl implements DirectionService {
     }
 
     @Override
-    public PaginationDTO<Direction> getWithCountByFaculty(long facultyId, long offset, long count) throws ServiceException {
+    public PaginationDto<Direction> getWithCountByFaculty(long facultyId, long offset, long count) throws ServiceException {
         try {
-            PaginationDTO<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> dto
+            PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>> dto
                     = directionDao.getWithCountByFaculty(facultyId, offset, count);
             long totalCount = dto.getCount();
 
             EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal> entries = dto.getEntries().get(0);
 
             List<Direction> directions = getDirections(entries);
-            return new PaginationDTO<>(directions, totalCount);
+            return new PaginationDto<>(directions, totalCount);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
