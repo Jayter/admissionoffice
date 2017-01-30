@@ -158,7 +158,7 @@ public class JdbcUserDaoImpl implements UserDao {
     }
 
     @Override
-    public Map<Long, Short> getResultsOfUser(long userId) throws DAOException {
+    public Map<Long, Short> getUserResults(long userId) throws DAOException {
         Map<Long, Short> results = new HashMap<>();
 
         try(Connection connection = dataSource.getConnection();
