@@ -19,6 +19,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+/**
+ * Intercepts and filters commands by time of request.
+ * <p/>
+ * The time can be before, after, within and beyond
+ * application session period.
+ * Commands should be described in a properties file,
+ * given as a parameter to <code>ServletConfig<code/>.
+ */
 public class TimeFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(TimeFilter.class);

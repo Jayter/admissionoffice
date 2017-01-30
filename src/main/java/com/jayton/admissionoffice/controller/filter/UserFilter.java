@@ -9,6 +9,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Intercepts and filters commands by user rights of request.
+ * <p/>
+ * There are commands available only for admins or only for users.
+ * They should be specified in a property file, given as a parameter
+ * to <code>ServletConfig</code>
+ */
 public class UserFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(UserFilter.class);
