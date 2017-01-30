@@ -7,6 +7,8 @@ import com.jayton.admissionoffice.service.exception.ServiceException;
 import com.jayton.admissionoffice.util.di.BeanContext;
 import com.jayton.admissionoffice.util.di.BeanContextHolder;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public class TimeFilter implements Filter {
+
+    private final Logger logger = LoggerFactory.getLogger(TimeFilter.class);
 
     private static final String COMMAND = "command";
     private static final String EXCEPTION_PAGE = "error.jsp";
@@ -63,6 +67,7 @@ public class TimeFilter implements Filter {
                 onlyAfterSessionCommands.add(commands.getString(key));
             }
         }
+        logger.info("Time filter is initialized.");
     }
 
     @Override
@@ -80,6 +85,7 @@ public class TimeFilter implements Filter {
         try {
              terms = utilService.getSessionTerms((short)current.getYear());
         } catch (ServiceException e) {
+            logger.error("Failed to get session terms.", e);
             request.setAttribute(EXCEPTION, new RuntimeException("Internal server error."));
             request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
         }
@@ -87,6 +93,7 @@ public class TimeFilter implements Filter {
         try {
             verifyCommand(command, terms, current);
         } catch (VerificationException e) {
+            logger.warn("Illegal request is intercepted by TimeFilter.", e);
             request.setAttribute(EXCEPTION, e);
             request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
         }
@@ -118,5 +125,6 @@ public class TimeFilter implements Filter {
 
     @Override
     public void destroy() {
+        logger.info("Time filter is destroyed.");
     }
 }

@@ -1,5 +1,8 @@
 package com.jayton.admissionoffice.controller.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -7,6 +10,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class UserFilter implements Filter {
+
+    private final Logger logger = LoggerFactory.getLogger(UserFilter.class);
 
     private static final String COMMAND = "command";
     private static final String EXCEPTION_PAGE = "error.jsp";
@@ -35,6 +40,7 @@ public class UserFilter implements Filter {
                 userCommands.add(commands.getString(key));
             }
         }
+        logger.info("User filter is initialized.");
     }
 
     @Override
@@ -55,6 +61,7 @@ public class UserFilter implements Filter {
                 if(isAuthorizedAdmin == null && isAuthorizedUser == null) {
                     request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
                     request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                    logger.warn("Illegal request is intercepted by UserFilter.");
                     return;
                 }
 
@@ -64,11 +71,13 @@ public class UserFilter implements Filter {
                 if(isAdminCommandViolated || isUserCommandViolated) {
                     request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
                     request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                    logger.warn("Illegal request is intercepted by UserFilter.");
                     return;
                 }
             } else {
                 request.setAttribute(EXCEPTION, new IllegalAccessException(ACCESS_DENIED));
                 request.getRequestDispatcher(EXCEPTION_PAGE).forward(request, servletResponse);
+                logger.warn("Illegal request is intercepted by UserFilter.");
                 return;
             }
         }
@@ -77,6 +86,6 @@ public class UserFilter implements Filter {
 
     @Override
     public void destroy() {
-        //nothing to destroy
+        logger.info("User filter is destroyed.");
     }
 }
