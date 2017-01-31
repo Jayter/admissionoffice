@@ -16,10 +16,10 @@ INSERT INTO session_info (year, session_start, session_end) VALUES
   ('2017', '2016-7-01 12:00:00', '2016-7-21 12:00:00');
 
 INSERT INTO credentials (login, password, is_admin) VALUES
-  ('admin', 'a1D2m3I4n4I2s2Ch1E', TRUE),
-  ('dimasik', 'dim_dim', FALSE),
-  ('kate', 'katherine3', FALSE),
-  ('maksim', 'maXMax', FALSE);
+  ('admin@gmail.com', '$2a$10$nr5CFHCJ7xj7bu6RIQZLGODs1l1wLRYOrIgAMHgNxhDpa79larXXK', TRUE),
+  ('dimasik@yandex.ru', '$2a$10$KyuU93aT1ivfvYDX5rGUL./jSgarpXbqj4gJnno9fSrwRnu3xlHqm', FALSE),
+  ('kate@in.ua', '$2a$10$ziPvYnzz9qc3wamVzwnZSOzjzT4zxG4xWBtAlbSC0VyK.1DNhNhV.', FALSE),
+  ('maksim@maxim.com', '$2a$10$fFQUOYLTefEj1PmVnh0T4eHj.PthtjXZIWeQbeQazr6EZ7I/Sjcgm', FALSE);
 
 INSERT INTO subjects(name) VALUES
   ('Українська мова та література'),

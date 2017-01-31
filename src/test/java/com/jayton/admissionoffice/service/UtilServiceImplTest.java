@@ -44,7 +44,7 @@ public class UtilServiceImplTest {
 
     @Test
     public void getNonExistedSessionTermsTest() throws Exception {
-        Assert.assertNull(utilService.getSessionTerms((short)2018));
+        Assert.assertNull(utilService.getSessionTerms((short)2019));
     }
 
     @Test

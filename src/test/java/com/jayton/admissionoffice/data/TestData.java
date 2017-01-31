@@ -47,7 +47,7 @@ public class TestData {
             "aNNa1q", "+380991329782", LocalDate.of(1990, Month.JULY, 7), new Byte("12"));
     public static final User NEW_USER_WITHOUT_CREDENTIALS = new User(NEW_ID, "Анна", "Мохир", "Боярка, Шевченка 45",
             "anna.moch@yandex.ru", "+380991329782", LocalDate.of(1990, Month.JULY, 7), new Byte("12"), new HashMap<>());
-    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", "", "", "", null, "",
+    public static final User USER_WITH_NULLABLE_FIELDS = new User("name", null, null, "", null, "",
             LocalDate.now(), new Byte("1"));
     public static final User UPDATED_USER = new User(START_SEQ + 6, "Катерина", "Руденко", "Дніпропетровськ, Орловська 13",
             "pan_max@gmail.com", "+380632212612", LocalDate.of(1999, Month.DECEMBER, 12), new Byte("9"),
@@ -123,9 +123,9 @@ public class TestData {
     public static final Application UPDATED_APPLICATION = new Application(START_SEQ + 20, USER1.getId(), DIRECTION1.getId(),
             LocalDateTime.of(2016, 11, 30, 20, 49, 30), Status.APPROVED, scale(new BigDecimal(180.5)));
 
-    public static final String ADMIN_LOGIN = "admin";
-    public static final String ADMIN_PASSWORD = "a1D2m3I4n4I2s2Ch1E";
-    public static final String USER_LOGIN = "dimasik";
+    public static final String ADMIN_LOGIN = "admin@gmail.com";
+    public static final String ADMIN_PASSWORD = "admin1";
+    public static final String USER_LOGIN = "dimasik@yandex.ru";
     public static final String USER_PASSWORD = "dim_dim";
 
 

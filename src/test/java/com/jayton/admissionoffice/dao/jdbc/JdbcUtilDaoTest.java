@@ -45,7 +45,7 @@ public class JdbcUtilDaoTest {
 
     @Test
     public void getNonExistedSessionTermsTest() throws Exception {
-        Assert.assertNull(utilDao.getSessionTerms((short)2018));
+        Assert.assertNull(utilDao.getSessionTerms((short)2019));
     }
 
     @Test
