@@ -31,7 +31,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public long add(Direction direction) throws DAOException {
-        logger.info("Adding direction: %s.", direction.toString());
+        logger.info("Adding direction: {}.", direction);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement addDirectionSt = connection.prepareStatement(directionQueries.getString("direction.add"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -73,7 +73,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public Direction get(long id) throws DAOException {
-        logger.info("Getting direction by id: %d.", id);
+        logger.info("Getting direction by id: {}.", id);
         Direction direction = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionSt = connection.prepareStatement(directionQueries.getString("direction.get"));
@@ -110,7 +110,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean update(Direction direction) throws DAOException {
-        logger.info("Updating direction: %s.", direction.toString());
+        logger.info("Updating direction: {}.", direction);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement updateDirectionSt = connection.prepareStatement(directionQueries.getString("direction.update"));) {
 
@@ -128,7 +128,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
-        logger.info("Deleting direction by id: %d.", id);
+        logger.info("Deleting direction by id: {}.", id);
         return daoHelper.delete(directionQueries.getString("direction.delete"), "Failed to delete direction.", id);
     }
 
@@ -152,7 +152,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
     @Override
     public PaginationDto<EntriesWithAssociatedPairsDto<Direction, Long, Long, BigDecimal>>
             getWithCountByFaculty(long facultyId, long offset, long count) throws DAOException {
-        logger.info("Getting directions by faculty id: %d, offset: %d, count: %d.", facultyId, offset, count);
+        logger.info("Getting directions by faculty id: {}, offset: {}, count: {}.", facultyId, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("direction.get.all.by_faculty"));
             PreparedStatement getSubjectsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_faculty"));
@@ -180,7 +180,7 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean addSubject(long directionId, long subjectId, BigDecimal coef) throws DAOException {
-        logger.info("Adding entrance subject: directionId: %d, subjectId: %d, coef: %f.", directionId, subjectId, coef);
+        logger.info("Adding entrance subject: directionId: {}, subjectId: {}, coef: {}.", directionId, subjectId, coef);
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(directionQueries.getString("subject.add"))) {
 
@@ -197,14 +197,14 @@ public class JdbcDirectionDaoImpl implements DirectionDao {
 
     @Override
     public boolean deleteSubject(long directionId, long subjectId) throws DAOException {
-        logger.info("Deleting entrance subject: directionId: %d, subjectId: %d.", directionId, subjectId);
+        logger.info("Deleting entrance subject: directionId: {}, subjectId: {}.", directionId, subjectId);
         return daoHelper.delete(directionQueries.getString("subject.delete"), "Failed to delete entrance subject.",
                 directionId, subjectId);
     }
 
     @Override
     public Map<Long, BigDecimal> getSubjects(long directionId) throws DAOException {
-        logger.info("Getting subjects by directionId: %d.", directionId);
+        logger.info("Getting subjects by directionId: {}.", directionId);
         Map<Long, BigDecimal> entranceSubjects = new HashMap<>();
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getDirectionsSt = connection.prepareStatement(directionQueries.getString("subject.get.all.by_direction"))) {

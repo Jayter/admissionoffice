@@ -30,7 +30,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public long add(Faculty faculty) throws DAOException {
-        logger.info("Adding faculty: %s.", faculty.toString());
+        logger.info("Adding faculty: {}.", faculty);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.add"),
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -54,7 +54,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public Faculty get(long id) throws DAOException {
-        logger.info("Getting faculty by id: %d.", id);
+        logger.info("Getting faculty by id: {}.", id);
         Faculty faculty = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.get"))) {
@@ -81,7 +81,7 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean update(Faculty faculty) throws DAOException {
-        logger.info("Updating faculty: %s.", faculty.toString());
+        logger.info("Updating faculty: {}.", faculty.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(facultyQueries.getString("faculty.update"))) {
 
@@ -100,13 +100,13 @@ public class JdbcFacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
-        logger.info("Deleting faculty by id: %d.", id);
+        logger.info("Deleting faculty by id: {}.", id);
         return daoHelper.delete(facultyQueries.getString("faculty.delete"), "Failed to delete faculty.", id);
     }
 
     @Override
     public PaginationDto<Faculty> getWithCountByUniversity(long universityId, long offset, long count) throws DAOException {
-        logger.info("Getting faculties by university id: %d, offset: %D, count: %d.", universityId, offset, count);
+        logger.info("Getting faculties by university id: {}, offset: {}, count: {}.", universityId, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getFacultiesSt = connection.prepareStatement(facultyQueries.getString("faculty.get.all.by_university"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(facultyQueries.getString("faculty.count"));) {

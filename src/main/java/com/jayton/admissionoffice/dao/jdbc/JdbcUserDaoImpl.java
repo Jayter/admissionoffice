@@ -33,7 +33,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public long add(User user) throws DAOException {
-        logger.info("Adding user: %s.", user);
+        logger.info("Adding user: {}.", user);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement addUserSt = connection.prepareStatement(userQueries.getString("user.add"),
                     Statement.RETURN_GENERATED_KEYS);
@@ -73,7 +73,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public User get(long id) throws DAOException {
-        logger.info("Getting user by id: %d.", id);
+        logger.info("Getting user by id: {}.", id);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all.by_id"))) {
@@ -90,7 +90,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean update(User user) throws DAOException {
-        logger.info("Updating user: %s.", user);
+        logger.info("Updating user: {}.", user);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement updateUserSt = connection.prepareStatement(userQueries.getString("user.update"))) {
 
@@ -111,7 +111,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public User getByEmail(String email) throws DAOException {
-        logger.info("Getting user by email: %s.", email);
+        logger.info("Getting user by email: {}.", email);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all.by_email"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all.by_email"))) {
@@ -128,13 +128,13 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
-        logger.info("Deleting user by id: %d.", id);
+        logger.info("Deleting user by id: {}.", id);
         return daoHelper.delete(userQueries.getString("user.delete"), "Failed to delete user.", id);
     }
 
     @Override
     public PaginationDto<EntriesWithAssociatedPairsDto<User, Long, Long, Short>> getAllWithCount(long offset, long count) throws DAOException {
-        logger.info("Getting users: offset: %d, count: %d.", offset, count);
+        logger.info("Getting users: offset: {}, count: {}.", offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUserSt = connection.prepareStatement(userQueries.getString("user.get.all"));
             PreparedStatement getResultsSt = connection.prepareStatement(userQueries.getString("result.get.all"));
@@ -158,7 +158,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean addResult(long userId, long subjectId, short mark) throws DAOException {
-        logger.info("Adding user result: userId: %d, subjectId: %d, mark: %d.", userId, subjectId, mark);
+        logger.info("Adding user result: userId: {}, subjectId: {}, mark: {}.", userId, subjectId, mark);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("result.add"))) {
 
@@ -175,7 +175,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public Map<Long, Short> getUserResults(long userId) throws DAOException {
-        logger.info("Getting results of user by id: %d.", userId);
+        logger.info("Getting results of user by id: {}.", userId);
         Map<Long, Short> results = new HashMap<>();
 
         try(Connection connection = dataSource.getConnection();
@@ -197,13 +197,13 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteResult(long userId, long subjectId) throws DAOException {
-        logger.info("Deleting user result: userId: %d, subjectId: %d.", userId, subjectId);
+        logger.info("Deleting user result: userId: {}, subjectId: {}.", userId, subjectId);
         return daoHelper.delete(userQueries.getString("result.delete"), "Failed to delete exam result.", userId, subjectId);
     }
 
     @Override
     public int checkEmail(String email) throws DAOException {
-        logger.info("Checking email: %s.", email);
+        logger.info("Checking email: {}.", email);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.get.email_count"));) {
 
@@ -221,7 +221,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public AuthorizationResult authorize(String login, String password) throws DAOException {
-        logger.info("Authorizing by login: %s.", login);
+        logger.info("Authorizing by login: {}.", login);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize"))) {
 
@@ -246,7 +246,7 @@ public class JdbcUserDaoImpl implements UserDao {
 
     @Override
     public Map<Long, String> getDirectionNames(long userId) throws DAOException {
-        logger.info("Getting direction names by user id: %d.", userId);
+        logger.info("Getting direction names by user id: {}.", userId);
         Map<Long, String> names = new HashMap<>();
 
         try(Connection connection = dataSource.getConnection();

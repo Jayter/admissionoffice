@@ -19,7 +19,7 @@ public class Controller extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("Handling request: %s.", request.getHeader("Referer"));
+        logger.info("Handling request: {}?{}.", request.getRequestURI(), request.getQueryString());
         String commandName = request.getParameter(COMMAND);
         BeanContext context = (BeanContext) getServletContext().getAttribute("beanContext");
         Command command = (Command) context.getBean(commandName);

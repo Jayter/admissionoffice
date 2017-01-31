@@ -30,7 +30,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public long add(University university) throws DAOException {
-        logger.info("Adding university: %s.", university.toString());
+        logger.info("Adding university: {}.", university);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.add"),
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -52,7 +52,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public University get(long id) throws DAOException {
-        logger.info("Getting university by id: %d.", id);
+        logger.info("Getting university by id: {}.", id);
         University university = null;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.get"))) {
@@ -77,7 +77,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public boolean update(University university) throws DAOException {
-        logger.info("Updating university: %s.", university.toString());
+        logger.info("Updating university: {}.", university);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(universityQueries.getString("university.update"))) {
 
@@ -95,13 +95,13 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public boolean delete(long id) throws DAOException {
-        logger.info("Deleting university by id: %id.", id);
+        logger.info("Deleting university by id: {}.", id);
         return daoHelper.delete(universityQueries.getString("university.delete"), "Failed to delete university.", id);
     }
 
     @Override
     public PaginationDto<University> getWithCountByCity(String city, long offset, long count) throws DAOException {
-        logger.info("Getting universitites by city: %s, offset: %d, count: %d.", city, offset, count);
+        logger.info("Getting universitites by city: {}, offset: {}, count: {}.", city, offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all.by_city"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count.by_city"))) {
@@ -123,7 +123,7 @@ public class JdbcUniversityDaoImpl implements UniversityDao {
 
     @Override
     public PaginationDto<University> getWithCount(long offset, long count) throws DAOException {
-        logger.info("Getting universitites: offset: %d, count: %d.", offset, count);
+        logger.info("Getting universitites: offset: {}, count: {}.", offset, count);
         try(Connection connection = dataSource.getConnection();
             PreparedStatement getUniversitiesSt = connection.prepareStatement(universityQueries.getString("university.get.all"));
             PreparedStatement getTotalCountSt = connection.prepareStatement(universityQueries.getString("university.count"))) {

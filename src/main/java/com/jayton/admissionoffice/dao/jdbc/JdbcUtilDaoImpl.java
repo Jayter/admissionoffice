@@ -32,7 +32,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     @Override
     public SessionTerms getSessionTerms(short currentYear) throws DAOException {
-        logger.info("Getting session terms by year %d.", currentYear);
+        logger.info("Getting session terms by year {}.", currentYear);
         SessionTerms terms = null;
         terms = termsCache.get(currentYear);
         if(terms == null) {
@@ -83,7 +83,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     @Override
     public boolean updateSessionTerms(SessionTerms terms) throws DAOException {
-        logger.info("Updating session terms: %s.", terms.toString());
+        logger.info("Updating session terms: {}.", terms.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(utilQueries.getString("sessionDate.update"))) {
 
@@ -107,7 +107,7 @@ public class JdbcUtilDaoImpl implements UtilDao {
 
     @Override
     public boolean createSessionTerms(SessionTerms terms) throws DAOException {
-        logger.info("Adding session terms: %s.", terms.toString());
+        logger.info("Adding session terms: {}.", terms.toString());
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(utilQueries.getString("sessionDate.create"))) {
 
