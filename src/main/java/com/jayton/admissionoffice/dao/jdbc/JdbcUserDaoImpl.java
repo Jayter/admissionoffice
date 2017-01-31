@@ -9,6 +9,7 @@ import com.jayton.admissionoffice.model.to.EntriesWithAssociatedPairsDto;
 import com.jayton.admissionoffice.model.to.PaginationDto;
 import com.jayton.admissionoffice.model.user.User;
 import com.jayton.admissionoffice.util.di.Injected;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class JdbcUserDaoImpl implements UserDao {
                 addUserSt.setDate(6, Date.valueOf(user.getBirthDate()));
                 addUserSt.setByte(7, user.getAverageMark());
                 addCredentialsSt.setString(1, user.getEmail());
-                addCredentialsSt.setString(2, user.getPassword());
+                addCredentialsSt.setString(2, BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 
                 addUserSt.executeUpdate();
                 addCredentialsSt.executeUpdate();
@@ -223,20 +224,21 @@ public class JdbcUserDaoImpl implements UserDao {
     public AuthorizationResult authorize(String login, String password) throws DAOException {
         logger.info("Authorizing by login: {}.", login);
         try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize"))) {
+            PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize1"))) {
 
             statement.setString(1, login);
-            statement.setString(2, password);
 
             try(ResultSet rs = statement.executeQuery()) {
                 if(rs.next()) {
-                    if(rs.getBoolean("is_admin")) {
-                        return AuthorizationResult.ADMIN;
+                    Boolean isCorrect = BCrypt.checkpw(password, rs.getString("password"));
+                    if(isCorrect) {
+                        if (rs.getBoolean("is_admin")) {
+                            return AuthorizationResult.ADMIN;
+                        }
+                        return AuthorizationResult.USER;
                     }
-                    return AuthorizationResult.USER;
-                } else {
-                    return AuthorizationResult.ABSENT;
                 }
+                return AuthorizationResult.ABSENT;
             }
         } catch (SQLException e) {
             logger.error("Failed to authorize.", e);
