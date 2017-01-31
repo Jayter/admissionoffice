@@ -21,7 +21,7 @@
 <body>
     <jsp:include page="../fragments/header.jsp"/>
     <c:set scope="request" var="isBeforeSessionStart" value="${dateFunctions:isBeforeSessionStart(sessionScope.sessionTerms)}"/>
-    <c:set scope="request" var="isAfterSessionEnd" value="${dateFunctions:isBeforeSessionStart(sessionScope.sessionTerms)}"/>
+    <c:set scope="request" var="isAfterSessionEnd" value="${dateFunctions:isAfterSessionEnd(sessionScope.sessionTerms)}"/>
     <c:set scope="request" var="isBeyondSessionTerms" value="${dateFunctions:isBeyondSessionTerms(sessionScope.sessionTerms)}"/>
     <div class="edit_outer">
         <c:if test="${not empty sessionScope.sessionTerms}">
