@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Verifier {
 
@@ -21,6 +23,7 @@ public class Verifier {
     public static final String INCORRECT_DATE = "Incorrect date.";
     public static final String NULLABLE = "%s must not be null.";
     public static final String EMPTY = "%s must not be empty.";
+    public static final Pattern EMAIL_PATTERN = Pattern.compile("([\\w]{1,}[@]{1}[\\w]{1,}[\\.]{1}[\\w]{1,})");
 
     private Verifier(){}
 
@@ -49,7 +52,7 @@ public class Verifier {
         if(Objects.isNull(email)) {
             throw new VerificationException(String.format(NULLABLE, "Email"));
         }
-        if(email.indexOf('@') == -1) {
+        if(!EMAIL_PATTERN.matcher(email).matches()) {
             throw new VerificationException(INCORRECT_EMAIL);
         }
     }
