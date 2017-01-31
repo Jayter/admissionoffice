@@ -224,7 +224,7 @@ public class JdbcUserDaoImpl implements UserDao {
     public AuthorizationResult authorize(String login, String password) throws DAOException {
         logger.info("Authorizing by login: {}.", login);
         try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize1"))) {
+            PreparedStatement statement = connection.prepareStatement(userQueries.getString("user.authorize"))) {
 
             statement.setString(1, login);
 
